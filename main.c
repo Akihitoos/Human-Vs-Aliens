@@ -1,5 +1,5 @@
 int main
 {
-  printf("%d", 1+1);
+  printf("test");
   return 0;
 }
