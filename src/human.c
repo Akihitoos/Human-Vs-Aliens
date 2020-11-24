@@ -1,30 +1,94 @@
+/*
+File dealing with the Human faction. It provides :
+    - The struct Human
+    - Different function creating different type of Human
+    - Different function managing them
+
+first version (unbalanced)
+*/
+
 #include <stdio.h>
 
 // Struct defining a Human
 typedef struct human{
     int hp;
     int damage;
+    int cost;               
     int range;
     double revenus;
-    int movement_speed;
-    double attack_speed;
+    double attack_speed;   // Numbers of attack per seconds
     int position;
     int lane;
 } Human;
 
-// Function creating a ranged Human
-Human *create_ranged(int lane){
-    Human *ranged = NULL;
-    ranged = (Human *)malloc(sizeof(Human));
-    if(ranged != NULL){
-        ranged->hp = 300;
-        ranged->damage = 70;
-        ranged->movement_speed = 0;
-        ranged->attack_speed = 1.2;
-        ranged->position = 0;
-        ranged->lane = lane;
+// Function returning a Human ranged
+Human *create_ranged(int positionX, int lane){
+    Human *new = NULL;
+    new = (Human *)malloc(sizeof(Human));
+    if(new != NULL){
+        new->hp = 300;
+        new->damage = 70;         // DPS : 84
+        new->range = 250;
+        new->revenus = 0.;
+        new->attack_speed = 1.2;
+        new->position = positionX;
+        new->lane = lane;
     } else {
-        fprintf(stderr, "Allocation error in ranged");
+        fprintf(stderr, "Allocation error in create_ranged()");
     }
-    return ranged;
+    return new;
+}
+
+// Function returning a Human tank
+Human *create_tank(int positionX, int lane){
+    Human *new = NULL;
+    new = (Human *)malloc(sizeof(Human));
+    if(new != NULL){
+        new->hp = 1000;
+        new->damage = 30;            // DPS : 36
+        new->range = 30;
+        new->revenus = 0.;
+        new->attack_speed = 0.8;
+        new->position = positionX;
+        new->lane = lane;
+    } else {
+        fprintf(stderr, "Allocation error in create_tank()");
+    }
+    return new;
+}
+
+// Function returning a Human melee
+Human *create_melee(int positionX, int lane){
+    Human *new = NULL;
+    new = (Human *)malloc(sizeof(Human));
+    if(new != NULL){
+        new->hp = 600;
+        new->damage = 60;            // DPS : 60
+        new->range = 30;
+        new->revenus = 0.;
+        new->attack_speed = 1;
+        new->position = positionX;
+        new->lane = lane;
+    } else {
+        fprintf(stderr, "Allocation error in create_melee()");
+    }
+    return new;
+}
+
+// Function returning an Usine (a special type of Human)
+Human *create_factory(int positionX, int lane){
+    Human *new = NULL;
+    new = (Human *)malloc(sizeof(Human));
+    if(new != NULL){
+        new->hp = 450;
+        new->damage = 0;
+        new->range = 0;
+        new->revenus = 10;
+        new->attack_speed = 0;
+        new->position = positionX;
+        new->lane = lane;
+    } else {
+        fprintf(stderr, "Allocation error in create_melee()");
+    }
+    return new;
 }
