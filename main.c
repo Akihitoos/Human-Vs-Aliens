@@ -10,5 +10,6 @@ int main()
   printf("test");
   printf("hey les reuf voila j'arrive");
   print("eaaeeaeaea");
+  printf("bonjourles reuf");
   return 0;
 }
