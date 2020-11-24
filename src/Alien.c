@@ -72,6 +72,15 @@ void move(Alien *alien){        /*Susceptible de changer*/  //Incrémente la pos
     alien->position += alien->movement_speed;
 }
 
+void upon_death(Alien *alien){    // Fonction qui s'éxecute si hp = 0, et libère la mémoire allouée
+    if (alien->hp <= 0){
+        /* Eventuelles actions */
+        free(alien);
+    }
+}
+
+
+
 int main(int argc, char const *argv[])
 {
     Alien test = create_tank(1);
