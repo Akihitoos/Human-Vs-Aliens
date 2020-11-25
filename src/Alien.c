@@ -13,7 +13,7 @@ typedef struct Alien    //Structure contenant les stats des aliens.
     int lane;
 }Alien;
 
-Alien create_range(int lane){     // Retourne un nouvel alien "range" avec ses statistiques.
+Alien* create_range(int lane){     // Retourne un nouvel alien "range" avec ses statistiques.
     Alien *new = (Alien*)malloc(sizeof(Alien));
     if ( new != NULL){
         new->hp = 300;
@@ -29,10 +29,10 @@ Alien create_range(int lane){     // Retourne un nouvel alien "range" avec ses s
         fprintf(stderr,"Malloc erroc");
     }
     
-    return *new;
+    return new;
 }
 
-Alien create_melee(int lane){     // Retourne un nouvel alien "melee" avec ses statistiques
+Alien* create_melee(int lane){     // Retourne un nouvel alien "melee" avec ses statistiques
     Alien *new = (Alien*)malloc(sizeof(Alien));
     if ( new != NULL){
         new->hp = 900;
@@ -47,10 +47,10 @@ Alien create_melee(int lane){     // Retourne un nouvel alien "melee" avec ses s
     {
         fprintf(stderr,"Malloc erroc");
     }
-    return *new;
+    return new;
 }
 
-Alien create_tank(int lane){      // Retourne un nouvel alien "tank" avec ses statistiques
+Alien* create_tank(int lane){      // Retourne un nouvel alien "tank" avec ses statistiques
     Alien *new = (Alien*)malloc(sizeof(Alien));
     if ( new != NULL){
         new->hp = 2100;
@@ -65,7 +65,7 @@ Alien create_tank(int lane){      // Retourne un nouvel alien "tank" avec ses st
     {
         fprintf(stderr,"Malloc erroc");
     }
-    return *new;
+    return new;
 }
 
 void move(Alien *alien){        /*Susceptible de changer*/  //Incrémente la position de l'alien de sa ms
@@ -83,7 +83,7 @@ void upon_death(Alien *alien){    // Fonction qui s'éxecute si hp = 0, et libè
 
 int main(int argc, char const *argv[])
 {
-    Alien test = create_tank(1);
-    printf("hp : %d\ndmg : %d\n",test.hp,test.damage);
+    Alien *test = create_tank(1);
+    printf("hp : %d\ndmg : %d\n",test->hp,test->damage);
     return 0;
 }
