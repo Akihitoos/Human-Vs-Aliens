@@ -1,25 +1,14 @@
 /*
 File dealing with the Human faction. It provides :
-    - The struct Human
     - Different function creating different type of Human
     - Different function managing them
+
+    (The struct Human is defined in the human.h)
 
 first version (unbalanced)
 */
 
-#include <stdio.h>
-
-// Struct defining a Human
-typedef struct human{
-    int hp;
-    int damage;
-    int cost;               
-    int range;
-    double revenus;
-    double attack_speed;   // Numbers of attack per seconds
-    int position;
-    int lane;
-} Human;
+#include "human.h"
 
 // Function returning a Human ranged
 Human *create_ranged(int positionX, int lane){
@@ -91,4 +80,9 @@ Human *create_factory(int positionX, int lane){
         fprintf(stderr, "Allocation error in create_melee()");
     }
     return new;
+}
+
+//deallocate the memory for the human given in parameters
+void free_human(Human *human){
+    free(human);
 }
