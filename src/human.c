@@ -10,6 +10,17 @@ first version (unbalanced)
 
 #include "human.h"
 
+struct Human{
+    int hp;
+    int damage;
+    int cost;               
+    int range;
+    double revenus;
+    double attack_speed;   // Numbers of attack per seconds
+    int position;
+    int lane;
+};
+
 // Function returning a Human ranged
 Human *create_ranged(int positionX, int lane){
     Human *new = NULL;
@@ -84,5 +95,7 @@ Human *create_factory(int positionX, int lane){
 
 //deallocate the memory for the human given in parameters
 void free_human(Human *human){
-    free(human);
+    if(human->hp <= 0){
+        free(human);
+    }
 }
