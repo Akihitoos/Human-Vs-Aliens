@@ -78,12 +78,3 @@ void upon_death(Alien *alien){    // Fonction qui s'éxecute si hp = 0, et libè
         free(alien);
     }
 }
-
-
-
-int main(int argc, char const *argv[])
-{
-    Alien *test = create_tank(1);
-    printf("hp : %d\ndmg : %d\n",test->hp,test->damage);
-    return 0;
-}
