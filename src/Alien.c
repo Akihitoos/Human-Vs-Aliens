@@ -1,5 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "Alien.h"
 
 typedef struct Alien    //Structure contenant les stats des aliens.
