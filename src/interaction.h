@@ -12,6 +12,9 @@ Entity *** initTab_Alien ();
 void add_entity ();
 
 
+// function which permite to choose your type and put in position for console_debug
+Entity * choose_your_type();
+
 
 // function which manage interaction between Alien and Human
 

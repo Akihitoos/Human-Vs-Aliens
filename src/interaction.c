@@ -1,6 +1,11 @@
 #include <interaction.h>
 #include <Entity.h>
 
+
+
+// function which initialize tab human
+
+
 Entity ***initTab_Human(){
     Entity *** p =NULL; 
     int column = 0;
@@ -13,6 +18,8 @@ Entity ***initTab_Human(){
         fprintf(stderr,"Allocation error in initTab_Human");
     }
 }
+
+// function which initialize tab alien 
 
 Entity ***initTab_Alien(){
 
@@ -28,55 +35,80 @@ Entity ***initTab_Alien(){
     }
 }
 
-void add_entity()
-{
-    int ch1, ch2;
+
+
+// Function choose your type of human or Alien for debug console
+
+Entity * choose_your_type(){
+    int ch1, ch2, posX, lane;
     printf("ALIEN OU HUMAIN ?(1 ou 0)");
+    scanf("%d", &ch1);
     switch (ch1)
     {
     case 1:
-        Entity * a = NULL;
+        printf("entre une lane");
+        scanf("%d", &lane);
+        Entity *a = NULL;
         printf("que voulez ajoutez comme Alien");
         printf("1 alien distance");
         prinf("2 alien melee");
         printf("3 alien tank");
-        switch (ch2){
+        scanf("%d", &ch2);
+        switch (ch2)
+            {
             case 1:
-                
+                a = create_alien_distance(lane);
+                return a;
                 break;
             case 2:
-
+                a = create_alien_melee(lane);
+                return a;
                 break;
-            case 3  :
-
+            case 3:
+                a = create_alien_tank(lane);
+                return a;
                 break;
             }
-            break;
     case 0:
-        Entity * h = NULL;
-        printf("que voulez ajoutez comme Humain");
-        printf("1 alien distance");
-        prinf("2 alien melee");
-        printf("3 alien tank");
-        printf("4 alien tank");
+
+        Entity *h = NULL;
+        printf("quelle type voulez vous ajoutez comme Humain");
+        printf("1 humain distance");
+        prinf("2 humain melee");
+        printf("3 humain tank");
+        printf("4 humain tank");
+        scanf("%d", &ch2);
+        printf("entre une posX et une lane");
+        scanf("%d", &posX);
+        scanf("%d", &lane);
         switch (ch2)
-        {
-        case 1:
-
-            break;
-        case 2:
-
-            break;
-        case 3:
-
-            break;
-        case 4:
-
-            break;
-        }
-        break;
+            {
+            case 1:
+                h = create_human_ranged(posX, lane);
+                return h;
+                break;
+            case 2:
+                h = create_human_melee(posX, lane);
+                return h;
+                break;
+            case 3:
+                h = create_human_tank(posX, lane);
+                return h;
+                break;
+            case 4:
+                h = create_human_factory(posX, lane);
+                return h;
+                break;
+            }       
     default:
-        fprintf(stderr,"ERROR in add_entity");
+        fprintf(stderr, "ERROR in add_entity");
         break;
     }
+}
+
+void add_entity()
+{
+    Entity * p = NULL;
+    p=choose_your_type();
+
 }
