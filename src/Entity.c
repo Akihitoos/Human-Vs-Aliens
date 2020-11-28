@@ -11,6 +11,7 @@ typedef struct Entity
     double attack_speed;
     int position;
     int lane;
+    Entity *next;
 }Entity;
 
 // Function returning a Human ranged
@@ -27,6 +28,7 @@ Entity *create_human_ranged(int positionX, int lane){
         new->attack_speed = 1.2;
         new->position = positionX;
         new->lane = lane;
+        new->next = NULL;
     } else {
         fprintf(stderr, "Allocation error in create_ranged()");
     }
@@ -47,6 +49,7 @@ Entity *create_human_tank(int positionX, int lane){
         new->attack_speed = 0.8;
         new->position = positionX;
         new->lane = lane;
+        new->next = NULL;
     } else {
         fprintf(stderr, "Allocation error in create_tank()");
     }
@@ -67,6 +70,7 @@ Entity *create_human_melee(int positionX, int lane){
         new->attack_speed = 1;
         new->position = positionX;
         new->lane = lane;
+        new->next = NULL;
     } else {
         fprintf(stderr, "Allocation error in create_melee()");
     }
@@ -87,6 +91,7 @@ Entity *create_human_factory(int positionX, int lane){
         new->attack_speed = 0;
         new->position = positionX;
         new->lane = lane;
+        new->next = NULL;
     } else {
         fprintf(stderr, "Allocation error in create_melee()");
     }
@@ -106,6 +111,7 @@ Entity* create_alien_range(int lane){
         new->attack_speed = 1.2;
         new->position = 1000;
         new->lane = lane;
+        new->next = NULL;
     }
     else
     {
@@ -128,6 +134,7 @@ Entity* create_alien_melee(int lane){
         new->attack_speed = 1.8;
         new->position = 1000;
         new->lane = lane;
+        new->next = NULL;
     }
     else
     {
@@ -149,6 +156,7 @@ Entity* create_alien_tank(int lane){
         new->attack_speed = 0.3;
         new->position = 1000;
         new->lane = lane;
+        new->next = NULL;
     }
     else
     {
