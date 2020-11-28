@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include "Entity.h"
 
 // function which init Table Human
 Entity *** initTab_Human ();
@@ -13,8 +13,7 @@ void add_entity ();
 
 
 // function which permite to choose your type and put in position for console_debug
-Entity * choose_your_type();
-
+Entity* choose_your_type(int team, int id, int lane, int pos);
 
 // function which manage interaction between Alien and Human
 

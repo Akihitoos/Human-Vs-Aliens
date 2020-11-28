@@ -1,16 +1,14 @@
 #include "interaction.h"
-#include "Entity.h"
-
 
 
 // function which initialize tab human
 
 
 Entity ***initTab_Human(){
-    Entity *** p =NULL; 
+    Entity ***p =NULL; 
     int column = 0;
     int row =5;
-    p=(Entity***)calloc(row,sizeof(Entity**));
+    p=(Entity***)malloc(row*sizeof(Entity**));
     if(p!=NULL){
         return p;
     }
@@ -23,10 +21,10 @@ Entity ***initTab_Human(){
 
 Entity ***initTab_Alien(){
 
-    Entity *** p =NULL;
+    Entity ***p =NULL;
     int column = 0;
     int row =5;
-    p=(Entity ***)calloc(row, sizeof(Entity**));
+    p=(Entity ***)malloc(row*sizeof(Entity**));
     if(p!=NULL){
         return p;
     }
@@ -39,65 +37,46 @@ Entity ***initTab_Alien(){
 
 // Function choose your type of human or Alien for debug console
 
-Entity * choose_your_type(){
-    int ch1, ch2, posX, lane;
-    printf("ALIEN OU HUMAIN ?(1 ou 0)");
-    scanf("%d", &ch1);
-    switch (ch1)
+Entity* choose_your_type(int team, int id, int lane, int pos){
+    switch (team)
     {
-    case 1:
-        printf("entre une lane");
-        scanf("%d", &lane);
-        Entity *a = NULL;
-        printf("que voulez ajoutez comme Alien");
-        printf("1 alien distance");
-        printf("2 alien melee");
-        printf("3 alien tank");
-        scanf("%d", &ch2);
-        switch (ch2)
+    case 1:     //Alien
+        Entity *temp = NULL;
+        switch (id)
             {
             case 1:
-                a = create_alien_distance(lane);
-                return a;
+                temp = create_alien_distance(lane);
+                return temp;
                 break;
             case 2:
-                a = create_alien_melee(lane);
-                return a;
+                temp = create_alien_melee(lane);
+                return temp;
                 break;
             case 3:
-                a = create_alien_tank(lane);
-                return a;
+                temp = create_alien_tank(lane);
+                return temp;
                 break;
             }
     case 0:
 
-        Entity *h = NULL;
-        printf("quelle type voulez vous ajoutez comme Humain");
-        printf("1 humain distance");
-        printf("2 humain melee");
-        printf("3 humain tank");
-        printf("4 humain tank");
-        scanf("%d", &ch2);
-        printf("entre une posX et une lane");
-        scanf("%d", &posX);
-        scanf("%d", &lane);
-        switch (ch2)
+        Entity *temp = NULL;
+        switch (id)
             {
             case 1:
-                h = create_human_ranged(posX, lane);
-                return h;
+                temp = create_human_ranged(pos, lane);
+                return temp;
                 break;
             case 2:
-                h = create_human_melee(posX, lane);
-                return h;
+                temp = create_human_melee(pos, lane);
+                return temp;
                 break;
             case 3:
-                h = create_human_tank(posX, lane);
-                return h;
+                temp = create_human_tank(pos, lane);
+                return temp;
                 break;
             case 4:
-                h = create_human_factory(posX, lane);
-                return h;
+                temp = create_human_factory(pos, lane);
+                return temp;
                 break;
             }       
     default:
@@ -106,19 +85,15 @@ Entity * choose_your_type(){
     }
 }
 
-void add_entity()
+void add_entity(int team, int id, int lane, int pos)
 {
-    Entity * p = NULL;
-    p=choose_your_type();
-    // if((*p).id <1){
-        
-    // }
-
+    Entity *p = NULL;
+    p = choose_your_type(team, id, lane, pos);
 }
 
 int main (){
     Entity *p = NULL;
-    p=choose_your_type();
+    //p=choose_your_type();
     free(p);
     return 0;
 }
