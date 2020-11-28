@@ -30,6 +30,5 @@ Entity* create_alien_melee(int lane);
 Entity* create_alien_tank(int lane);
 
 void move(Entity *alien);
-void free_entity(Entity *entity);
 
 #endif

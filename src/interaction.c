@@ -99,11 +99,12 @@ void delete_entity_on_lane(Entity **simpleArray,int lane, Entity *todelete)
     }
 }
 
+//Free the content of a lane. The first occurence must be the first entity of the lane
 void free_tab_content_recursive(Entity *entity){
     if (entity->next != NULL){
         free_tab_content_recursive(entity->next);
-        free(entity);
     }
+    free(entity); 
 }
 
 void free_array(Entity **Human, Entity **Alien){
@@ -157,4 +158,8 @@ void attack(Entity *attacker, Entity *attacked){
 
 void factory_generation(Entity *factory/*, Joueur gain*/){
     /*Joueur->bank += (factory.revenus)/REFRESH_RATE;*/
+}
+
+void move(Entity *alien){        //Reduces alien position of its MS
+    alien->position -= alien->movement_speed; // / refresh_rate
 }

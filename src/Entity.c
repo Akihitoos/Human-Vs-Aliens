@@ -7,7 +7,7 @@ Entity *create_human_ranged(int positionX, int lane){
     if(new != NULL){
         new->id = 2;
         new->hp = 300;
-        new->damage = 70;         // DPS : 84
+        new->damage = 70;         
         new->range = 250;
         new->income = 0;
         new->movement_speed = 0;
@@ -27,7 +27,7 @@ Entity *create_human_tank(int positionX, int lane){
     if(new != NULL){
         new->id = 3;
         new->hp = 1000;
-        new->damage = 30;            // DPS : 36
+        new->damage = 30;           
         new->range = 30;
         new->income = 0;
         new->movement_speed = 0;
@@ -47,7 +47,7 @@ Entity *create_human_melee(int positionX, int lane){
     if(new != NULL){
         new->id = 1;
         new->hp = 600;
-        new->damage = 60;            // DPS : 60
+        new->damage = 60;
         new->range = 30;
         new->income = 0;
         new->movement_speed = 0;
@@ -146,11 +146,4 @@ Entity* create_alien_tank(int lane){
 
 void move(Entity *alien){        /* May change */  //Reduces alien position of its MS
     alien->position -= alien->movement_speed; // / refresh_rate
-}
-
-//deallocate the memory for the entity given in parameters
-void free_entity(Entity *entity){
-    if(entity->hp <= 0){
-        free(entity);
-    }
 }
