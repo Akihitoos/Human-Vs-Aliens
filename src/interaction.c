@@ -1,120 +1,74 @@
 #include "interaction.h"
 
+// function which initialize a double array of entity
+Entity ***init_entity_double_array(){
+    Entity ***p = NULL; 
+    p = (Entity ***)malloc(sizeof(Entity***) * LANE); // Initialise the pointer onto the array of each lane 
 
-// function which initialize tab human
+    if(p != NULL){
 
+        // Initialise each array of Entity (per lane)
+        for(int i = 0; i < LANE; i++){
 
-Entity **initTab_Human(){
-    Entity **p =NULL; 
-    int column = 0;
-    int row =5;
-    p=(Entity**)malloc(row*sizeof(Entity*));
-    if(p!=NULL){
-        return p;
-    }
-    else{
-        fprintf(stderr,"Allocation error in initTab_Human");
-    }
-}
-
-// function which initialize tab alien 
-
-Entity **initTab_Alien(){
-
-    Entity **p =NULL;
-    int column = 0;
-    int row =5;
-    p=(Entity **)malloc(row*sizeof(Entity*));
-    if(p!=NULL){
-        return p;
-    }
-    else{
-        fprintf(stderr, "Allocation error in initTab_Alien");
-    }
-}
-
-
-
-// Function choose your type of human or Alien for debug console
-
-Entity* choose_your_type(int team, int id, int lane, int pos){
-    switch (team)
-    {
-    case 1:     //Alien
-        Entity *temp = NULL;
-        switch (id)
-            {
-            case 1:
-                temp = create_alien_distance(lane);
-                return temp;
-                break;
-            case 2:
-                temp = create_alien_melee(lane);
-                return temp;
-                break;
-            case 3:
-                temp = create_alien_tank(lane);
-                return temp;
-                break;
+            p[i] = (Entity **)malloc(sizeof(Entity**)); 
+            if(p[i] == NULL){
+                fprintf(stderr,"Allocation error in init_entity_double_array()\n");
             }
-    case 0:
-
-        Entity *temp = NULL;
-        switch (id)
-            {
-            case 1:
-                temp = create_human_ranged(pos, lane);
-                return temp;
-                break;
-            case 2:
-                temp = create_human_melee(pos, lane);
-                return temp;
-                break;
-            case 3:
-                temp = create_human_tank(pos, lane);
-                return temp;
-                break;
-            case 4:
-                temp = create_human_factory(pos, lane);
-                return temp;
-                break;
-            }       
-    default:
-        fprintf(stderr, "ERROR in add_entity");
-        break;
+        }
+    } else {
+        fprintf(stderr,"Allocation error in init_entity_double_array()\n");
     }
+
+    return p;
+}
+
+// Function returning a entity depending on his id
+Entity* create_entity_on_id(int id, int lane, int pos){
+    Entity *new = NULL;
+    switch(id){
+        case 1:
+            new = create_human_melee(pos, lane);
+            break;
+        case 2:
+            new = create_human_ranged(pos, lane);
+            break;
+        case 3:
+            new = create_human_tank(pos, lane);
+            break;
+        case 4:
+            new = create_human_factory(pos, lane);
+            break;
+        case -1:
+            new = create_alien_melee(lane);
+            break;
+        case -2:
+            new = create_alien_range(lane);
+            break;
+        case -3:
+            new = create_alien_tank(lane);
+            break;
+        default:
+            new = NULL;
+            break;
+    }
+
+    return new;
 }
 
 
- Entity *** add_in_Alien(Entity * alien, Entity ** Tab_Alien){
+// Add an Entity to a Lane
+Entity ***add_entity_to_lane(Entity **lane, Entity *new){
 
-
-
-
-}
-            
-            
-Entity *** add_in_Human(Entity * human, Entity ** Tab_Human){
-
-
-
-
+    // return the first Entity of the lane
 
 }
 
-
-
-
-void add_entity(int team, int id, int lane, int pos)
+// create an Entity (depending on the id) and add it to a double array of entity
+void add_entity(Entity ***doubleArray, int id, int lane, int pos)
 {
     Entity *p = NULL;
-    p = choose_your_type(team, id, lane, pos);
+    p = create_entity_on_id(id, lane, pos);
     if(p!=NULL){
-        if(p->id<0){
-           
-        }
-        else{
-            
-        }
+        
     }
 }

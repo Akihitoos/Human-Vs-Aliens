@@ -1,27 +1,29 @@
+#ifndef INTERACTION_H
+#define INTERACTION_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "Entity.h"
 
-// function which init Table Human
-Entity ** initTab_Human ();
+#define LANE 5
 
-// function which init Table Alien
-Entity ** initTab_Alien ();
+// function which initialize a double array of entity
+Entity ***init_entity_double_array();
 
 // function which add a Entity structure in Alien_Tab or Human_Table
-void add_entity ();
+void add_entity();
 
+// Function returning a entity depending on his id
+Entity* create_entity_on_id(int id, int lane, int pos);
 
-// function which permite to choose your type and put in position for console_debug
-Entity* choose_your_type(int team, int id, int lane, int pos);
+// Add an Entity to a Lane
+Entity ***add_entity_to_lane(Entity **lane, Entity *new);
 
-// Function which add an element in the chained list Alien
-Entity ***add_in_Alien(Entity *alien, Entity ** Tab_Alien);
-
-// Function which add an element in the chained list Human
-Entity ***add_in_Human(Entity *alien, Entity ** Tab_Human);
+// create an Entity (depending on the id) and add it to a double array of entity
+void add_entity(Entity ***doubleArray, int id, int lane, int pos);
 
 // function which manage interaction between Alien and Human
-
 void search (Entity * Tab_Human, Entity * Tab_Alien);
 void attack (Entity * human, Entity * alien);
+
+#endif
