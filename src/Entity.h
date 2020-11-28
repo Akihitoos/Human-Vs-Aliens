@@ -26,7 +26,7 @@ Entity *create_human_tank(int positionX, int lane);
 Entity *create_human_melee(int positionX, int lane);
 Entity *create_human_factory(int positionX, int lane);
 
-Entity* create_alien_distance(int lane);
+Entity* create_alien_range(int lane);
 Entity* create_alien_melee(int lane);
 Entity* create_alien_tank(int lane);
 
