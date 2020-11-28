@@ -51,7 +51,7 @@ Entity * choose_your_type(){
         Entity *a = NULL;
         printf("que voulez ajoutez comme Alien");
         printf("1 alien distance");
-        prinf("2 alien melee");
+        printf("2 alien melee");
         printf("3 alien tank");
         scanf("%d", &ch2);
         switch (ch2)
@@ -74,7 +74,7 @@ Entity * choose_your_type(){
         Entity *h = NULL;
         printf("quelle type voulez vous ajoutez comme Humain");
         printf("1 humain distance");
-        prinf("2 humain melee");
+        printf("2 humain melee");
         printf("3 humain tank");
         printf("4 humain tank");
         scanf("%d", &ch2);
@@ -110,5 +110,15 @@ void add_entity()
 {
     Entity * p = NULL;
     p=choose_your_type();
+    // if((*p).id <1){
+        
+    // }
 
+}
+
+int main (){
+    Entity *p = NULL;
+    p=choose_your_type();
+    free(p);
+    return 0;
 }
