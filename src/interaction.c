@@ -4,11 +4,11 @@
 // function which initialize tab human
 
 
-Entity ***initTab_Human(){
-    Entity ***p =NULL; 
+Entity **initTab_Human(){
+    Entity **p =NULL; 
     int column = 0;
     int row =5;
-    p=(Entity***)malloc(row*sizeof(Entity**));
+    p=(Entity**)malloc(row*sizeof(Entity*));
     if(p!=NULL){
         return p;
     }
@@ -19,12 +19,12 @@ Entity ***initTab_Human(){
 
 // function which initialize tab alien 
 
-Entity ***initTab_Alien(){
+Entity **initTab_Alien(){
 
-    Entity ***p =NULL;
+    Entity **p =NULL;
     int column = 0;
     int row =5;
-    p=(Entity ***)malloc(row*sizeof(Entity**));
+    p=(Entity **)malloc(row*sizeof(Entity*));
     if(p!=NULL){
         return p;
     }
@@ -85,15 +85,36 @@ Entity* choose_your_type(int team, int id, int lane, int pos){
     }
 }
 
+
+ Entity *** add_in_Alien(Entity * alien, Entity ** Tab_Alien){
+
+
+
+
+}
+            
+            
+Entity *** add_in_Human(Entity * human, Entity ** Tab_Human){
+
+
+
+
+
+}
+
+
+
+
 void add_entity(int team, int id, int lane, int pos)
 {
     Entity *p = NULL;
     p = choose_your_type(team, id, lane, pos);
-}
-
-int main (){
-    Entity *p = NULL;
-    //p=choose_your_type();
-    free(p);
-    return 0;
+    if(p!=NULL){
+        if(p->id<0){
+           
+        }
+        else{
+            
+        }
+    }
 }
