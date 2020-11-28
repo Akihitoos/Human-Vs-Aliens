@@ -2,11 +2,10 @@
 
 typedef struct Entity
 {
-    int team; //1 : Human 2 : Alien
+    int id; //1 : Human 2 : Alien
     int hp;
     int damage;
     int range;
-    int cost; // j'ai pas trop compris pourquoi spécifier le prix dans la structure
     int movement_speed;
     double revenus;
     double attack_speed;
@@ -19,7 +18,7 @@ Entity *create_human_ranged(int positionX, int lane){
     Entity *new = NULL;
     new = (Entity *)malloc(sizeof(Entity));
     if(new != NULL){
-        new->team = 1;
+        new->id = 2;
         new->hp = 300;
         new->damage = 70;         // DPS : 84
         new->range = 250;
@@ -39,7 +38,7 @@ Entity *create_human_tank(int positionX, int lane){
     Entity *new = NULL;
     new = (Entity *)malloc(sizeof(Entity));
     if(new != NULL){
-        new->team = 1;
+        new->id = 3;
         new->hp = 1000;
         new->damage = 30;            // DPS : 36
         new->range = 30;
@@ -59,7 +58,7 @@ Entity *create_human_melee(int positionX, int lane){
     Entity *new = NULL;
     new = (Entity *)malloc(sizeof(Entity));
     if(new != NULL){
-        new->team = 1;
+        new->id = 1;
         new->hp = 600;
         new->damage = 60;            // DPS : 60
         new->range = 30;
@@ -79,7 +78,7 @@ Entity *create_human_factory(int positionX, int lane){
     Entity *new = NULL;
     new = (Entity *)malloc(sizeof(Entity));
     if(new != NULL){
-        new->team = 1;
+        new->id = 4;
         new->hp = 450;
         new->damage = 0;
         new->range = 0;
@@ -98,7 +97,7 @@ Entity *create_human_factory(int positionX, int lane){
 Entity* create_alien_range(int lane){     
     Entity *new = (Entity*)malloc(sizeof(Entity));
     if (new != NULL){
-        new->team = 2;
+        new->id = -2;
         new->hp = 300;
         new->damage = 70;
         new->range = 300;
@@ -120,7 +119,7 @@ Entity* create_alien_range(int lane){
 Entity* create_alien_melee(int lane){     
     Entity *new = (Entity*)malloc(sizeof(Entity));
     if ( new != NULL){
-        new->team = 2;
+        new->id = -1;
         new->hp = 900;
         new->damage = 110;
         new->range = 50;
@@ -141,7 +140,7 @@ Entity* create_alien_melee(int lane){
 Entity* create_alien_tank(int lane){      
     Entity *new = (Entity*)malloc(sizeof(Entity));
     if ( new != NULL){
-        new->team = 2;
+        new->id = -3;
         new->hp = 2100;
         new->damage = 150;
         new->range = 50;
