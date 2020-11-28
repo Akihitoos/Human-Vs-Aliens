@@ -1,22 +1,16 @@
 #include "interaction.h"
 
-// function which initialize and return a double array of entity
-Entity ***init_entity_double_array(){
-    Entity ***p = NULL; 
-    p = (Entity ***)malloc(sizeof(Entity***) * LANE); // Initialise the pointer onto the array of each lane 
 
-    if(p != NULL){
-        // Initialise each array of Entity (per lane)
-        for(int i = 0; i < LANE; i++){
-            p[i] = (Entity **)malloc(sizeof(Entity**)); 
-            if(p[i] == NULL){
-                fprintf(stderr,"Allocation error in init_entity_double_array()\n");
-            }
+
+// function which initialize and return a simple array of entity
+Entity **init_entity_array(){
+    Entity **p = NULL;
+    p = (Entity**)malloc(sizeof(Entity**)*LANE); // Initialize the pointer onto the array of each lane 
+    if (p != NULL){
+        for (int i = 0; i<LANE;i++){
+            *(p+i) = NULL;
         }
-    } else {
-        fprintf(stderr,"Allocation error in init_entity_double_array()\n");
     }
-
     return p;
 }
 
@@ -56,23 +50,111 @@ Entity* create_entity_on_id(int id, int lane, int pos){
 
 /*
     Add an Entity to a Lane.
-    Entity **lane : This is a pointer onto the first element of the chain of Entity (which form the lane)
+    Entity *lane : This is a pointer onto the first element of the chain of Entity (which from the lane)
     Entity *new : This is the Entity to add in the chain
 */
-Entity ***add_entity_to_lane(Entity **lane, Entity *new){
-
-    // return the first Entity of the lane
-
+void add_entity_to_lane(Entity *lane, Entity *new){
+    Entity *temp = lane;
+    if (temp == NULL){
+        lane = new;
+        return;
+    }
+    while (temp->next != NULL){
+        temp = temp->next;
+    }
+    temp->next = new;
 }
 
+
 /* 
-    Create an Entity (depending on the id) and add it to a double array of entity
+    Create an Entity (depending on the id) and add it to a chain list of entity
 */
-void add_entity(Entity ***doubleArray, int id, int lane, int pos)
+void add_entity(Entity **simpleArray, int id, int lane, int pos)
 {
     Entity *p = NULL;
     p = create_entity_on_id(id, lane, pos);
     if(p!=NULL){
-        
+        add_entity_to_lane(*(simpleArray+lane),p);      //input lanes from 0 to 4 
+
+    }else{fprintf(stderr,"Malloc error");}
+    
+}
+
+void delete_entity_on_lane(Entity **simpleArray,int lane, Entity *todelete)
+{
+    if (todelete == *(simpleArray+lane))
+    {
+        *(simpleArray+lane) = todelete->next;
+        free(todelete);
     }
+    else
+    {
+        Entity *temp = *(simpleArray+lane);
+        while(temp->next != todelete)
+        {
+            temp = temp->next;
+        }
+        temp->next = temp->next->next;
+        free(temp->next);
+    }
+}
+
+void free_tab_content_recursive(Entity *entity){
+    if (entity->next != NULL){
+        free_tab_content_recursive(entity->next);
+        free(entity);
+    }
+}
+
+void free_array(Entity **Human, Entity **Alien){
+    for (int i = 0;i<LANE;i++){
+    if (*(Human+i) != NULL)
+        {
+            free_tab_content_recursive(*(Human+i));
+        }
+    if(*(Alien+i) != NULL)
+        {
+            free_tab_content_recursive(*(Alien+i));
+        }
+    }
+    free(Human);
+    free(Alien);
+}
+
+Entity* alien_search_human (Entity * alien, Entity * tab_human)
+{
+    Entity *cible = NULL;
+    Entity *temp = tab_human;
+    while (temp != NULL)
+    {
+        if((alien->position - alien->range > temp->position) && (alien->position >= temp->position)
+        && ((cible == NULL) || (cible->position < temp->position))){
+            temp = cible;
+        }
+        temp = temp->next;
+    }
+    return cible;
+}
+
+Entity* human_search_alien (Entity * human, Entity * tab_alien)
+{
+    Entity *cible = NULL;
+    Entity *temp = tab_alien;
+    while (temp != NULL)
+    {
+        if((human->position + human->range > temp->position) && (human->position <= temp->position)
+        && ((cible == NULL) || (cible->position > temp->position))){
+            temp = cible;
+        }
+        temp = temp->next;
+    }
+    return cible;
+}
+
+void attack(Entity *attacker, Entity *attacked){
+    attacked->hp -= attacker->damage;
+}
+
+void factory_generation(Entity *factory/*, Joueur gain*/){
+    /*Joueur->bank += (factory.revenus)/REFRESH_RATE;*/
 }

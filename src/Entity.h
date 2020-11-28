@@ -14,8 +14,7 @@ typedef struct Entity
     int damage;
     int range;
     int movement_speed;
-    double revenus;
-    double attack_speed;
+    int income;
     int position;
     int lane;
     Entity *next;
