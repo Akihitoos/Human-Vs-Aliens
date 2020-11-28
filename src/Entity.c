@@ -2,7 +2,7 @@
 
 typedef struct Entity
 {
-    int id; //1 : Human 2 : Alien
+    int id;  // Positive : human | Negative : Alien
     int hp;
     int damage;
     int range;
