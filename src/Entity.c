@@ -1,19 +1,5 @@
 #include "Entity.h"
 
-typedef struct Entity
-{
-    int id;  // Positive : human | Negative : Alien
-    int hp;
-    int damage;
-    int range;
-    int movement_speed;
-    double revenus;
-    double attack_speed;
-    int position;
-    int lane;
-    Entity *next;
-}Entity;
-
 // Function returning a Human ranged
 Entity *create_human_ranged(int positionX, int lane){
     Entity *new = NULL;
