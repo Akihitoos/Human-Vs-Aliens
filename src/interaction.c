@@ -152,7 +152,7 @@ Entity* human_search_alien (Entity * human, Entity * tab_alien)
 }
 
 void attack(Entity *attacker, Entity *attacked){
-    attacked->hp -= attacker->damage;
+    attacked->hp -= attacker->damage/* /refresh_rate*/;
 }
 
 void factory_generation(Entity *factory/*, Joueur gain*/){
