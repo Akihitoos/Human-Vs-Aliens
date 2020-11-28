@@ -13,7 +13,7 @@ Entity ***init_entity_double_array();
 // function which add a Entity structure in Alien_Tab or Human_Table
 void add_entity();
 
-// Function returning a entity depending on his id
+// Function returning an Entity depending on his id
 Entity* create_entity_on_id(int id, int lane, int pos);
 
 // Add an Entity to a Lane
