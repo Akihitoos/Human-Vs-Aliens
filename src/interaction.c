@@ -197,11 +197,6 @@ void testingInteraction()
 
     debugEntityArray(humanArray);
 
-    add_entity(&humanArray, 2, 1, 500);
-
-    debugEntityArray(humanArray);
-
-
     // On doit passer par adresse si on veut free nos tableaux dans une fonction
     free_array(&humanArray, &alienArray);
 
