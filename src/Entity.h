@@ -29,6 +29,4 @@ Entity* create_alien_range(int lane);
 Entity* create_alien_melee(int lane);
 Entity* create_alien_tank(int lane);
 
-void move(Entity *alien);
-
 #endif

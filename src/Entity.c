@@ -143,7 +143,3 @@ Entity* create_alien_tank(int lane){
     }
     return new;
 }
-
-void move(Entity *alien){        /* May change */  //Reduces alien position of its MS
-    alien->position -= alien->movement_speed; // / refresh_rate
-}
