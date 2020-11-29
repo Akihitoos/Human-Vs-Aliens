@@ -65,7 +65,6 @@ void add_entity_to_lane(Entity *lane, Entity *new){
     temp->next = new;
 }
 
-
 /* 
     Create an Entity (depending on the id) and add it to a chain list of entity
 */
@@ -107,19 +106,21 @@ void free_tab_content_recursive(Entity *entity){
     free(entity); 
 }
 
-void free_array(Entity **Human, Entity **Alien){
+void free_array(Entity ***Human, Entity ***Alien){
     for (int i = 0;i<LANE;i++){
-    if (*(Human+i) != NULL)
+    if ( *((*Human)+i) != NULL)
         {
-            free_tab_content_recursive(*(Human+i));
+            free_tab_content_recursive(*((*Human)+i));
         }
-    if(*(Alien+i) != NULL)
+    if(*((*Alien)+i) != NULL)
         {
-            free_tab_content_recursive(*(Alien+i));
+            free_tab_content_recursive(*((*Alien)+i));
         }
     }
-    free(Human);
-    free(Alien);
+    free(*Human);
+    free(*Alien);
+    *Human = NULL;
+    *Alien = NULL;
 }
 
 Entity* alien_search_human (Entity * alien, Entity * tab_human)
@@ -162,4 +163,48 @@ void factory_generation(Entity *factory/*, Joueur gain*/){
 
 void move(Entity *alien){        //Reduces alien position of its MS
     alien->position -= alien->movement_speed; // / refresh_rate
+}
+
+void debugEntityArray(Entity **array)
+{
+    //Affiche le pointeur du tableau
+    printf("array pointer = %p\n", array);
+
+    for(int i = 0; i < LANE; i++){
+        if(array[i] != NULL){
+            printf("array[%d], pointer = %p :\n", i, array[i]); // Affiche le premier element
+
+            //On affiches toute les cases
+            for(Entity *temp = array[i]; temp != NULL; temp = temp->next){
+                printf("    Entity id = %d,pointer = %p :\n", i, array[i]->id, array[i]); //Affiche chaque element
+            }
+        } else {
+            printf("array[%d] is NULL\n", i);
+        }
+    }
+}
+
+void testingInteraction()
+{
+    Entity **humanArray = NULL;
+    Entity **alienArray = NULL;
+
+    humanArray = init_entity_array();
+    alienArray = init_entity_array();
+
+    printf("humanArray : %p\n", humanArray);
+    printf("alienArray : %p\n", alienArray);
+
+    debugEntityArray(humanArray);
+
+    add_entity(&humanArray, 2, 1, 500);
+
+    debugEntityArray(humanArray);
+
+
+    // On doit passer par adresse si on veut free nos tableaux dans une fonction
+    free_array(&humanArray, &alienArray);
+
+    printf("humanArray : %p\n", humanArray);
+    printf("alienArray : %p\n", alienArray);
 }

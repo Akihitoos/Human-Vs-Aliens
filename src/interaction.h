@@ -29,7 +29,7 @@ void delete_entity_on_lane(Entity **simpleArray,int lane, Entity *todelete);
 void free_tab_content_recursive(Entity *entity);
 
 // Free the two array dealing with the Entity on the board (for the end game)
-void free_array(Entity **Human, Entity **Alien);
+void free_array(Entity ***Human, Entity ***Alien);
 
 // Function wich return the entity closest to the ALien in it's range
 Entity* alien_search_human (Entity * Alien, Entity * tab_human);
@@ -42,5 +42,11 @@ void attack (Entity *attacker, Entity *attacked);
 
 // Make the entity move depending on his movement_speed
 void move(Entity *alien);
+
+// Function used to debug the Array (It prints every single elements of the array)
+void debugEntityArray(Entity **array);
+
+// Create some array and test the different function
+void testingInteraction();
 
 #endif
