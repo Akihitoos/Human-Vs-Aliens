@@ -70,9 +70,9 @@ void GameRender_updatePos(int idInArray, int x, int y);
 */
 
 // Will simply apply the changes made to renderArray
-void GameRender_UpdateWindow(GameRender *renderArray);
+void GameRender_UpdateWindow(GameRender *gameRender);
 
 // Free and destroy everything in order to finish the game
-void GameRender_Free(SDL_Window **window, GameRender *renderArray);
+void GameRender_Free(SDL_Window **window, GameRender *gameRender);
 
 #endif
