@@ -43,7 +43,6 @@ Entity* create_entity_on_id(int id, int lane, int pos){
             new = NULL;
             break;
     }
-
     return new;
 }
 
@@ -53,16 +52,16 @@ Entity* create_entity_on_id(int id, int lane, int pos){
     Entity *lane : This is a pointer onto the first element of the chain of Entity (which from the lane)
     Entity *new : This is the Entity to add in the chain
 */
-void add_entity_to_lane(Entity *lane, Entity *new){
-    Entity *temp = lane;
+void add_entity_to_lane(Entity **tab,int lane, Entity *new_entity){
+    Entity *temp = tab[lane];
     if (temp == NULL){
-        lane = new;
-        return;
+        tab[lane] = new_entity;
+    }else{
+        while (temp->next != NULL){
+            temp = temp->next;
+        }
+        temp->next = new_entity;
     }
-    while (temp->next != NULL){
-        temp = temp->next;
-    }
-    temp->next = new;
 }
 
 /* 
@@ -73,17 +72,24 @@ void add_entity(Entity **simpleArray, int id, int lane, int pos)
     Entity *p = NULL;
     p = create_entity_on_id(id, lane, pos);
     if(p!=NULL){
-        add_entity_to_lane(*(simpleArray+lane),p);      //input lanes from 0 to 4 
-
+        add_entity_to_lane(simpleArray,lane,p);      //input lanes from 0 to 4 
     }else{fprintf(stderr,"Malloc error");}
     
 }
 
+
 void delete_entity_on_lane(Entity **simpleArray,int lane, Entity *todelete)
 {
+
     if (todelete == *(simpleArray+lane))
     {
-        *(simpleArray+lane) = todelete->next;
+        if(todelete->next != NULL){
+            *(simpleArray+lane) = todelete->next;
+        }
+        else
+        {
+            *(simpleArray+lane) = NULL;
+        }
         free(todelete);
     }
     else
@@ -93,8 +99,15 @@ void delete_entity_on_lane(Entity **simpleArray,int lane, Entity *todelete)
         {
             temp = temp->next;
         }
-        temp->next = temp->next->next;
-        free(temp->next);
+        if (temp->next->next != NULL){
+            temp->next = temp->next->next;
+            
+        }
+        else 
+        {
+            temp->next = NULL;
+        }
+        free(todelete);
     }
 }
 
@@ -123,30 +136,31 @@ void free_array(Entity ***Human, Entity ***Alien){
     *Alien = NULL;
 }
 
-Entity* alien_search_human (Entity * alien, Entity * tab_human)
+Entity* alien_search_human (Entity * alien, Entity * first_human_entity)
 {
     Entity *cible = NULL;
-    Entity *temp = tab_human;
+    Entity *temp = first_human_entity;
     while (temp != NULL)
     {
-        if((alien->position - alien->range > temp->position) && (alien->position >= temp->position)
-        && ((cible == NULL) || (cible->position < temp->position))){
-            temp = cible;
+        if((alien->position - alien->range < temp->position)&&(alien->position >= temp->position)
+        &&((cible == NULL) || (cible->position < temp->position))){
+            cible = temp;
         }
+        
         temp = temp->next;
     }
     return cible;
 }
 
-Entity* human_search_alien (Entity * human, Entity * tab_alien)
+Entity* human_search_alien (Entity * human, Entity *first_alien_entity)
 {
     Entity *cible = NULL;
-    Entity *temp = tab_alien;
+    Entity *temp = first_alien_entity;
     while (temp != NULL)
     {
-        if((human->position + human->range > temp->position) && (human->position <= temp->position)
+        if((human->position + human->range > temp->position) && (human->position <= human->position)
         && ((cible == NULL) || (cible->position > temp->position))){
-            temp = cible;
+            cible = temp;
         }
         temp = temp->next;
     }
@@ -163,6 +177,13 @@ void factory_generation(Entity *factory/*, Joueur gain*/){
 
 void move(Entity *alien){        //Reduces alien position of its MS
     alien->position -= alien->movement_speed; // / refresh_rate
+}
+
+void show_tab_order_by_asc(Entity* temp){
+    printf("id : %d, hp: %d, dmg : %d, range : %d, inc : %d, ms : %d, pos : %d, lane : %d\n",temp->id,temp->hp,temp->damage,temp->range,temp->income,temp->movement_speed,temp->position,temp->lane);
+    if (temp->next != NULL){
+        afficher_tab_dans_lordre(temp->next);
+    }
 }
 
 void debugEntityArray(Entity **array)
@@ -202,4 +223,39 @@ void testingInteraction()
 
     printf("humanArray : %p\n", humanArray);
     printf("alienArray : %p\n", alienArray);
+}
+
+
+void testing_attack(){
+    Entity **tab_alien = init_entity_array();
+    Entity **tab_human = init_entity_array();
+
+    add_entity(tab_alien,-2,0,0);
+    add_entity(tab_human,2,0,900);
+
+    Entity *attacker = tab_alien[0];
+    Entity *cible = NULL;
+    cible = alien_search_human(attacker,tab_human[0]);
+    printf("hp alien : %d hp human : %d\n",attacker->hp, cible->hp);
+    attack(attacker,cible);
+    printf("hp alien : %d hp human : %d\n",attacker->hp, cible->hp);
+
+    attacker = tab_human[0];
+    cible = human_search_alien(attacker,tab_alien[0]);
+    attack(attacker,cible);
+    printf("hp alien : %d hp human : %d\n",attacker->hp, cible->hp);
+
+/* Test delete*/
+
+    add_entity(tab_alien,-1,0,0);
+    add_entity(tab_alien,-2,0,0);
+    add_entity(tab_alien,-3,0,0);
+    add_entity(tab_human,2,0,800);
+    add_entity(tab_human,1,0,700);
+    add_entity(tab_human,4,0,600);
+    Entity *todelete = tab_alien[0];
+    show_tab_order_by_asc(tab_alien[0]);
+    printf("__\n");
+    delete_entity_on_lane(tab_alien,0,todelete);
+    show_tab_order_by_asc(tab_alien[0]);
 }

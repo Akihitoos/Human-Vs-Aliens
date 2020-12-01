@@ -2,7 +2,7 @@
 
 int main(int argc, char **argv)
 {
-    testingInteraction();
+    testing_attack();
 
     return 0;
 }
