@@ -17,7 +17,7 @@ void add_entity();
 Entity* create_entity_on_id(int id, int lane, int pos);
 
 // Add an Entity to a Lane
-void add_entity_to_lane(Entity *lane, Entity *new);
+void add_entity_to_lane(Entity **tab,int lane, Entity *new);
 
 // create an Entity (depending on the id) and add it to a simple array of entity
 void add_entity(Entity **simpleArray, int id, int lane, int pos);
@@ -32,10 +32,10 @@ void free_tab_content_recursive(Entity *entity);
 void free_array(Entity ***Human, Entity ***Alien);
 
 // Function wich return the entity closest to the ALien in it's range
-Entity* alien_search_human (Entity * Alien, Entity * tab_human);
+Entity* alien_search_human (Entity * Alien, Entity *first_human_entity);
 
 // Function wich return the entity closest to the Human in it's range
-Entity* human_search_alien (Entity * human, Entity * tab_alien);
+Entity* human_search_alien (Entity * human, Entity *first_alien_entity);
 
 //Inflict damage of the attacker to the attacked
 void attack (Entity *attacker, Entity *attacked);
@@ -46,7 +46,12 @@ void move(Entity *alien);
 // Function used to debug the Array (It prints every single elements of the array)
 void debugEntityArray(Entity **array);
 
+// Function that shows a Entity array, and all entity stats. Parameter : the 1st entity in the tab. (recursive)
+void show_tab_order_by_asc(Entity* temp);
+
 // Create some array and test the different function
+void debugEntityArray(Entity **array);
 void testingInteraction();
+void testing_attack();
 
 #endif
