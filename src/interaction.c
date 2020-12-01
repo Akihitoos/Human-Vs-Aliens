@@ -182,7 +182,7 @@ void move(Entity *alien){        //Reduces alien position of its MS
 void show_tab_order_by_asc(Entity* temp){
     printf("id : %d, hp: %d, dmg : %d, range : %d, inc : %d, ms : %d, pos : %d, lane : %d\n",temp->id,temp->hp,temp->damage,temp->range,temp->income,temp->movement_speed,temp->position,temp->lane);
     if (temp->next != NULL){
-        afficher_tab_dans_lordre(temp->next);
+        show_tab_order_by_asc(temp->next);
     }
 }
 
