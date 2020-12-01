@@ -14,8 +14,7 @@ typedef struct Entity
     int damage;
     int range;
     int movement_speed;
-    double revenus;
-    double attack_speed;
+    int income;
     int position;
     int lane;
     Entity *next;
@@ -29,8 +28,5 @@ Entity *create_human_factory(int positionX, int lane);
 Entity* create_alien_range(int lane);
 Entity* create_alien_melee(int lane);
 Entity* create_alien_tank(int lane);
-
-void move(Entity *alien);
-void free_entity(Entity *entity);
 
 #endif

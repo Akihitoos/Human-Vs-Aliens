@@ -1,12 +1,8 @@
-#include <stdio.h>
-#include <SDL.h>
+#include "interaction.h"
 
 int main(int argc, char **argv)
 {
-    SDL_version nb;
-    SDL_VERSION(&nb);
+    testing_attack();
 
-    printf("SDL : %d.%d.%d\n",nb.major,nb.minor,nb.patch);
-    system("PAUSE");
     return 0;
 }

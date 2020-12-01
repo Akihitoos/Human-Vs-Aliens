@@ -7,11 +7,10 @@ Entity *create_human_ranged(int positionX, int lane){
     if(new != NULL){
         new->id = 2;
         new->hp = 300;
-        new->damage = 70;         // DPS : 84
+        new->damage = 70;         
         new->range = 250;
-        new->revenus = 0.;
+        new->income = 0;
         new->movement_speed = 0;
-        new->attack_speed = 1.2;
         new->position = positionX;
         new->lane = lane;
         new->next = NULL;
@@ -28,11 +27,10 @@ Entity *create_human_tank(int positionX, int lane){
     if(new != NULL){
         new->id = 3;
         new->hp = 1000;
-        new->damage = 30;            // DPS : 36
+        new->damage = 30;           
         new->range = 30;
-        new->revenus = 0.;
+        new->income = 0;
         new->movement_speed = 0;
-        new->attack_speed = 0.8;
         new->position = positionX;
         new->lane = lane;
         new->next = NULL;
@@ -49,11 +47,10 @@ Entity *create_human_melee(int positionX, int lane){
     if(new != NULL){
         new->id = 1;
         new->hp = 600;
-        new->damage = 60;            // DPS : 60
+        new->damage = 60;
         new->range = 30;
-        new->revenus = 0.;
+        new->income = 0;
         new->movement_speed = 0;
-        new->attack_speed = 1;
         new->position = positionX;
         new->lane = lane;
         new->next = NULL;
@@ -72,9 +69,8 @@ Entity *create_human_factory(int positionX, int lane){
         new->hp = 450;
         new->damage = 0;
         new->range = 0;
-        new->revenus = 10;
+        new->income = 10;
         new->movement_speed = 0;
-        new->attack_speed = 0;
         new->position = positionX;
         new->lane = lane;
         new->next = NULL;
@@ -93,8 +89,7 @@ Entity* create_alien_range(int lane){
         new->damage = 70;
         new->range = 300;
         new->movement_speed = 100;
-        new->revenus = 0.;
-        new->attack_speed = 1.2;
+        new->income = 0;
         new->position = 1000;
         new->lane = lane;
         new->next = NULL;
@@ -116,8 +111,7 @@ Entity* create_alien_melee(int lane){
         new->damage = 110;
         new->range = 50;
         new->movement_speed = 150;
-        new->revenus = 0.;
-        new->attack_speed = 1.8;
+        new->income = 0;
         new->position = 1000;
         new->lane = lane;
         new->next = NULL;
@@ -138,8 +132,7 @@ Entity* create_alien_tank(int lane){
         new->damage = 150;
         new->range = 50;
         new->movement_speed = 50;
-        new->movement_speed = 0.;
-        new->attack_speed = 0.3;
+        new->income = 0;
         new->position = 1000;
         new->lane = lane;
         new->next = NULL;
@@ -149,15 +142,4 @@ Entity* create_alien_tank(int lane){
         fprintf(stderr,"Malloc erroc");
     }
     return new;
-}
-
-void move(Entity *alien){        /* May change */  //Reduces alien position of its MS
-    alien->position -= alien->movement_speed; // / refresh_rate
-}
-
-//deallocate the memory for the entity given in parameters
-void free_entity(Entity *entity){
-    if(entity->hp <= 0){
-        free(entity);
-    }
 }
