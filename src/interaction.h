@@ -47,7 +47,7 @@ void move(Entity *alien);
 void debugEntityArray(Entity **array);
 
 // Function that shows a Entity array, and all entity stats. Parameter : the 1st entity in the tab. (recursive)
-void show_tab_order_by_asc(Entity* temp){
+void show_tab_order_by_asc(Entity* temp);
 
 // Create some array and test the different function
 void debugEntityArray(Entity **array);
