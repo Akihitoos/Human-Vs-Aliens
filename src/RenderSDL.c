@@ -95,6 +95,21 @@ int GameRender_InitRenderCell(RenderCell *renderCell)
 
 /*
     Return 0 on success or a negative error on failure.
+    Allocate every ArrayRenderCell.
+*/
+int GameRender_InitArrayRenderCell(RenderCell **renderCell)
+{
+    int error = 0;
+    (*renderCell) = (RenderCell *)malloc(sizeof(RenderCell*) * LANE);
+    if( (**renderCell) != NULL){
+        for(int i = 0; i < LANE; i++){
+            error = GameRender_InitRenderCell(*renderCell);
+        }
+    }
+}
+
+/*
+    Return 0 on success or a negative error on failure.
     Allocate the struct gameRender.
 */
 int GameRender_InitGameRender(GameRender *gameRender, SDL_Window *window)
@@ -104,8 +119,9 @@ int GameRender_InitGameRender(GameRender *gameRender, SDL_Window *window)
     if(*gameRender != NULL){
         (*gameRender)->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-        error = GameRender_InitRenderCell( &((*gameRender)->humanStruct) );
-        error = GameRender_InitRenderCell( &((*gameRender)->alienStruct) );
+        error = GameRender_InitArrayRenderCell( &((*gameRender)->humanArrayStruct) );
+        error = GameRender_InitArrayRenderCell( &((*gameRender)->alienArrayStruct) );
+        error = GameRender_InitRenderCell( &((*gameRender)->mowerStruct) );
         error = GameRender_InitRenderCell( &((*gameRender)->uiStruct) );
     }
     if( *gameRender == NULL || (*gameRender)->renderer == NULL || error == -1)
@@ -139,10 +155,17 @@ void GameRender_FreeRenderCell(RenderCell *renderCell)
         
 }
 
+void GameRender_FreeArrayRenderCell(RenderCell **arrayRenderCell)
+{
+    for(int i = 0; i < LANE; i++){
+        GameRender_FreeRenderCell(arrayRenderCell[i]);
+    }
+}
+
 void GameRender_FreeGameRender(GameRender *gameRender)
 {
-    GameRender_FreeRenderCell( &( (*gameRender)->humanStruct ) );
-    GameRender_FreeRenderCell( &( (*gameRender)->alienStruct ) );
+    GameRender_FreeArrayRenderCell( &( (*gameRender)->humanArrayStruct ) );
+    GameRender_FreeArrayRenderCell( &( (*gameRender)->alienArrayStruct ) );
     GameRender_FreeRenderCell( &( (*gameRender)->uiStruct    ) );
     SDL_DestroyRenderer( (*gameRender)->renderer );
 
@@ -188,73 +211,16 @@ void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender)
 // Still need to check if the next two work.
 void GameRender_DebugRenderCell(RenderCell renderCell)
 {
-    printf("    -> numberOfElement: %d\n", renderCell->numberOfElements);
-    if(renderCell->textureArray != NULL){
-        for(int i = 0; i < renderCell->numberOfElements ; i++ )
-        {
-            printf("    -> textureArray[%d] : %p", i, renderCell->textureArray[i]);
-        }
-    } else {
-        printf("    -> textureArray is NULL",renderCell->textureArray);
-    }
 
-    if(renderCell->srcArray != NULL){
-        for(int i = 0; i < renderCell->numberOfElements ; i++ )
-        {
-            printf("    -> textureArray[%d] : %p", i, renderCell->srcArray[i]);
-        }
-    } else {
-        printf("    -> srcArray is NULL",renderCell->srcArray);
-    }
+}
 
-    if(renderCell->dstArray != NULL){
-        for(int i = 0; i < renderCell->numberOfElements ; i++ )
-        {
-            printf("    -> textureArray[%d] : %p", i, renderCell->dstArray[i]);
-        }
-    } else {
-        printf("    -> dstArray is NULL",renderCell->dstArray);
-    }
+void GameRender_DebugRenderCelleArray(RenderCell *arrayRenderCell)
+{
 
 }
 
 void GameRender_DebugGameRender(GameRender gameRender)
 {
-    if(gameRender != NULL)
-    {
-        printf("gameRender allocated at %p\n", gameRender);
-
-        if(gameRender->renderer != NULL)
-        {
-            printf("    gameRender->renderer allocated at %p\n", gameRender->renderer);
-        } else {
-            printf("    gameRender->renderer is NULL.\n");
-        }
-
-        if(gameRender->humanStruct != NULL){
-            printf("    gameRender->humanStruct allocated at %p\n", gameRender->humanStruct);
-            GameRender_DebugRenderCell(gameRender->humanStruct);
-        } else {
-            printf("    gameRender->humanStruct is NULL.\n");
-        }
-
-        if(gameRender->alienStruct != NULL){
-            printf("    gameRender->alienStruct allocated at %p\n", gameRender->alienStruct);
-            GameRender_DebugRenderCell(gameRender->alienStruct);
-        } else {
-            printf("    gameRender->alienStruct is NULL.\n");
-        }
-
-        if(gameRender->uiStruct != NULL){
-            printf("    gameRender->uiStruct allocated at %p\n", gameRender->uiStruct);
-            GameRender_DebugRenderCell(gameRender->uiStruct);
-        } else {
-            printf("    gameRender->uiStruct is NULL.\n");
-        }
-
-    } else {
-        printf("gameRender is NULL.\n");
-    }
 
 }
 
@@ -267,7 +233,11 @@ void GameRender_Test()
     GameRender_CreateWindow(&windowMain);
 
     GameRender_InitGameRender(&gameRender, windowMain);
+
     GameRender_DebugGameRender(gameRender);
+
+    GameRender_FreeGameRender(&gameRender);
+    printf("It worked\n");
 
     SDL_DestroyWindow(windowMain);
     SDL_Quit();

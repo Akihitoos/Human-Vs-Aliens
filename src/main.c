@@ -1,8 +1,9 @@
 #include "interaction.h"
+//#include "RenderSDL.h"
 
 int main(int argc, char **argv)
 {
-    testing_attack();
-
+    //GameRender_Test();
+    testingInteraction();
     return 0;
 }

@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL.h>
+#include "interaction.h" // Get the constant LANE
 
     //Below are all the define needed
 
@@ -50,8 +51,9 @@ typedef renderCell *RenderCell;
 // Struct containing all the information needed to display the game
 typedef struct gameRender{
     SDL_Renderer *renderer;
-    RenderCell humanStruct;
-    RenderCell alienStruct;
+    RenderCell *humanArrayStruct;
+    RenderCell mowerStruct;
+    RenderCell *alienArrayStruct;
     RenderCell uiStruct;
 } gameRender;
 
@@ -67,6 +69,7 @@ void GameRender_GetDisplayMode(int *width, int *height);
 
 int GameRender_CreateWindow(SDL_Window **window);
 
+// Need to rework these
 int GameRender_InitRenderCell(RenderCell *renderCell);
 
 int GameRender_InitGameRender(GameRender *gameRender, SDL_Window *window);
