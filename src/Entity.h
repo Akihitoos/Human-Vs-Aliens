@@ -1,8 +1,8 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 // Struct defining an Entity
 typedef struct Entity Entity;
