@@ -1,12 +1,6 @@
 #ifndef SHOP_H
 #define SHOP_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "interaction.h"
-#include "Entity.h"
-#include "Player.h"
-
 //For a same index, we consider an unique entity
 typedef struct Shop
 {
