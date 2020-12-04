@@ -1,11 +1,12 @@
 #ifndef INTERACTION_H
 #define INTERACTION_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "Entity.h"
-
 #define LANE 5
+#define REFRESH_RATE 10
+
+#include "Entity.h"
+#include "Player.h"
+#include "mower.h"
 
 // function which initialize a simple array of entity
 Entity **init_entity_array();
@@ -48,6 +49,10 @@ void debugEntityArray(Entity **array);
 
 // Function that shows a Entity array, and all entity stats. Parameter : the 1st entity in the tab. (recursive)
 void show_tab_order_by_asc(Entity* temp);
+
+//Grants the player the factory gold generation.
+void factory_generation(Entity *factory, Player *p);
+
 
 // Create some array and test the different function
 void debugEntityArray(Entity **array);
