@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include "Entity.h"
 #include "mower.h"
+#include "Player.h"
 
 #define LANE 5
 
@@ -49,6 +50,10 @@ void debugEntityArray(Entity **array);
 
 // Function that shows a Entity array, and all entity stats. Parameter : the 1st entity in the tab. (recursive)
 void show_tab_order_by_asc(Entity* temp);
+
+//Grants the player the factory gold generation.
+void factory_generation(Entity *factory, Player *p);
+
 
 // Create some array and test the different function
 void debugEntityArray(Entity **array);
