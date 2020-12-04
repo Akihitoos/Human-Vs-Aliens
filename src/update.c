@@ -52,17 +52,19 @@ void entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array,
     }
 }
 
-void update (Entity ** human_array, Entity ** alien_array, Mower mower_array)
+void update (Entity ** human_array, Entity ** alien_array, Mower mower_array, Player *human_player, Player *alien_player)
 {
     Entity* humanTemp=NULL;
     Entity* alienTemp=NULL;
 
+    human_player->golds += (human_player->gold_per_second/REFRESH_RATE);
+    alien_player->golds += (alien_player->gold_per_second/REFRESH_RATE);
     for (int lane = 0; lane <LANE; lane++){
 
         humanTemp=*(human_array+lane);
         alienTemp=*(alien_array+lane);
-
         entityUpdate(human_array, &humanTemp, alien_array, lane, mower_array);
         entityUpdate(alien_array, &alienTemp, human_array, lane, mower_array);
+
     }    
 }

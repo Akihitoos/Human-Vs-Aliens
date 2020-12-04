@@ -3,6 +3,7 @@
 #include "interaction.h"
 #include "Entity.h"
 #include "mower.h"
+#include "Player.h"
 
 void commonUpdate(Entity **entity_array, int lane, Entity* entity);
 
