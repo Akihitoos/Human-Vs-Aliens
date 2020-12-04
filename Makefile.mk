@@ -1,7 +1,7 @@
 LIB = -I include -L lib -lmingw32 -lSDL2main -lSDL2
 CC = gcc
 BIN = bin/HumanVsAliens
-OBJECTS = src/main.o src/Entity.o src/interaction.o
+OBJECTS = src/main.o src/Entity.o src/interaction.o src/mower.o
 
 all: $(OBJECTS) 
 	$(CC) -o $(BIN) $(OBJECTS) $(LIB)
@@ -14,6 +14,9 @@ src/Entity.o: src/Entity.c
 
 src/interaction.o: src/interaction.c
 	$(CC) -c src/interaction.c -o src/interaction.o $(LIB)
+
+src/mower.o: src/mower.c
+	$(CC) -c src/mower.c -o src/mower.o $(LIB)
 
 clear:
 	del src/*.o

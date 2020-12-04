@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "Entity.h"
+#include "mower.h"
 
 #define LANE 5
 
