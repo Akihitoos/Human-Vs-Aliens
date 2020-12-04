@@ -18,8 +18,9 @@ void commonUpdate(Entity **entity_array, int lane, Entity* entity)
 /*
     Go through every entity of the entity_array, apply common update and attack if in range.
 */
-void entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, int lane, Mower mower_array)
+int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, int lane, Mower mower_array)
 {
+    int temp = 0;
     Entity* target = NULL;
     for(;*entity!=NULL;){
         // common update
@@ -38,8 +39,11 @@ void entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array,
 
                 // Use the mower
             } 
-            if( (*entity)->position <= 0 ) {
-                activate_mower(mower_array, lane, entity_array);
+            if((*entity)->position <= 0 ) {
+                temp = activate_mower(mower_array, lane, entity_array);
+                if (temp == 1){
+                    return temp;
+                }
             }
         }
         
@@ -50,10 +54,12 @@ void entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array,
 
         (*entity)=(*entity)->next;  // Make the loop reach his condition
     }
+    return temp;
 }
 
-void update (Entity ** human_array, Entity ** alien_array, Mower mower_array)
+int update (Entity ** human_array, Entity ** alien_array, Mower mower_array)
 {
+    int game_ended = 0;
     Entity* humanTemp=NULL;
     Entity* alienTemp=NULL;
 
@@ -63,6 +69,10 @@ void update (Entity ** human_array, Entity ** alien_array, Mower mower_array)
         alienTemp=*(alien_array+lane);
 
         entityUpdate(human_array, &humanTemp, alien_array, lane, mower_array);
-        entityUpdate(alien_array, &alienTemp, human_array, lane, mower_array);
+        game_ended = entityUpdate(alien_array, &alienTemp, human_array, lane, mower_array);
+        if (game_ended == 1){
+            return game_ended;
+        }
     }    
+    return game_ended;
 }
