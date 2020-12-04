@@ -2,6 +2,7 @@
 #define INTERACTION_H
 
 #define LANE 5
+#define REFRESH_RATE 10
 
 #include "Entity.h"
 #include "Player.h"

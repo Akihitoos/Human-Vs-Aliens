@@ -1,6 +1,8 @@
 #ifndef SHOP_H
 #define SHOP_H
 
+#include "Entity.h"
+
 //For a same index, we consider an unique entity
 typedef struct Shop
 {

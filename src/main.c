@@ -45,8 +45,8 @@ int main(int argc, char **argv)
     
     
     for(int i = 0; i < 500 ; i++){
-        /*show_tab_order_by_asc(human_array[0]);
-        printf("------\n")*/
+        show_tab_order_by_asc(human_array[0]);
+        printf("------\n");
         show_tab_order_by_asc(alien_array[1]);
         printf("------ new refresh %d ----------\n",i);
         game_ended = update(human_array, alien_array, mower_array);

@@ -1,6 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "Entity.h"
+
 //Defines a Joueur struct
 typedef struct Player
 {

@@ -4,8 +4,6 @@
 #include <stdbool.h>
 #include "interaction.h"
 
-#define REFRESH_RATE 10
-
 // Struct defining a boolean tab
 typedef bool *Mower;
 
@@ -17,6 +15,5 @@ int activate_mower(Mower tab, int lane, Entity **entity_tab);
 
 //Free the mower tab memory
 void free_mower(Mower* tab);
-
 
 #endif

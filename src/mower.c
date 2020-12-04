@@ -21,7 +21,7 @@ int activate_mower(Mower tab,int lane, Entity **entity_tab){
     }
     else
     {
-        printf("GAME TERMINEE");
+        printf("GAME TERMINEE !\n");
         return 1;
     }
 }
