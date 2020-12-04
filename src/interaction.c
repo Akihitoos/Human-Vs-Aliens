@@ -171,8 +171,8 @@ void attack(Entity *attacker, Entity *attacked){
     attacked->hp -= attacker->damage / REFRESH_RATE;
 }
 
-void factory_generation(Entity *factory/*, Joueur gain*/){
-    /*Joueur->bank += (factory.revenus)/REFRESH_RATE;*/
+void factory_generation(Entity *factory, Player *p){
+    p->golds += (p->gold_per_second / REFRESH_RATE);
 }
 
 void move(Entity *alien){

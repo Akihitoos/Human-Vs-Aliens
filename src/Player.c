@@ -1,9 +1,10 @@
 #include "Player.h"
 
 Player* init_human_player(){
-    Player* human = (Player*)malloc(sizeof(Player)); 
+    Player* human = (Player*)malloc(sizeof(Player));
     if (human == NULL){
-        fprintf(stderr,"Malloc error");
+        fprintf(stderr, "Malloc error");
+        return NULL;
     }
     human->team = 1;
     human->score = 0;
@@ -20,7 +21,7 @@ Player* init_alien_player(int gamemode){
         fprint(stderr, "Error in init_alien_player\n");
         return NULL;
     }
-
+  
     if(gamemode == 1){
         alien->team = -1;
     } else {
