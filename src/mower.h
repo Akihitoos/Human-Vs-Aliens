@@ -6,6 +6,9 @@
 #include "Entity.h"
 #include <stdbool.h>
 #include "interaction.h"
+#include <time.h>
+
+#define REFRESH_RATE 10
 
 // Struct defining a boolean tab
 typedef bool *Mower;

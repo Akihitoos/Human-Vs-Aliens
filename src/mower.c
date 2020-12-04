@@ -16,6 +16,7 @@ int activate_mower(Mower tab,int lane, Entity **entity_tab){
     if (tab[lane]){
         tab[lane] = false;
         free_tab_content_recursive(entity_tab[lane]);
+        entity_tab[lane] = NULL;
         return 1;
     }
     else
@@ -25,13 +26,3 @@ int activate_mower(Mower tab,int lane, Entity **entity_tab){
     }
     
 }
-
-int main(int argc, char const *argv[])
-{
-    Mower tab = init_mower_tab();
-    for (int i = 0;i<LANE;i++){
-        printf("GROPD %d\n",tab[i]);
-    }
-    return 0;
-}
-

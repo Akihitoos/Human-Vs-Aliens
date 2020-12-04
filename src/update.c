@@ -32,12 +32,13 @@ void entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array,
             target = alien_search_human(*entity, ennemy_array[lane]);
 
             // move
-            if( (target == NULL) || ((*entity)->position >= target->position) )
+            if( (target == NULL) || ((*entity)->position - ((*entity)->movement_speed/REFRESH_RATE) >= target->position) )
             {
                 move(*entity);
 
                 // Use the mower
-            } else if( (*entity)->position <= 0 ) {
+            } 
+            if( (*entity)->position <= 0 ) {
                 activate_mower(mower_array, lane, entity_array);
             }
         }
