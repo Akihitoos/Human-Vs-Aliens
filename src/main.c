@@ -44,7 +44,7 @@ int main(int argc, char **argv)
     printf("Au temps : %lf\n",tempsinit/CLOCKS_PER_SEC);
     
     
-    for(int i = 0; i < 500 ; i++){
+    for(int i = 0; i < 10 ; i++){
         show_tab_order_by_asc(human_array[0]);
         printf("------\n");
         show_tab_order_by_asc(alien_array[1]);
@@ -60,11 +60,16 @@ int main(int argc, char **argv)
 
         delay();
     }
-    
 
     // free
     free_array(&human_array, &alien_array);
     free_mower(&mower_array);
+
+    int close = 0;
+    do{
+        printf("Quit program ? (type 1)\n");
+        scanf("%d", &close);
+    } while (close != 1);
 
     return 0;
 }

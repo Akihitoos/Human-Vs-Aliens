@@ -14,6 +14,6 @@ Mower init_mower_tab();
 int activate_mower(Mower tab, int lane, Entity **entity_tab);
 
 //Free the mower tab memory
-void free_mower(Mower* tab);
+void free_mower(Mower *tab);
 
 #endif

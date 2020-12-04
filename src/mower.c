@@ -26,6 +26,7 @@ int activate_mower(Mower tab,int lane, Entity **entity_tab){
     }
 }
 
-void free_mower(Mower* tab){
-    free(tab);
+void free_mower(Mower *tab){
+    free(*tab);
+    *tab = NULL;
 }
