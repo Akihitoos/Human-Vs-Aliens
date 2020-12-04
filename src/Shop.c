@@ -8,6 +8,9 @@ Shop* init_shop_human(){
     }
     shop->id = (int*)malloc(sizeof(int)*4);
     shop->tab_cost = (int*)malloc(sizeof(int)*4);
+    if ((shop->id == NULL) || (shop->tab_cost)){
+        fprintf(stderr,"Malloc error");
+    }
     for (int i = 0;i < 4;i++){
         shop->id[i] = i+1;
     }
@@ -28,6 +31,9 @@ Shop* init_shop_alien(){
     }
     shop->id = (int*)malloc(sizeof(int)*3);
     shop->tab_cost = (int*)malloc(sizeof(int)*3);
+    if ((shop->id == NULL) || (shop->tab_cost)){
+        fprintf(stderr,"Malloc error");
+    }
     for(int i = 0; i < 3; i++){
         shop->id[i] = -i-1;
     }

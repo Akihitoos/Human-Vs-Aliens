@@ -7,6 +7,7 @@
 #include "Entity.h"
 #include "Player.h"
 
+//For a same index, we consider an unique entity
 typedef struct Shop
 {
     int cursor;
