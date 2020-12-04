@@ -16,22 +16,16 @@ int activate_mower(Mower tab,int lane, Entity **entity_tab){
     if (tab[lane]){
         tab[lane] = false;
         free_tab_content_recursive(entity_tab[lane]);
-        return 1;
+        entity_tab[lane] = NULL;
+        return 0;
     }
     else
     {
-        //Game ended
-        return 0;
+        printf("GAME TERMINEE");
+        return 1;
     }
-    
 }
 
-int main(int argc, char const *argv[])
-{
-    Mower tab = init_mower_tab();
-    for (int i = 0;i<LANE;i++){
-        printf("GROPD %d\n",tab[i]);
-    }
-    return 0;
+void free_mower(Mower* tab){
+    free(tab);
 }
-

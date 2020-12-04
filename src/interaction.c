@@ -168,18 +168,21 @@ Entity* human_search_alien (Entity * human, Entity *first_alien_entity)
 }
 
 void attack(Entity *attacker, Entity *attacked){
-    attacked->hp -= attacker->damage/* /refresh_rate*/;
+    attacked->hp -= attacker->damage / REFRESH_RATE;
 }
 
 void factory_generation(Entity *factory/*, Joueur gain*/){
     /*Joueur->bank += (factory.revenus)/REFRESH_RATE;*/
 }
 
-void move(Entity *alien){        //Reduces alien position of its MS
-    alien->position -= alien->movement_speed; // / refresh_rate
+void move(Entity *alien){
+    alien->position -= alien->movement_speed / REFRESH_RATE;
 }
 
 void show_tab_order_by_asc(Entity* temp){
+    if (temp == NULL){
+        return;
+    }
     printf("id : %d, hp: %d, dmg : %d, range : %d, inc : %d, ms : %d, pos : %d, lane : %d\n",temp->id,temp->hp,temp->damage,temp->range,temp->income,temp->movement_speed,temp->position,temp->lane);
     if (temp->next != NULL){
         show_tab_order_by_asc(temp->next);
