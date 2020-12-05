@@ -43,9 +43,9 @@ typedef struct renderCell{
     SDL_Rect *srcArray;                   // array Source SDL_Rect (which is copied)
     SDL_Rect *dstArray;                   // array Destination SDL_Rect (where it's copied)
     int numberOfElements;
-}renderCell;
+}RenderCell_Struct;
 
-typedef renderCell *RenderCell;
+typedef RenderCell_Struct *RenderCell;
 
 // Struct containing all the information needed to display the game
 typedef struct gameRender{
@@ -54,9 +54,9 @@ typedef struct gameRender{
     RenderCell *alienArrayStruct;
     RenderCell mowerStruct;
     RenderCell uiStruct;                // Need to be careful, and know which case is what
-} gameRender;
+} GameRender_Struct;
 
-typedef gameRender *GameRender;
+typedef GameRender_Struct *GameRender;
 
     // Function inside RenderSDL.c
     // Those are (hopefully) ready
@@ -81,10 +81,7 @@ void GameRender_FreeRenderCell(RenderCell renderCell);
 
 void GameRender_FreeArrayRenderCell(RenderCell* arrayRenderCell);
 
-void GameRender_FreeGameRender(GameRender *gameRender);
-
-
-
+void GameRender_FreeGameRender(GameRender* gameRender);
 
     // Function under work
 

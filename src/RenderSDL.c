@@ -71,49 +71,49 @@ SDL_Window *GameRender_CreateWindow()
 }
 
 /*
-    Allocate a RenderCell and return it
+    Allocate a RenderCell* and return it
 */
 RenderCell GameRender_InitRenderCell()
 {
-    RenderCell renderCell = NULL;
-    renderCell = (RenderCell)malloc(sizeof(RenderCell));
-    if(renderCell != NULL){
-        renderCell->textureArray = (SDL_Texture **)malloc(sizeof(SDL_Texture *));
-        renderCell->srcArray = (SDL_Rect *)malloc(sizeof(SDL_Rect));
-        renderCell->dstArray = (SDL_Rect *)malloc(sizeof(SDL_Rect));
-        renderCell->numberOfElements = 0;
+    RenderCell newCell = NULL;
+    newCell = (RenderCell_Struct *)malloc(sizeof(RenderCell_Struct));
+    if(newCell != NULL){
+        newCell->textureArray = (SDL_Texture **)malloc(sizeof(SDL_Texture *));
+        newCell->srcArray = (SDL_Rect *)malloc(sizeof(SDL_Rect));
+        newCell->dstArray = (SDL_Rect *)malloc(sizeof(SDL_Rect));
+        newCell->numberOfElements = 0;
     }
 
-    if(renderCell == NULL || renderCell->textureArray == NULL || renderCell->srcArray == NULL || renderCell->dstArray == NULL){
+    if(newCell == NULL || newCell->textureArray == NULL || newCell->srcArray == NULL || newCell->dstArray == NULL){
         fprintf(stderr,"Error occured in GameRender_InitRenderCell() : %s\n", SDL_GetError());
     }  
-    return renderCell;
+    return newCell;
 }
 
 /*
-    Allocate an array of RenderCell and return it
+    Allocate an array of RenderCell* and return it
 */
 RenderCell *GameRender_InitArrayRenderCell()
 {
-    RenderCell *renderCell = NULL;
-    renderCell = (RenderCell *)malloc(sizeof(RenderCell*) * LANE);
-    if( renderCell != NULL){
+    RenderCell *newCell = NULL;
+    newCell = (RenderCell_Struct **)malloc(sizeof(RenderCell_Struct *) * LANE);
+    if( newCell != NULL){
         for(int i = 0; i < LANE; i++){
-            renderCell[i] = GameRender_InitRenderCell();
+            newCell[i] = GameRender_InitRenderCell();
         }
     } else {
         fprintf(stderr, "Error occured in GameRender_InitArrayRenderCell()\n");
     }
-    return renderCell;
+    return newCell;
 }
 
 /*
-    Allocate the struct gameRender and return it
+    Allocate a struct GameRender* and return it
 */
 GameRender GameRender_InitGameRender(SDL_Window *window)
 {
     GameRender gameRender = NULL;
-    gameRender = (GameRender)malloc(sizeof(GameRender));
+    gameRender = (GameRender_Struct *)malloc(sizeof(GameRender_Struct));
     if(gameRender != NULL){
         gameRender->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
@@ -151,6 +151,7 @@ void GameRender_FreeArrayRenderCell(RenderCell *arrayRenderCell)
             GameRender_FreeRenderCell(arrayRenderCell[i]);
         }
     }
+
     free(arrayRenderCell);
 }
 
@@ -161,9 +162,11 @@ void GameRender_FreeGameRender(GameRender *gameRender)
     GameRender_FreeArrayRenderCell( (*gameRender)->alienArrayStruct );
     GameRender_FreeRenderCell( (*gameRender)->uiStruct    );
     GameRender_FreeRenderCell( (*gameRender)->mowerStruct );
+
     SDL_DestroyRenderer( (*gameRender)->renderer );
     free(*gameRender);
     *gameRender = NULL;
+
 }
 
 
