@@ -45,38 +45,45 @@ typedef struct renderCell{
     int numberOfElements;
 }renderCell;
 
-// We will always work with pointer
 typedef renderCell *RenderCell;
 
 // Struct containing all the information needed to display the game
 typedef struct gameRender{
     SDL_Renderer *renderer;
     RenderCell *humanArrayStruct;
-    RenderCell mowerStruct;
     RenderCell *alienArrayStruct;
-    RenderCell uiStruct;
+    RenderCell mowerStruct;
+    RenderCell uiStruct;                // Need to be careful, and know which case is what
 } gameRender;
 
-// We will always work with pointer
 typedef gameRender *GameRender;
 
     // Function inside RenderSDL.c
     // Those are (hopefully) ready
 
-void GameRender_SDL_Init();
+void GameRender_SDL_Init(Uint32 flags);
 
 void GameRender_GetDisplayMode(int *width, int *height);
 
-int GameRender_CreateWindow(SDL_Window **window);
+SDL_Window* GameRender_CreateWindow();
 
-// Need to rework these
-int GameRender_InitRenderCell(RenderCell *renderCell);
+    // allocation function of the GameRender
 
-int GameRender_InitGameRender(GameRender *gameRender, SDL_Window *window);
+RenderCell GameRender_InitRenderCell();
 
-void GameRender_FreeRenderCell(RenderCell *renderCell);
+RenderCell* GameRender_InitArrayRenderCell();
+
+GameRender GameRender_InitGameRender(SDL_Window* window);
+
+    // free function of the GameRender
+
+void GameRender_FreeRenderCell(RenderCell renderCell);
+
+void GameRender_FreeArrayRenderCell(RenderCell* arrayRenderCell);
 
 void GameRender_FreeGameRender(GameRender *gameRender);
+
+
 
 
     // Function under work
@@ -85,36 +92,28 @@ int GameRender_Init(SDL_Window **window, GameRender *gameRender);
 
 void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender);
 
-    // Debugging function
-
-// Display everything we need to know for the RenderCell
-void GameRender_DebugRenderCell(RenderCell renderCell);
-
-// Simply display everything we need to know if the gameRender is correctly working
-void GameRender_DebugGameRender(GameRender gameRender);
+    // Debugging function 
 
 // Simply call function to see if they work
 void GameRender_Test();
 
-
-
-    // Function that aren't well thought yet
+    // Function that aren't well thought yet | Will maybe move to another c files
 
 /*
     Whenever we add a new Entity on the board, we need to call this function.
     The id is the id of the Entity we will add, this function will then load that entity
     into the right RenderCell.
 */
-void GameRender_addEntity();
+//void GameRender_addEntity();
 /*
     !Not definitive! this would change the position of the SDL_Rect dst of the
     corresponding Entity, still need to work out the actual parameters.
     Normally, the humanArray and alienArray of the gameRenderer will correspond to
     the ones in the game logic (created in the interaction.c)
 */
-void GameRender_updatePos();
+//void GameRender_updatePos();
 
 // Will simply apply the changes made to renderArray
-void GameRender_UpdateWindow(GameRender gameRender);
+//void GameRender_UpdateWindow(GameRender gameRender);
 
 #endif
