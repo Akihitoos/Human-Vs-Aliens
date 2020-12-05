@@ -24,7 +24,7 @@ void GameRender_GetDisplayMode(int *width, int *height)
         fprintf(stdout, "4 : 1280 x 720\n");
         fprintf(stdout, "5 : 1600 x 900\n");
         fprintf(stdout, "6 : 1920 x 1080\n");
-        fscanf_s(stdin, "%d", &choice);
+        fscanf(stdin, "%d", &choice);
         switch(choice){
             case 1:
                 *width = 640;
