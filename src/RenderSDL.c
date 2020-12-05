@@ -210,18 +210,8 @@ void GameRender_Test()
 
     gameRender = GameRender_InitGameRender(windowMain);
 
-    if (gameRender != NULL) {
-
-        GameRender_FreeArrayRenderCell((gameRender)->humanArrayStruct);
-        GameRender_FreeArrayRenderCell((gameRender)->alienArrayStruct);
-        GameRender_FreeRenderCell((gameRender)->uiStruct);
-        GameRender_FreeRenderCell((gameRender)->mowerStruct);
-        SDL_DestroyRenderer((gameRender)->renderer);
-        free(gameRender);
-        gameRender = NULL;
-        
-        //GameRender_FreeGameRender(&gameRender);
-
+    if (gameRender != NULL) {  
+        GameRender_FreeGameRender(&gameRender);
     }
     
     SDL_DestroyWindow(windowMain);
