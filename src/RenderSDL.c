@@ -213,6 +213,8 @@ void GameRender_Test()
 
     gameRender = GameRender_InitGameRender(windowMain);
 
+    SDL_Delay(5000);
+
     if (gameRender != NULL) {  
         GameRender_FreeGameRender(&gameRender);
     }

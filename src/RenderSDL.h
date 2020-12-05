@@ -14,18 +14,18 @@
 
 // All the img are in BMP
 // The number is the id
-#define PATH_TO_HUMAN_1
-#define PATH_TO_HUMAN_2
-#define PATH_TO_HUMAN_3
-#define PATH_TO_HUMAN_4
+#define PATH_TO_HUMAN_1 "src\\img\\Human_Melee.bmp"
+#define PATH_TO_HUMAN_2 "src\\img\\Human_Range.bmp"
+#define PATH_TO_HUMAN_3 "src\\img\\Human_Tank.bmp"
+#define PATH_TO_HUMAN_4 "src\\img\\Human_Range.bmp"
 
 // The real id is negative
-#define PATH_TO_ALIEN_1
-#define PATH_TO_ALIEN_2
-#define PATH_TO_ALIEN_3
+#define PATH_TO_ALIEN_1 "src\\img\\Alien_Melee.bmp"
+#define PATH_TO_ALIEN_2 "src\\img\\Alien_Range.bmp"
+#define PATH_TO_ALIEN_3 "src\\img\\Alien_Tank.bmp"
 
 // It will show the lane, the box where the entity will be placed etc.
-#define PATH_TO_BACKGROUND
+#define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
 
 // It will be a box where the entity choosable will appear
 #define PATH_TO_SHOP_UI
