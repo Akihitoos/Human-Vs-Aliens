@@ -12,7 +12,9 @@
 
     //Below are all the define needed
 
-// All the img are in BMP
+#define ENTITY_RATIO 0.4
+
+// All the img are in BMP 400*400
 // The number is the id
 #define PATH_TO_HUMAN_1 "src\\img\\Human_Melee.bmp"
 #define PATH_TO_HUMAN_2 "src\\img\\Human_Range.bmp"
@@ -54,18 +56,19 @@ typedef struct gameRender{
     RenderCell *alienArrayStruct;
     RenderCell mowerStruct;
     RenderCell uiStruct;                // Need to be careful, and know which case is what
+    int screen_width;
+    int screen_height;
 } GameRender_Struct;
 
 typedef GameRender_Struct *GameRender;
 
     // Function inside RenderSDL.c
-    // Those are (hopefully) ready
 
-void GameRender_SDL_Init(Uint32 flags);
+void GameRender_InitSDL(Uint32 flags);
 
 void GameRender_GetDisplayMode(int *width, int *height);
 
-SDL_Window* GameRender_CreateWindow();
+SDL_Window *GameRender_CreateWindow(int *width, int *height);
 
     // allocation function of the GameRender
 
@@ -73,7 +76,7 @@ RenderCell GameRender_InitRenderCell();
 
 RenderCell* GameRender_InitArrayRenderCell();
 
-GameRender GameRender_InitGameRender(SDL_Window* window);
+GameRender GameRender_InitGameRender(SDL_Window *window, int width, int height);
 
     // free function of the GameRender
 
@@ -83,16 +86,23 @@ void GameRender_FreeArrayRenderCell(RenderCell* arrayRenderCell);
 
 void GameRender_FreeGameRender(GameRender* gameRender);
 
-    // Function under work
+    // Main function used elsewhere
 
-int GameRender_Init(SDL_Window **window, GameRender *gameRender);
+int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode);
 
 void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender);
 
     // Debugging function 
 
-// Simply call function to see if they work
 void GameRender_Test();
+
+    // Function under developpement
+
+void GameRender_AddElementToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element, 
+                                                            int posX, int posY, double widthRatio, double heightRatio);
+
+
+void GameRender_Update(GameRender gameRender);
 
     // Function that aren't well thought yet | Will maybe move to another c files
 

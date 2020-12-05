@@ -1,7 +1,7 @@
 #include "RenderSDL.h"
 
 //Call the SDL_Init function and exit if it fails
-void GameRender_SDL_Init(Uint32 flags)
+void GameRender_InitSDL(Uint32 flags)
 {
     if(SDL_Init(flags) != 0){
         SDL_Log("Error SDL_Init %s\n", SDL_GetError());
@@ -57,13 +57,12 @@ void GameRender_GetDisplayMode(int *width, int *height)
 }
 
 //Return 0 on success or a negative error on failure
-//Create a window by asking the user the resolution he wants
-SDL_Window *GameRender_CreateWindow()
+//Create a window by asking the user the resolution he wants, and return them via parameters
+SDL_Window *GameRender_CreateWindow(int *width, int *height)
 {
     SDL_Window *window = NULL;
-    int width = 0, height = 0, error = 0;;
-    GameRender_GetDisplayMode(&width, &height);
-    window = SDL_CreateWindow("Human vs Aliens", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_ALLOW_HIGHDPI);
+    GameRender_GetDisplayMode(width, height);
+    window = SDL_CreateWindow("Human vs Aliens", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, *width, *height, SDL_WINDOW_ALLOW_HIGHDPI);
     if(window == NULL){
         SDL_Log("Erreur in GameRender_CreateWindow() : %s \n", SDL_GetError());
     }
@@ -108,19 +107,21 @@ RenderCell *GameRender_InitArrayRenderCell()
 }
 
 /*
-    Allocate a struct GameRender* and return it
+    Allocate a struct GameRender* and return it.
+    Width and height correspond to the screen.
 */
-GameRender GameRender_InitGameRender(SDL_Window *window)
+GameRender GameRender_InitGameRender(SDL_Window *window, int width, int height)
 {
     GameRender gameRender = NULL;
     gameRender = (GameRender_Struct *)malloc(sizeof(GameRender_Struct));
     if(gameRender != NULL){
         gameRender->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-
         gameRender->humanArrayStruct = GameRender_InitArrayRenderCell();
         gameRender->alienArrayStruct = GameRender_InitArrayRenderCell();
         gameRender->mowerStruct = GameRender_InitRenderCell();
         gameRender->uiStruct = GameRender_InitRenderCell();
+        gameRender->screen_width = width;
+        gameRender->screen_height = height;
     }
     if( gameRender == NULL || gameRender->renderer == NULL)
     {
@@ -128,7 +129,6 @@ GameRender GameRender_InitGameRender(SDL_Window *window)
     }
     return gameRender;
 }
-
 
 // Free a renderCell (doesn't replace the pointer by NULL)
 void GameRender_FreeRenderCell(RenderCell renderCell)
@@ -151,7 +151,6 @@ void GameRender_FreeArrayRenderCell(RenderCell *arrayRenderCell)
             GameRender_FreeRenderCell(arrayRenderCell[i]);
         }
     }
-
     free(arrayRenderCell);
 }
 
@@ -162,30 +161,111 @@ void GameRender_FreeGameRender(GameRender *gameRender)
     GameRender_FreeArrayRenderCell( (*gameRender)->alienArrayStruct );
     GameRender_FreeRenderCell( (*gameRender)->uiStruct    );
     GameRender_FreeRenderCell( (*gameRender)->mowerStruct );
-
     SDL_DestroyRenderer( (*gameRender)->renderer );
     free(*gameRender);
     *gameRender = NULL;
-
 }
 
+/*
+    return 0 on succes or negative if error. (to do)
+    add a BMP to a renderCell.
+    widthRatio and heightRatio dictate if we resize the image. There will conversion between int and double,
+    but it won't cause problem
+*/
+void GameRender_AddElementToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element, int posX, int posY, double widthRatio, double heightRatio)
+{
+    SDL_Surface *surface = NULL;
+    SDL_Texture *texture = NULL;
+    int width = 0, height = 0;
 
+    int i = renderCell->numberOfElements; // Where we add our new element
 
+    surface = SDL_LoadBMP(path_to_element);
 
+    if(surface != NULL){
+
+        texture = SDL_CreateTextureFromSurface(renderer, surface);
+        SDL_FreeSurface(surface);
+        // Get the texture width and height
+        SDL_QueryTexture(texture, NULL, NULL, &width, &height);
+        // Resize the texture
+        width *= widthRatio;
+        height *= heightRatio;
+
+        if( i != 0 ){
+            renderCell = realloc(renderCell, sizeof(RenderCell_Struct) * i+1);
+        }
+
+        if(renderCell != NULL){
+            renderCell->textureArray[i] = texture;
+            texture = NULL;
+
+            renderCell->srcArray[i].x = -500; //Say that we take the entire texture to render
+            renderCell->srcArray[i].y = -500;
+            renderCell->srcArray[i].w = -500;
+            renderCell->srcArray[i].h = -500;
+
+            renderCell->dstArray[i].x = posX;
+            renderCell->dstArray[i].y = posY;
+            renderCell->dstArray[i].w = width;
+            renderCell->dstArray[i].h = height;
+
+            renderCell->numberOfElements += 1;
+        }  
+    }
+    if(surface == NULL || renderCell == NULL){
+        fprintf(stderr, "Error in GameRender_AddElementToRenderCell() : %s \n", SDL_GetError());
+    }
+}
+
+/*
+    Copy everything inside the gameRender to the renderer
+*/
+void GameRender_Update(GameRender gameRender)
+{
+    for(int j = 0; j < gameRender->uiStruct->numberOfElements; j++){
+        SDL_RenderCopy(gameRender->renderer, gameRender->uiStruct->textureArray[j], NULL, &(gameRender->uiStruct->dstArray[j]));
+    }
+
+    for(int i = 0; i < LANE ; i++){
+        for(int j = 0; j < gameRender->humanArrayStruct[i]->numberOfElements; j++){
+            SDL_RenderCopy(gameRender->renderer, gameRender->humanArrayStruct[i]->textureArray[j], NULL, &(gameRender->humanArrayStruct[i]->dstArray[j]) );
+        }
+        for(int j = 0; j < gameRender->alienArrayStruct[i]->numberOfElements; j++){
+            SDL_RenderCopy(gameRender->renderer, gameRender->alienArrayStruct[i]->textureArray[j], NULL, &(gameRender->alienArrayStruct[i]->dstArray[j]) );
+        }
+    }
+    for(int j = 0; j < gameRender->mowerStruct->numberOfElements; j++){
+        SDL_RenderCopy(gameRender->renderer, gameRender->mowerStruct->textureArray[j], NULL, &(gameRender->mowerStruct->dstArray[j])); 
+    }
+
+    SDL_RenderPresent(gameRender->renderer);
+
+}
 
 /*
     Return 0 on success or a negative error on failure.
     Create, allocate and load everything in order to initalise the game window, including the SDL
-    The Window is currently 
+    gameMode : 0 = solo, 1 = multiplayer
 */
-int GameRender_Init(SDL_Window **window, GameRender *gameRender)
+int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode)
 {
-    int error = 0;
-    // initialise the SDL ?
+    int error = 0, width = 0, height = 0;
+
+    // initialise the SDL
+    GameRender_InitSDL(SDL_INIT_VIDEO);
 
     // Create the window
+    *window = GameRender_CreateWindow(&width, &height);
 
     // Allocate the gameRender
+    *gameRender = GameRender_InitGameRender(*window, width, height);
+
+    if(*window != NULL || *gameRender != NULL){
+        
+    } else {
+        error = -1;
+    }
 
     return error;
 }
@@ -196,29 +276,35 @@ int GameRender_Init(SDL_Window **window, GameRender *gameRender)
 void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender)
 {
     // Free the gameRender
+    GameRender_FreeGameRender(gameRender);
 
     // destroy the window
+    SDL_DestroyWindow(*window);
     
     // uninitialise the SDL ?
+    SDL_Quit();
 }
 
+
+/*
+    A function to test the others
+*/
 void GameRender_Test()
 {
     GameRender gameRender = NULL;
     SDL_Window *windowMain = NULL;
+    int c = 1;
 
-    GameRender_SDL_Init(SDL_INIT_VIDEO);
+    GameRender_Init(&windowMain, &gameRender, 0);
 
-    windowMain = GameRender_CreateWindow();
-
-    gameRender = GameRender_InitGameRender(windowMain);
-
-    SDL_Delay(5000);
-
-    if (gameRender != NULL) {  
-        GameRender_FreeGameRender(&gameRender);
-    }
+    GameRender_AddElementToRenderCell(gameRender->uiStruct, gameRender->renderer, PATH_TO_PLAYGROUND, 0, 0, 1, 1.3);
+    GameRender_AddElementToRenderCell(gameRender->humanArrayStruct[0], gameRender->renderer, PATH_TO_HUMAN_1, 350, 40, ENTITY_RATIO, ENTITY_RATIO);
+    GameRender_AddElementToRenderCell(gameRender->alienArrayStruct[0], gameRender->renderer, PATH_TO_ALIEN_1, 1000, 40, ENTITY_RATIO, ENTITY_RATIO);
     
-    SDL_DestroyWindow(windowMain);
-    SDL_Quit();
+    do{
+        GameRender_Update(gameRender);
+        scanf("%d", &c);
+    } while (c !=0 );
+
+    GameRender_FreeEverything(&windowMain, &gameRender);
 }
