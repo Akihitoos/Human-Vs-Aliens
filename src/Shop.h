@@ -16,7 +16,7 @@ Shop* init_shop_human();
 Shop* init_shop_alien();
 
 // Free a shop memory
-void free(Shop **shop);
+void free_shop(Shop **shop);
 
 
 #endif

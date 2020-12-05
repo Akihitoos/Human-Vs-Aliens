@@ -45,7 +45,7 @@ Shop* init_shop_alien(){
     
 }
 
-void free(Shop **shop){
+void free_shop(Shop **shop){
     free(*shop);
     *shop = NULL;
 }
