@@ -148,7 +148,7 @@ void GameRender_FreeArrayRenderCell(RenderCell *arrayRenderCell)
 {
     for(int i = 0; i < LANE; i++){
         if (arrayRenderCell[i] != NULL) {
-            //GameRender_FreeRenderCell(arrayRenderCell[i]);
+            GameRender_FreeRenderCell(arrayRenderCell[i]);
         }
     }
     free(arrayRenderCell);
