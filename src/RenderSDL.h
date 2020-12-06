@@ -12,12 +12,18 @@
 
     //Below are all the define needed
 
-// All the img are in BMP 400*400
+// All the entity are in BMP 400*400
+
+#define SIZE_ENTITY 400
+
 // The number is the id
+//#define PATH_TO_HUMAN_1 "src\\img\\Human_Melee.bmp"
 #define PATH_TO_HUMAN_1 "src\\img\\Human_Melee.bmp"
 #define PATH_TO_HUMAN_2 "src\\img\\Human_Range.bmp"
 #define PATH_TO_HUMAN_3 "src\\img\\Human_Tank.bmp"
 #define PATH_TO_HUMAN_4 "src\\img\\Human_Range.bmp"
+
+#define PATH_TO_MOWER_0 "src\\img\\" // EMPTY
 
 // The real id is negative
 #define PATH_TO_ALIEN_1 "src\\img\\Alien_Melee.bmp"
@@ -25,15 +31,17 @@
 #define PATH_TO_ALIEN_3 "src\\img\\Alien_Tank.bmp"
 
 // It will show the lane, the box where the entity will be placed etc.
+
+//#define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
 #define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
 
 // It will be a box where the entity choosable will appear
-#define PATH_TO_SHOP_UI
+#define PATH_TO_SHOP_UI             // !EMPTY
 
 // Path to the different cursor used in the game
-#define PATH_TO_CURSOR_PLAYER_1
-#define PATH_TO_CURSOR_PLAYER_2
-#define PATH_TO_CURSOR_SHOP
+#define PATH_TO_CURSOR_PLAYER_1     // !EMPTY
+#define PATH_TO_CURSOR_PLAYER_2     // !EMPTY
+#define PATH_TO_CURSOR_SHOP         // !EMPTY
 
     // Below are the struct
 
@@ -94,6 +102,9 @@ int GameRender_AddRenderCell(RenderCell firstRC, RenderCell newRC);
 
 void GameRender_DeleteRenderCell(RenderCell *firstRC, int id);
 
+int GameRender_AddEntityToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element, 
+            int posX, int posY, double widthRatio, double heightRatio);
+
     // Main function used elsewhere
 
 int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode);
@@ -108,13 +119,8 @@ void GameRender_Test();
 
     // Function under developpement
 
-int GameRender_AddEntityToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element, 
-            int posX, int posY, double widthRatio, double heightRatio);
-
-    // Function that aren't well thought yet
-
-// when an entity live 
-//void GameRender_AddEntity(int lane, int idEntity);
+// when an entity is added
+int GameRender_AddEntity(GameRender gameRender,int idEntity,  int lane, int posX );
 
 // When an entity move
 //void GameRender_UpdatePosition(int lane, int id);

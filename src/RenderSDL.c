@@ -232,7 +232,7 @@ void GameRender_DeleteRenderCell(RenderCell *firstRC, int id)
 }
 
 /*
-
+    Not done yet
 */
 void GameRender_ModifyRenderCell()
 {
@@ -272,7 +272,7 @@ RenderCell GameRender_CreateEmptyRenderCell()
 }
 
 /*
-    return 0 on succes or negative if error. (to do)
+    return 0 on succes or negative if error.
     add a BMP to a renderCell.
     widthRatio and heightRatio dictate if we resize the image. There will conversion between int and double,
     but it won't cause problem
@@ -327,27 +327,127 @@ int GameRender_AddEntityToRenderCell(RenderCell renderCell, SDL_Renderer *render
 }
 
 /*
+    Return the path to the corresponding texture.
+*/
+char *GameRender_GetPathFromId(int id)
+{
+    char *temp = NULL;
+    switch(id)
+    {
+        case -3:
+            temp = PATH_TO_ALIEN_3;
+            break;
+        case -2:
+            temp = PATH_TO_ALIEN_2;
+            break;
+        case -1:
+            temp = PATH_TO_ALIEN_1;
+            break;
+        case 0:
+            temp = PATH_TO_MOWER_0;
+            break;
+        case 1:
+            temp = PATH_TO_HUMAN_1;
+            break;
+        case 2:
+            temp = PATH_TO_HUMAN_2;
+            break;
+        case 3:
+            temp = PATH_TO_HUMAN_3;
+            break;
+        case 4:
+            temp = PATH_TO_HUMAN_4;
+            break;
+        default:
+            break;
+    }
+    return temp;
+}
+
+/*
+    return 0 on succes or negative if error.
+    Takes the GameRender, the lane where the entity is added, and his id(for his texture)
+    id : {1,2,3,4} for human, id : {-1,-2,-3} for alien, id : {0} for mower
+    posX : pos of the Human Entity
+*/
+int GameRender_AddEntity(GameRender gameRender,int idEntity,  int lane, int posX)
+{
+    /*
+        This function is a bit experimental / tricky, because of the equation. 
+        We need to find where to position and redimension the different element, so
+        I tried to find some equation allowing it, depending on the screen.
+    */
+    char *pathToEntity = NULL;
+    SDL_Renderer *renderer = NULL;
+    RenderCell rcLane = NULL;
+    int x = 0;
+    int y = 0;
+    double widthRatio = 0;
+    double heightRatio = 0;
+    int screenW = 0;
+    int screenH = 0;
+
+    if( idEntity >= -3 && idEntity <= 4){
+
+        pathToEntity = GameRender_GetPathFromId(idEntity);
+        renderer = gameRender->renderer;
+        screenW = gameRender->screen_width;
+        screenH = gameRender->screen_height;
+
+
+        // position are in int, but I expect the approximation to be usable
+        // position x of entity: (screen width * 13/96) + posX * (screen width * 35/48)
+        // position y of entity: (screen height * 7/96) + lane * (screen width * 5/96 + screen width * 1/128) 
+        //                                                       ( screen width * 23/384 )
+        // width of entity is  : screen width * 5/96
+        // height of entity is : screen height * 1/20
+
+        y = (screenH * 7/96) + lane * (screenH * 23/384);
+
+
+        widthRatio = ( ( (double)screenW * 5./96.) / ( (double)SIZE_ENTITY / 4. ) );
+        heightRatio = widthRatio;
+
+
+        if(idEntity < 0){           //It's an alien
+            x = (screenW * 13/96) + 1000 * (screenW* 35/48);
+            rcLane = gameRender->alienArrayStruct[lane];
+        } else if (idEntity > 0){   //It's an human
+            x = (screenW * 13/96) + posX * (screenW* 35/48);
+            rcLane = gameRender->humanArrayStruct[lane];
+        } else {                    //It's a mower
+            rcLane = gameRender->humanArrayStruct[lane];
+        }
+        GameRender_AddEntityToRenderCell(rcLane, renderer, pathToEntity, x, y, widthRatio, heightRatio);
+    } 
+}
+
+
+
+
+
+/*
     Copy everything inside the gameRender to the renderer
 */
 void GameRender_Update(GameRender gameRender)
 {
     // Update the UI
-    for(RenderCell pointer = gameRender->uiStruct; pointer != NULL; pointer = pointer->next){
+    for(RenderCell pointer = gameRender->uiStruct; pointer != NULL && pointer->texture != NULL; pointer = pointer->next){
         SDL_RenderCopy(gameRender->renderer, pointer->texture, NULL, pointer->dst);
     }
 
     // Update the Entity
     for(int i = 0; i < LANE ; i++){
-        for(RenderCell pointer = gameRender->humanArrayStruct[i]; pointer != NULL; pointer = pointer->next){
+        for(RenderCell pointer = gameRender->humanArrayStruct[i]; pointer != NULL && pointer->texture != NULL; pointer = pointer->next){
             SDL_RenderCopy(gameRender->renderer, pointer->texture, NULL, pointer->dst );
         }
-        for(RenderCell pointer = gameRender->alienArrayStruct[i]; pointer != NULL; pointer = pointer->next){
+        for(RenderCell pointer = gameRender->alienArrayStruct[i]; pointer != NULL && pointer->texture != NULL; pointer = pointer->next){
             SDL_RenderCopy(gameRender->renderer, pointer->texture, NULL, pointer->dst );
         }
     }
 
     // Update the Mower
-    for(RenderCell pointer = gameRender->mowerStruct; pointer != NULL; pointer = pointer->next){
+    for(RenderCell pointer = gameRender->mowerStruct; pointer != NULL && pointer->texture != NULL; pointer = pointer->next){
         SDL_RenderCopy(gameRender->renderer, pointer->texture, NULL, pointer->dst);
     }
 
@@ -405,19 +505,14 @@ void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender)
 void GameRender_Test()
 {
     GameRender gameRender = NULL;
-    SDL_Window *windowMain = NULL;
+    SDL_Window* windowMain = NULL;
     int c = 1;
 
     GameRender_Init(&windowMain, &gameRender, 0);
 
-    GameRender_AddEntityToRenderCell(gameRender->uiStruct, gameRender->renderer, PATH_TO_PLAYGROUND, 0, 0, 1, 1.3);
-    GameRender_AddEntityToRenderCell(gameRender->humanArrayStruct[0], gameRender->renderer, PATH_TO_HUMAN_1, 450, 40, 0.4, 0.4);
-    GameRender_AddEntityToRenderCell(gameRender->humanArrayStruct[0], gameRender->renderer, PATH_TO_HUMAN_1, 150, 100, 0.4, 0.4);
+    GameRender_AddEntityToRenderCell(gameRender->uiStruct, gameRender->renderer, PATH_TO_PLAYGROUND, 0, 0, 0.94, 1);
 
-    GameRender_DeleteRenderCell( &(gameRender->humanArrayStruct[0]), 5);
-
-    GameRender_AddEntityToRenderCell(gameRender->humanArrayStruct[0], gameRender->renderer, PATH_TO_HUMAN_1, 600, 100, 0.4, 0.4);
-    GameRender_AddEntityToRenderCell(gameRender->alienArrayStruct[0], gameRender->renderer, PATH_TO_ALIEN_1, 1000, 40, 0.4, 0.4);
+    GameRender_AddEntity(gameRender, 1, 0, 0);
     
     do{
         GameRender_Update(gameRender);
