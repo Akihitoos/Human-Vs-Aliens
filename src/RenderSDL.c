@@ -77,13 +77,13 @@ RenderCell GameRender_InitRenderCell()
     RenderCell newCell = NULL;
     newCell = (RenderCell_Struct *)malloc(sizeof(RenderCell_Struct));
     if(newCell != NULL){
-        newCell->textureArray = (SDL_Texture **)malloc(sizeof(SDL_Texture *));
-        newCell->srcArray = (SDL_Rect *)malloc(sizeof(SDL_Rect));
-        newCell->dstArray = (SDL_Rect *)malloc(sizeof(SDL_Rect));
-        newCell->numberOfElements = 0;
+        newCell->texture = NULL;
+        newCell->src = (SDL_Rect *)malloc(sizeof(SDL_Rect));
+        newCell->dst = (SDL_Rect *)malloc(sizeof(SDL_Rect));
+        newCell->next = NULL;
     }
 
-    if(newCell == NULL || newCell->textureArray == NULL || newCell->srcArray == NULL || newCell->dstArray == NULL){
+    if(newCell == NULL || newCell->src == NULL || newCell->dst == NULL){
         fprintf(stderr,"Error occured in GameRender_InitRenderCell() : %s\n", SDL_GetError());
     }  
     return newCell;
@@ -130,40 +130,145 @@ GameRender GameRender_InitGameRender(SDL_Window *window, int width, int height)
     return gameRender;
 }
 
-// Free a renderCell (doesn't replace the pointer by NULL)
-void GameRender_FreeRenderCell(RenderCell renderCell)
+// Free every renderCell (need the first one in parameters)
+void GameRender_FreeAllRenderCell(RenderCell *firstRC)
 {
-    for (int i = 0; i < renderCell->numberOfElements; i++)
-    {
-        SDL_DestroyTexture(renderCell->textureArray[i]);
+    RenderCell toDelete = *firstRC; // We delete this one
+    RenderCell pointer = *firstRC;  // We search the next one to delete
+    for( ; pointer != NULL; toDelete = pointer){
+        pointer = pointer->next;
+
+        SDL_DestroyTexture(toDelete->texture);
+        free(toDelete->src);
+        free(toDelete->dst);
+        free(toDelete);
     }
-    free(renderCell->textureArray);
-    free(renderCell->srcArray);
-    free(renderCell->dstArray);
-    free(renderCell);
+    *firstRC = NULL;
 }
 
-// Free an array of RenderCell (doesn't replace the pointer by NULL)
-void GameRender_FreeArrayRenderCell(RenderCell *arrayRenderCell)
+// Free an array of RenderCell (replace the pointer by NULL)
+void GameRender_FreeArrayRenderCell(RenderCell **arrayRenderCell)
 {
     for(int i = 0; i < LANE; i++){
-        if (arrayRenderCell[i] != NULL) {
-            GameRender_FreeRenderCell(arrayRenderCell[i]);
+        if ( (*arrayRenderCell)[i] != NULL) {
+            GameRender_FreeAllRenderCell( &( (*arrayRenderCell)[i] ) );
         }
     }
-    free(arrayRenderCell);
+    free(*arrayRenderCell);
+    *arrayRenderCell = NULL;
 }
 
 // Free the whole GameRender (replace the pointer by NULL)
 void GameRender_FreeGameRender(GameRender *gameRender)
 {
-    GameRender_FreeArrayRenderCell( (*gameRender)->humanArrayStruct );
-    GameRender_FreeArrayRenderCell( (*gameRender)->alienArrayStruct );
-    GameRender_FreeRenderCell( (*gameRender)->uiStruct    );
-    GameRender_FreeRenderCell( (*gameRender)->mowerStruct );
+    GameRender_FreeArrayRenderCell( &( (*gameRender)->humanArrayStruct ) );
+    GameRender_FreeArrayRenderCell( &( (*gameRender)->alienArrayStruct ) );
+    GameRender_FreeAllRenderCell(      &( (*gameRender)->uiStruct         ) );
+    GameRender_FreeAllRenderCell(      &( (*gameRender)->mowerStruct      ) );
     SDL_DestroyRenderer( (*gameRender)->renderer );
     free(*gameRender);
     *gameRender = NULL;
+}
+
+/*
+    Return 0 on success, or negative on failure.
+    Only add an element to the end of the chain of RenderCell
+*/
+int GameRender_AddRenderCell(RenderCell firstRC, RenderCell newRC)
+{
+    int error = 0;
+    RenderCell temp = firstRC;
+
+    if(firstRC->texture == NULL) //If the RenderCell doesn't contain anything
+    {
+        firstRC->texture = newRC->texture;
+        firstRC->src = newRC->src;
+        firstRC->dst= newRC->dst;
+        firstRC->next = NULL; //Just to be sure
+    } else { //If the RenderCell already contains something
+
+        //Find the last RenderCell
+        for( ; temp->next != NULL ; temp = temp->next); 
+
+        if(newRC != NULL){
+            temp->next = newRC;
+        } else {
+            fprintf(stderr, "Error in GameRender_AddRenderCell()\n");
+            error = -1;
+        }
+    }
+
+    return error;
+}
+
+/*
+    Only delete one element of the chain, depending on his position.
+    id 0 = first element, id nb-1 or superior = last element
+*/
+void GameRender_DeleteRenderCell(RenderCell *firstRC, int id)
+{
+    RenderCell toDelete = *firstRC;
+    RenderCell previous = toDelete;
+    RenderCell next = NULL;
+    int i = 0;
+
+    // find the Element and keep the previous one
+    for( ; toDelete->next != NULL && i < id; previous = toDelete, toDelete = toDelete->next, i++);
+
+    // if the RenderCell in parameters isn't already null
+    if( toDelete != NULL ){
+        // next = NULL if toDelete is in last
+        next = toDelete->next;
+        SDL_DestroyTexture(toDelete->texture);
+        free(toDelete->src);
+        free(toDelete->dst);
+        free(toDelete);
+        if(id == 0){  // if we're in the first position
+            *firstRC = next;
+        } else { // Else we're in the middle or in last. If in last, next is NULL
+            previous->next = next;
+        }
+    } else { fprintf(stderr, "Trying to delete a NULL RenderCell\n"); }
+}
+
+/*
+
+*/
+void GameRender_ModifyRenderCell()
+{
+
+}
+
+/*
+    return a new RenderCell or NULL if it failed
+*/
+RenderCell GameRender_CreateEmptyRenderCell()
+{
+    RenderCell new = NULL;
+
+    new = (RenderCell_Struct *)malloc(sizeof(RenderCell_Struct));
+    if(new != NULL){
+        new->texture = NULL;
+        new->src = (SDL_Rect *)malloc(sizeof(SDL_Rect));
+        new->dst = (SDL_Rect *)malloc(sizeof(SDL_Rect));
+        new->next = NULL;
+
+        // if something is wrong, we free everything and return NULL
+        if(new->src == NULL){
+            free(new->dst);
+            new->dst = NULL;
+        }
+        if(new->dst == NULL){
+            free(new->src);
+            new->src = NULL;
+        }
+        if(new->src == NULL && new->dst == NULL){
+            free(new);
+            new = NULL;
+        }
+    }
+
+    return new;
 }
 
 /*
@@ -172,13 +277,13 @@ void GameRender_FreeGameRender(GameRender *gameRender)
     widthRatio and heightRatio dictate if we resize the image. There will conversion between int and double,
     but it won't cause problem
 */
-void GameRender_AddElementToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element, int posX, int posY, double widthRatio, double heightRatio)
+int GameRender_AddEntityToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element, int posX, int posY, double widthRatio, double heightRatio)
 {
+    int error = 0;
     SDL_Surface *surface = NULL;
     SDL_Texture *texture = NULL;
+    RenderCell newRC = NULL;
     int width = 0, height = 0;
-
-    int i = renderCell->numberOfElements; // Where we add our new element
 
     surface = SDL_LoadBMP(path_to_element);
 
@@ -186,36 +291,39 @@ void GameRender_AddElementToRenderCell(RenderCell renderCell, SDL_Renderer *rend
 
         texture = SDL_CreateTextureFromSurface(renderer, surface);
         SDL_FreeSurface(surface);
+
         // Get the texture width and height
         SDL_QueryTexture(texture, NULL, NULL, &width, &height);
+
         // Resize the texture
         width *= widthRatio;
         height *= heightRatio;
 
-        if( i != 0 ){
-            renderCell = realloc(renderCell, sizeof(RenderCell_Struct) * i+1);
-        }
+        //newRC = (RenderCell_Struct *)malloc(sizeof(RenderCell_Struct));
+        newRC = GameRender_CreateEmptyRenderCell();
 
-        if(renderCell != NULL){
-            renderCell->textureArray[i] = texture;
+        if(newRC != NULL){
+            newRC->texture = texture;
             texture = NULL;
 
-            renderCell->srcArray[i].x = -500; //Say that we take the entire texture to render
-            renderCell->srcArray[i].y = -500;
-            renderCell->srcArray[i].w = -500;
-            renderCell->srcArray[i].h = -500;
+            newRC->src->x = -500; // Say that we take the entire texture to render
+            newRC->src->y = -500; // (doesn't actually say it, I won't use it anyway in this version)
+            newRC->src->w = -500;
+            newRC->src->h = -500;
 
-            renderCell->dstArray[i].x = posX;
-            renderCell->dstArray[i].y = posY;
-            renderCell->dstArray[i].w = width;
-            renderCell->dstArray[i].h = height;
+            newRC->dst->x = posX;
+            newRC->dst->y = posY;
+            newRC->dst->w = width;
+            newRC->dst->h = height;
 
-            renderCell->numberOfElements += 1;
+            error = GameRender_AddRenderCell(renderCell, newRC);
         }  
     }
-    if(surface == NULL || renderCell == NULL){
+    if(surface == NULL || newRC == NULL){
         fprintf(stderr, "Error in GameRender_AddElementToRenderCell() : %s \n", SDL_GetError());
+        error = -1;
     }
+    return error;
 }
 
 /*
@@ -223,20 +331,24 @@ void GameRender_AddElementToRenderCell(RenderCell renderCell, SDL_Renderer *rend
 */
 void GameRender_Update(GameRender gameRender)
 {
-    for(int j = 0; j < gameRender->uiStruct->numberOfElements; j++){
-        SDL_RenderCopy(gameRender->renderer, gameRender->uiStruct->textureArray[j], NULL, &(gameRender->uiStruct->dstArray[j]));
+    // Update the UI
+    for(RenderCell pointer = gameRender->uiStruct; pointer != NULL; pointer = pointer->next){
+        SDL_RenderCopy(gameRender->renderer, pointer->texture, NULL, pointer->dst);
     }
 
+    // Update the Entity
     for(int i = 0; i < LANE ; i++){
-        for(int j = 0; j < gameRender->humanArrayStruct[i]->numberOfElements; j++){
-            SDL_RenderCopy(gameRender->renderer, gameRender->humanArrayStruct[i]->textureArray[j], NULL, &(gameRender->humanArrayStruct[i]->dstArray[j]) );
+        for(RenderCell pointer = gameRender->humanArrayStruct[i]; pointer != NULL; pointer = pointer->next){
+            SDL_RenderCopy(gameRender->renderer, pointer->texture, NULL, pointer->dst );
         }
-        for(int j = 0; j < gameRender->alienArrayStruct[i]->numberOfElements; j++){
-            SDL_RenderCopy(gameRender->renderer, gameRender->alienArrayStruct[i]->textureArray[j], NULL, &(gameRender->alienArrayStruct[i]->dstArray[j]) );
+        for(RenderCell pointer = gameRender->alienArrayStruct[i]; pointer != NULL; pointer = pointer->next){
+            SDL_RenderCopy(gameRender->renderer, pointer->texture, NULL, pointer->dst );
         }
     }
-    for(int j = 0; j < gameRender->mowerStruct->numberOfElements; j++){
-        SDL_RenderCopy(gameRender->renderer, gameRender->mowerStruct->textureArray[j], NULL, &(gameRender->mowerStruct->dstArray[j])); 
+
+    // Update the Mower
+    for(RenderCell pointer = gameRender->mowerStruct; pointer != NULL; pointer = pointer->next){
+        SDL_RenderCopy(gameRender->renderer, pointer->texture, NULL, pointer->dst);
     }
 
     SDL_RenderPresent(gameRender->renderer);
@@ -280,6 +392,7 @@ void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender)
 
     // destroy the window
     SDL_DestroyWindow(*window);
+    *window = NULL;
     
     // uninitialise the SDL ?
     SDL_Quit();
@@ -297,9 +410,14 @@ void GameRender_Test()
 
     GameRender_Init(&windowMain, &gameRender, 0);
 
-    GameRender_AddElementToRenderCell(gameRender->uiStruct, gameRender->renderer, PATH_TO_PLAYGROUND, 0, 0, 1, 1.3);
-    GameRender_AddElementToRenderCell(gameRender->humanArrayStruct[0], gameRender->renderer, PATH_TO_HUMAN_1, 350, 40, ENTITY_RATIO, ENTITY_RATIO);
-    GameRender_AddElementToRenderCell(gameRender->alienArrayStruct[0], gameRender->renderer, PATH_TO_ALIEN_1, 1000, 40, ENTITY_RATIO, ENTITY_RATIO);
+    GameRender_AddEntityToRenderCell(gameRender->uiStruct, gameRender->renderer, PATH_TO_PLAYGROUND, 0, 0, 1, 1.3);
+    GameRender_AddEntityToRenderCell(gameRender->humanArrayStruct[0], gameRender->renderer, PATH_TO_HUMAN_1, 450, 40, 0.4, 0.4);
+    GameRender_AddEntityToRenderCell(gameRender->humanArrayStruct[0], gameRender->renderer, PATH_TO_HUMAN_1, 150, 100, 0.4, 0.4);
+
+    GameRender_DeleteRenderCell( &(gameRender->humanArrayStruct[0]), 5);
+
+    GameRender_AddEntityToRenderCell(gameRender->humanArrayStruct[0], gameRender->renderer, PATH_TO_HUMAN_1, 600, 100, 0.4, 0.4);
+    GameRender_AddEntityToRenderCell(gameRender->alienArrayStruct[0], gameRender->renderer, PATH_TO_ALIEN_1, 1000, 40, 0.4, 0.4);
     
     do{
         GameRender_Update(gameRender);

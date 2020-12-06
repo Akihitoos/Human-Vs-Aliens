@@ -12,22 +12,20 @@
 
     //Below are all the define needed
 
-#define ENTITY_RATIO 0.4
-
 // All the img are in BMP 400*400
 // The number is the id
-#define PATH_TO_HUMAN_1 "src\\img\\Human_Melee.bmp"
+#define PATH_TO_HUMAN_1 "C:\\Principal\\Programme\\S3\\devApp\\TP\\Human-Vs-Aliens\\src\\img\\Human_Melee.bmp"
 #define PATH_TO_HUMAN_2 "src\\img\\Human_Range.bmp"
 #define PATH_TO_HUMAN_3 "src\\img\\Human_Tank.bmp"
 #define PATH_TO_HUMAN_4 "src\\img\\Human_Range.bmp"
 
 // The real id is negative
-#define PATH_TO_ALIEN_1 "src\\img\\Alien_Melee.bmp"
+#define PATH_TO_ALIEN_1 "C:\\Principal\\Programme\\S3\\devApp\\TP\\Human-Vs-Aliens\\src\\img\\Alien_Melee.bmp"
 #define PATH_TO_ALIEN_2 "src\\img\\Alien_Range.bmp"
 #define PATH_TO_ALIEN_3 "src\\img\\Alien_Tank.bmp"
 
 // It will show the lane, the box where the entity will be placed etc.
-#define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
+#define PATH_TO_PLAYGROUND "C:\\Principal\\Programme\\S3\\devApp\\TP\\Human-Vs-Aliens\\src\\img\\Playground.bmp"
 
 // It will be a box where the entity choosable will appear
 #define PATH_TO_SHOP_UI
@@ -40,16 +38,18 @@
     // Below are the struct
 
 // Struct defining a set of Texture with their corresponding SDL_Rect
+
 typedef struct renderCell{
-    SDL_Texture **textureArray;      // array of texture
-    SDL_Rect *srcArray;                   // array Source SDL_Rect (which is copied)
-    SDL_Rect *dstArray;                   // array Destination SDL_Rect (where it's copied)
-    int numberOfElements;
+    SDL_Texture *texture;      // texture
+    SDL_Rect *src;             // Source SDL_Rect (which is copied) ! Will maybe never be used, but could be for said improvement
+    SDL_Rect *dst;             // Destination SDL_Rect (where it's copied)
+    struct renderCell *next;   // A pointer onto the next RenderCell (struct renderCell* == RenderCell_Struct* == RenderCell)
 }RenderCell_Struct;
 
 typedef RenderCell_Struct *RenderCell;
 
 // Struct containing all the information needed to display the game
+
 typedef struct gameRender{
     SDL_Renderer *renderer;
     RenderCell *humanArrayStruct;
@@ -74,17 +74,25 @@ SDL_Window *GameRender_CreateWindow(int *width, int *height);
 
 RenderCell GameRender_InitRenderCell();
 
+RenderCell GameRender_CreateEmptyRenderCell();
+
 RenderCell* GameRender_InitArrayRenderCell();
 
 GameRender GameRender_InitGameRender(SDL_Window *window, int width, int height);
 
     // free function of the GameRender
 
-void GameRender_FreeRenderCell(RenderCell renderCell);
+void GameRender_FreeAllRenderCell(RenderCell* renderCell);
 
-void GameRender_FreeArrayRenderCell(RenderCell* arrayRenderCell);
+void GameRender_FreeArrayRenderCell(RenderCell** arrayRenderCell);
 
 void GameRender_FreeGameRender(GameRender* gameRender);
+
+    // Manipulatioon function
+
+int GameRender_AddRenderCell(RenderCell firstRC, RenderCell newRC);
+
+void GameRender_DeleteRenderCell(RenderCell *firstRC, int id);
 
     // Main function used elsewhere
 
@@ -92,35 +100,29 @@ int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode);
 
 void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender);
 
+void GameRender_Update(GameRender gameRender);
+
     // Debugging function 
 
 void GameRender_Test();
 
     // Function under developpement
 
-void GameRender_AddElementToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element, 
-                                                            int posX, int posY, double widthRatio, double heightRatio);
+int GameRender_AddEntityToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element, 
+            int posX, int posY, double widthRatio, double heightRatio);
 
+    // Function that aren't well thought yet
 
-void GameRender_Update(GameRender gameRender);
+// when an entity live 
+//void GameRender_AddEntity(int lane, int idEntity);
 
-    // Function that aren't well thought yet | Will maybe move to another c files
+// When an entity move
+//void GameRender_UpdatePosition(int lane, int id);
 
-/*
-    Whenever we add a new Entity on the board, we need to call this function.
-    The id is the id of the Entity we will add, this function will then load that entity
-    into the right RenderCell.
-*/
-//void GameRender_addEntity();
-/*
-    !Not definitive! this would change the position of the SDL_Rect dst of the
-    corresponding Entity, still need to work out the actual parameters.
-    Normally, the humanArray and alienArray of the gameRenderer will correspond to
-    the ones in the game logic (created in the interaction.c)
-*/
-//void GameRender_updatePos();
+// When an entity dies
+//void GameRender_DeleteEntity(int lane, int id);
 
-// Will simply apply the changes made to renderArray
-//void GameRender_UpdateWindow(GameRender gameRender);
+// When a mower is used
+//void GameRender_DeleteMower(int lane);
 
 #endif
