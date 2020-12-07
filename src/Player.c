@@ -16,10 +16,12 @@ Player* init_human_player(){
 // gamemode = 1(easy), 2(medium), 3(hard) if singleplayer, 0 if multiplayer
 Player* init_alien_player(int gamemode){
     Player* alien = (Player*)malloc(sizeof(Player));
-    if (alien == NULL){
-        fprintf(stderr, "Malloc error");
+
+    if(alien == NULL){
+        fprint(stderr, "Error in init_alien_player\n");
         return NULL;
     }
+  
     if(gamemode == 1){
         alien->team = -1;
     } else {

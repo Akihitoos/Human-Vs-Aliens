@@ -16,7 +16,7 @@ void delay()
 int main(int argc, char **argv)
 {
     
-    int tempsinit, step;
+    int tempsinit, step, game_ended;
     
     // initialization
     Mower mower_array = NULL;
@@ -28,13 +28,15 @@ int main(int argc, char **argv)
 
     // adding entity
     add_entity(alien_array,-1,0,0);
-    /*add_entity(alien_array,-2,0,0);
+    add_entity(alien_array,-2,0,0);
     add_entity(alien_array,-3,0,0);
     add_entity(alien_array,-2,1,0);
+    add_entity(alien_array,-1,1,0);
 
     add_entity(human_array,2,0,800);
     add_entity(human_array,1,0,700);
-    add_entity(human_array,4,0,600);*/
+    add_entity(human_array,4,0,600);
+
 
     // game loop and display
     
@@ -42,20 +44,32 @@ int main(int argc, char **argv)
     printf("Au temps : %lf\n",tempsinit/CLOCKS_PER_SEC);
     
     
-    for(int i = 0; i < 500 ; i++){
+    for(int i = 0; i < 10 ; i++){
         show_tab_order_by_asc(human_array[0]);
         printf("------\n");
-        show_tab_order_by_asc(alien_array[0]);
+        show_tab_order_by_asc(alien_array[1]);
         printf("------ new refresh %d ----------\n",i);
-        update(human_array, alien_array, mower_array);
-
+        game_ended = update(human_array, alien_array, mower_array);
+        if (game_ended == 1){
+            printf("Partie terminee : Les aliens ont gagne\n");
+            break;
+        }
+        if (i == 67){
+            add_entity(alien_array,-1,1,0);
+        }
 
         delay();
     }
-    
 
     // free
     free_array(&human_array, &alien_array);
+    free_mower(&mower_array);
+
+    int close = 0;
+    do{
+        printf("Quit program ? (type 1)\n");
+        scanf("%d", &close);
+    } while (close != 1);
 
     return 0;
 }

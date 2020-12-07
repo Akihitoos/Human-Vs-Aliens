@@ -1,13 +1,12 @@
 #ifndef INTERACTION_H
 #define INTERACTION_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include "Entity.h"
-#include "mower.h"
-#include "Player.h"
-
 #define LANE 5
+#define REFRESH_RATE 10
+
+#include "Entity.h"
+#include "Player.h"
+#include "mower.h"
 
 // function which initialize a simple array of entity
 Entity **init_entity_array();
