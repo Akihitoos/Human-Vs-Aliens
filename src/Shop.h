@@ -10,7 +10,9 @@
 //For a same index, we consider an unique entity
 typedef struct Shop
 {
-    int cursor;
+    int cursor_shop;
+    int cursor_lane;
+    int cursor_position;
     int *id;
     int *tab_cost;
 }Shop;

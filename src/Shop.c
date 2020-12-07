@@ -18,6 +18,9 @@ Shop* init_shop_human(){
     shop->tab_cost[1] = 200;
     shop->tab_cost[2] = 400;
     shop->tab_cost[3] = 250;
+    shop->cursor_shop = 1;
+    shop->cursor_lane = 0;
+    shop->cursor_position = 0;
 
     return shop;
 }
@@ -40,6 +43,9 @@ Shop* init_shop_alien(){
     shop->tab_cost[0] = 150;
     shop->tab_cost[1] = 200;
     shop->tab_cost[2] = 400;
+    shop->cursor_shop = -1;
+    shop->cursor_lane = 0;
+    shop->cursor_position = 1000;
 
     return shop;
     
@@ -50,7 +56,86 @@ void free(Shop **shop){
     *shop = NULL;
 }
 
-void shop_navigate(Shop *shop){
-    // +1 -1
+/**
+ * Navigates in the shop, using 3 cursors : One selects the ID, the 2nd determines the lane, and the 3rd the position
+ * 1/-1 : moves cursop shop (Q D or left right)     2/-2 : moves lane cursor (Z S or up down)     3/-3 : moves position cursor (A E (human only))
+ **/
+void shop_navigate(Shop *shop, int move){
+    if(shop->id[0] > 0){
+        switch (move)
+        {
+        case 1:
+            shop->cursor_shop += 1;
+            if(shop->cursor_shop > 4){
+                shop->cursor_shop = 1;
+            }
+            break;
+        case -1:
+            shop->cursor_shop -= 1;
+            if(shop->cursor_shop < 1){
+                shop->cursor_shop = 4;
+            }
+            break;
+        case 2:
+            shop->cursor_lane += 1;
+            shop->cursor_lane %= 5;
+            break;
+        case -2:
+            shop->cursor_lane -=1;
+            if (shop->cursor_lane <0){
+                shop->cursor_lane = 4;
+                break;
+            }
+        case 3:
+            shop->cursor_position += 100;
+            if (shop->cursor_position > 1000){
+                shop->cursor_position = 0;
+            }
+            break;
+        case -3:
+            shop->cursor_position -=100;
+            if (shop->cursor_position < 0){
+                shop->cursor_position = 1000;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+    else if(shop->id[0] < 0){
+        switch (move)
+        {
+        case 1:
+            shop->cursor_shop += 1;
+            if (shop->cursor_shop > -1){
+                shop->cursor_shop = -3;
+            }
+            break;
+        case -1:
+            shop->cursor_shop -= 1;
+            if (shop->cursor_shop < -3){
+                shop->cursor_shop = -1;
+            }
+            break;
+        case 2:
+            shop->cursor_lane += 1;
+            shop->cursor_lane %= 5;
+            break;
+        case -2:
+            shop->cursor_lane -=1;
+            if (shop->cursor_lane <0){
+                shop->cursor_lane = 4;
+                break;
+            }
+        default:
+            break;
+        }
+    }
+}
 
+bool can_buy(Shop* shop, Player* player){
+    if (player->golds >= shop->tab_cost[shop->cursor_shop]){
+        return true;
+    }
+    return false;
 }
