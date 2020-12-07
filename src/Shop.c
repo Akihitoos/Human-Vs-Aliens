@@ -8,7 +8,7 @@ Shop* init_shop_human(){
     }
     shop->id = (int*)malloc(sizeof(int)*4);
     shop->tab_cost = (int*)malloc(sizeof(int)*4);
-    if ((shop->id == NULL) || (shop->tab_cost)){
+    if ((shop->id == NULL) || (shop->tab_cost == NULL)){
         fprintf(stderr,"Malloc error");
     }
     for (int i = 0;i < 4;i++){
@@ -34,7 +34,7 @@ Shop* init_shop_alien(){
     }
     shop->id = (int*)malloc(sizeof(int)*3);
     shop->tab_cost = (int*)malloc(sizeof(int)*3);
-    if ((shop->id == NULL) || (shop->tab_cost)){
+    if ((shop->id == NULL) || (shop->tab_cost == NULL)){
         fprintf(stderr,"Malloc error");
     }
     for(int i = 0; i < 3; i++){
@@ -51,7 +51,7 @@ Shop* init_shop_alien(){
     
 }
 
-void free(Shop **shop){
+void free_shop(Shop **shop){
     free(*shop);
     *shop = NULL;
 }
@@ -84,8 +84,8 @@ void shop_navigate(Shop *shop, int move){
             shop->cursor_lane -=1;
             if (shop->cursor_lane <0){
                 shop->cursor_lane = 4;
-                break;
             }
+            break;
         case 3:
             shop->cursor_position += 100;
             if (shop->cursor_position > 1000){
@@ -93,7 +93,7 @@ void shop_navigate(Shop *shop, int move){
             }
             break;
         case -3:
-            shop->cursor_position -=100;
+            shop->cursor_position -= 100;
             if (shop->cursor_position < 0){
                 shop->cursor_position = 1000;
             }
@@ -106,15 +106,15 @@ void shop_navigate(Shop *shop, int move){
         switch (move)
         {
         case 1:
-            shop->cursor_shop += 1;
-            if (shop->cursor_shop > -1){
-                shop->cursor_shop = -3;
-            }
-            break;
-        case -1:
             shop->cursor_shop -= 1;
             if (shop->cursor_shop < -3){
                 shop->cursor_shop = -1;
+            }
+            break;
+        case -1:
+            shop->cursor_shop += 1;
+            if (shop->cursor_shop > -1){
+                shop->cursor_shop = -3;
             }
             break;
         case 2:
@@ -134,8 +134,20 @@ void shop_navigate(Shop *shop, int move){
 }
 
 bool can_buy(Shop* shop, Player* player){
-    if (player->golds >= shop->tab_cost[shop->cursor_shop]){
-        return true;
+    if (shop->id[0] > 0){
+        if (player->golds >= shop->tab_cost[shop->cursor_shop]){
+            return true;
+        }
+    }
+    else if (shop->id[0] < 0){
+        if (player->golds >= shop->tab_cost[-shop->cursor_shop]){
+            return true;
+        }
     }
     return false;
 }
+
+void afficher_curseurs(Shop* shop){
+    printf("shop : %d\t pos : %d\tlane : %d\n",shop->cursor_shop,shop->cursor_position,shop->cursor_lane);
+}
+

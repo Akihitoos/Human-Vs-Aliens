@@ -1,7 +1,7 @@
 #ifndef SHOP_H
 #define SHOP_H
 
-#include "Entity.h"
+#include "interaction.h"
 
 //For a same index, we consider an unique entity
 typedef struct Shop
@@ -18,7 +18,15 @@ Shop* init_shop_human();
 Shop* init_shop_alien();
 
 // Free a shop memory
-void free(Shop **shop);
+void free_shop(Shop **shop);
 
+//Cursor moves function
+void shop_navigate(Shop *shop, int move);
+
+//returns True if the selected entity can be bought
+bool can_buy(Shop* shop, Player* player);
+
+// [Debug] displays the cursors
+void afficher_curseurs(Shop* shop);
 
 #endif
