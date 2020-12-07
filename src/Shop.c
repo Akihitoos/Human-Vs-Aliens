@@ -134,8 +134,11 @@ void shop_navigate(Shop *shop, int move){
 }
 
 bool can_buy(Shop* shop, Player* player){
-    if (shop->id[0] != 0){
-        return (player->golds >= shop->tab_cost[shop->cursor_shop]);
+    if (shop->id[0] > 0){
+        return (player->golds >= shop->tab_cost[shop->cursor_shop-1]);
+    }
+    if (shop->id[0] < 0){
+        return (player->golds >= shop->tab_cost[-(shop->cursor_shop+1)]);
     }
     return false;
 }

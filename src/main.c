@@ -3,6 +3,7 @@
 //test update
 int main(int argc, char **argv)
 {
+    Player* player = init_alien_player(-1);
     Shop* human = init_shop_human();
     Shop* alien = init_shop_alien();
     printf("shop human :\n");
@@ -15,5 +16,6 @@ int main(int argc, char **argv)
         shop_navigate(alien,-2);
         shop_navigate(alien,-3);
         afficher_curseurs(alien);
+        printf("peut acheter : %s\n",can_buy(alien,player) ? "oui":"non");
     }
 }
