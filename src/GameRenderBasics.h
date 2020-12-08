@@ -1,16 +1,15 @@
 /*
-    Contains all the function needed to render the game in SDL
+    Contains all the basic functions needed for GameRenderMain
 */
 
-#ifndef RENDERSDL_H
-#define RENDERSDL_H
+#ifndef GAME_RENDER_BASICS_H
+#define GAME_RENDER_BASICS_H
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <SDL.h>
 #include "interaction.h" // Get the constant LANE
+#include "Shop.h"
 
-    //Below are all the define needed
+//Below are all the define needed
 
 // All the entity are in BMP 400*400
 
@@ -36,41 +35,43 @@
 #define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
 
 // It will be a box where the entity choosable will appear
-#define PATH_TO_SHOP_UI             // !EMPTY
+#define PATH_TO_SHOP_UI // !EMPTY
 
 // Path to the different cursor used in the game
-#define PATH_TO_CURSOR_PLAYER_1     // !EMPTY
-#define PATH_TO_CURSOR_PLAYER_2     // !EMPTY
-#define PATH_TO_CURSOR_SHOP         // !EMPTY
+#define PATH_TO_CURSOR_PLAYER_1 // !EMPTY
+#define PATH_TO_CURSOR_PLAYER_2 // !EMPTY
+#define PATH_TO_CURSOR_SHOP     // !EMPTY
 
-    // Below are the struct
+// Below are the struct
 
 // Struct defining a set of Texture with their corresponding SDL_Rect
 
-typedef struct renderCell{
-    SDL_Texture *texture;      // texture
-    SDL_Rect *src;             // Source SDL_Rect (which is copied) ! Will maybe never be used, but could be for said improvement
-    SDL_Rect *dst;             // Destination SDL_Rect (where it's copied)
-    struct renderCell *next;   // A pointer onto the next RenderCell (struct renderCell* == RenderCell_Struct* == RenderCell)
-}RenderCell_Struct;
+typedef struct renderCell
+{
+    SDL_Texture *texture;    // texture
+    SDL_Rect *src;           // Source SDL_Rect (which is copied) ! Will maybe never be used, but could be for said improvement
+    SDL_Rect *dst;           // Destination SDL_Rect (where it's copied)
+    struct renderCell *next; // A pointer onto the next RenderCell (struct renderCell* == RenderCell_Struct* == RenderCell)
+} RenderCell_Struct;
 
 typedef RenderCell_Struct *RenderCell;
 
 // Struct containing all the information needed to display the game
 
-typedef struct gameRender{
+typedef struct gameRender
+{
     SDL_Renderer *renderer;
     RenderCell *humanArrayStruct;
     RenderCell *alienArrayStruct;
     RenderCell mowerStruct;
-    RenderCell uiStruct;                // Need to be careful, and know which case is what
+    RenderCell uiStruct; // Need to be careful, and know which case is what
     int screen_width;
     int screen_height;
 } GameRender_Struct;
 
 typedef GameRender_Struct *GameRender;
 
-    // Function inside RenderSDL.c
+// Function inside RenderSDL.c
 
 void GameRender_InitSDL(Uint32 flags);
 
@@ -78,49 +79,38 @@ void GameRender_GetDisplayMode(int *width, int *height);
 
 SDL_Window *GameRender_CreateWindow(int *width, int *height);
 
-    // allocation function of the GameRender
+// allocation function of the GameRender
 
 RenderCell GameRender_InitRenderCell();
 
 RenderCell GameRender_CreateEmptyRenderCell();
 
-RenderCell* GameRender_InitArrayRenderCell();
+RenderCell *GameRender_InitArrayRenderCell();
 
 GameRender GameRender_InitGameRender(SDL_Window *window, int width, int height);
 
-    // free function of the GameRender
+// free function of the GameRender
 
-void GameRender_FreeAllRenderCell(RenderCell* renderCell);
+void GameRender_FreeAllRenderCell(RenderCell *renderCell);
 
-void GameRender_FreeArrayRenderCell(RenderCell** arrayRenderCell);
+void GameRender_FreeArrayRenderCell(RenderCell **arrayRenderCell);
 
-void GameRender_FreeGameRender(GameRender* gameRender);
+void GameRender_FreeGameRender(GameRender *gameRender);
 
-    // Manipulatioon function
+// chain manipulation function
 
 int GameRender_AddRenderCell(RenderCell firstRC, RenderCell newRC);
 
 void GameRender_DeleteRenderCell(RenderCell *firstRC, int id);
 
-int GameRender_AddEntityToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element, 
-            int posX, int posY, double widthRatio, double heightRatio);
+int GameRender_AddEntityToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element,
+                                     int posX, int posY, double widthRatio, double heightRatio);
 
-    // Main function used elsewhere
+int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX);
 
-int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode);
+void GameRender_MoveEntity(RenderCell rcToMove, Entity *entity);
 
-void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender);
-
-void GameRender_Update(GameRender gameRender);
-
-    // Debugging function 
-
-void GameRender_Test();
-
-    // Function under developpement
-
-// when an entity is added
-int GameRender_AddEntity(GameRender gameRender,int idEntity,  int lane, int posX );
+void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity);
 
 // When an entity move
 //void GameRender_UpdatePosition(int lane, int id);
