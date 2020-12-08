@@ -22,7 +22,7 @@
 #define PATH_TO_HUMAN_3 "src\\img\\Human_Tank.bmp"
 #define PATH_TO_HUMAN_4 "src\\img\\Human_Range.bmp"
 
-#define PATH_TO_MOWER_0 "src\\img\\" // EMPTY
+#define PATH_TO_MOWER_0 "src\\img\\Mower.bmp" // EMPTY
 
 // The real id is negative
 #define PATH_TO_ALIEN_1 "src\\img\\Alien_Melee.bmp"
@@ -112,13 +112,14 @@ void GameRender_MoveEntity(RenderCell rcToMove, Entity *entity);
 
 void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity);
 
-// When an entity move
-//void GameRender_UpdatePosition(int lane, int id);
+// mathematical function
 
-// When an entity dies
-//void GameRender_DeleteEntity(int lane, int id);
+int GameRender_FindPosX(int screenW, int posX);
 
-// When a mower is used
-//void GameRender_DeleteMower(int lane);
+int GameRender_FindPosY(int screenH, int lane);
+
+double GameRender_FindWidthRatio(int screenW);
+
+double GameRender_FindHeightRatio(int screenH);
 
 #endif

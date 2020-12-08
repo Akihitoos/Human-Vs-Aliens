@@ -23,6 +23,15 @@ int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode)
         fprintf(stderr, "Error in GameRender_Init : %s\n", SDL_GetError());
         error = -1;
     }
+    else
+    {
+        for (int i = 0; i < LANE; i++)
+        {
+            GameRender_AddEntity(*gameRender, 0, i, 0);
+        }
+
+        GameRender_AddEntityToRenderCell((*gameRender)->uiStruct, (*gameRender)->renderer, PATH_TO_PLAYGROUND, 0, 0, 1.2, 1);
+    }
 
     return error;
 }
@@ -53,9 +62,15 @@ void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntit
     {
         GameRender_UpdateRcEntity(gameRender, &(gameRender->humanArrayStruct[i]), humanArrayEntity[i]);
         GameRender_UpdateRcEntity(gameRender, &(gameRender->alienArrayStruct[i]), alienArrayEntity[i]);
-    }
 
-    // !update mower!
+        //Update mowerStruct
+        if (mowerArray[i] == 0 && gameRender->mowerStruct[i].texture != NULL)
+        {
+            SDL_DestroyTexture(gameRender->mowerStruct[i].texture);
+            gameRender->mowerStruct[i].texture = NULL;
+            GameRender_FreeAllRenderCell(&(gameRender->alienArrayStruct[i]));
+        }
+    }
 
     // ! Update the position of the cursor / Waiting for that part to be finished !
 }
@@ -111,10 +126,9 @@ void GameRender_Test()
     mower_array = init_mower_tab();
 
     add_entity(alien_array, -1, 0, 0);
+    add_entity(human_array, 1, 0, 100);
 
     GameRender_Init(&windowMain, &gameRender, 0);
-
-    GameRender_AddEntityToRenderCell(gameRender->uiStruct, gameRender->renderer, PATH_TO_PLAYGROUND, 0, 0, 1.2, 1);
 
     for (int i = 0; i < 120; i++)
     {

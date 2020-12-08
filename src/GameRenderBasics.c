@@ -411,7 +411,7 @@ int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX
         This function is a bit experimental / tricky, because of the equation. 
         We need to find where to position and redimension the different element, so
         I tried to find some equation allowing it, depending on the screen.
-        Maybe do it depending on the 
+        Maybe do it depending on the actual lane texture
     */
     char *pathToEntity = NULL;
     SDL_Renderer *renderer = NULL;
@@ -425,7 +425,6 @@ int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX
 
     if (idEntity >= -3 && idEntity <= 4)
     {
-
         pathToEntity = GameRender_GetPathFromId(idEntity);
         renderer = gameRender->renderer;
         screenW = gameRender->screen_width;
@@ -438,19 +437,18 @@ int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX
         // width of entity is  : screen width * 5/96
         // height of entity is : screen height * 1/20
 
-        y = (screenH * 7 / 96) + lane * (screenH * 23 / 384);
-
-        widthRatio = (((double)screenW * 5. / 96.) / ((double)SIZE_ENTITY / 4.));
+        widthRatio = GameRender_FindWidthRatio(screenW);
         heightRatio = widthRatio;
+
+        x = GameRender_FindPosX(screenW, x);
+        y = GameRender_FindPosY(screenH, lane);
 
         if (idEntity < 0)
         { //It's an alien
-            x = (screenW * 13 / 96) + 1000 * (screenW * 35 / 48);
             rcLane = gameRender->alienArrayStruct[lane];
         }
         else if (idEntity > 0)
         { //It's an human
-            x = (screenW * 13 / 96) + posX * (screenW * 35 / 48);
             rcLane = gameRender->humanArrayStruct[lane];
         }
         else
@@ -459,6 +457,34 @@ int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX
         }
         GameRender_AddEntityToRenderCell(rcLane, renderer, pathToEntity, x, y, widthRatio, heightRatio);
     }
+}
+
+int GameRender_FindPosY(int screenH, int lane)
+{
+    int y = 0;
+    y = (screenH * 7 / 96) + lane * (screenH * 23 / 384);
+    return y;
+}
+
+int GameRender_FindPosX(int screenW, int posX)
+{
+    int x = 0;
+    x = (screenW * 13 / 96) + 1000 * (screenW * 35 / 48);
+    return x;
+}
+
+double GameRender_FindWidthRatio(int screenW)
+{
+    double heightRatio = 0.0;
+    heightRatio = (((double)screenW * 5. / 96.) / ((double)SIZE_ENTITY / 4.));
+    return heightRatio;
+}
+
+double GameRender_FindHeightRatio(int screenH)
+{
+    double heightRatio = 0.0;
+    heightRatio = 0;
+    return heightRatio;
 }
 
 /*
