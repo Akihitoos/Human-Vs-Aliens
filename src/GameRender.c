@@ -25,12 +25,7 @@ int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode)
     }
     else
     {
-        for (int i = 0; i < LANE; i++)
-        {
-            GameRender_AddEntity(*gameRender, 0, i, 0);
-        }
-
-        GameRender_AddEntityToRenderCell((*gameRender)->uiStruct, (*gameRender)->renderer, PATH_TO_PLAYGROUND, 0, 0, 1.2, 1);
+        error = GameRender_PrepareGame(*gameRender, gameMode);
     }
 
     return error;
@@ -58,21 +53,27 @@ void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender)
 void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntity, Entity **alienArrayEntity,
                                  Mower mowerArray, Shop *humanShop, Shop *alienShop)
 {
+    // Update the entity array
     for (int i = 0; i < LANE; i++)
     {
         GameRender_UpdateRcEntity(gameRender, &(gameRender->humanArrayStruct[i]), humanArrayEntity[i]);
         GameRender_UpdateRcEntity(gameRender, &(gameRender->alienArrayStruct[i]), alienArrayEntity[i]);
 
-        //Update mowerStruct
-        if (mowerArray[i] == 0 && gameRender->mowerStruct[i].texture != NULL)
+        // Update mowerStruct
+        RenderCell temp = GameRender_GetI_RC(gameRender->mowerStruct, i);
+
+        if (mowerArray[i] == false && temp->texture != NULL)
         {
-            SDL_DestroyTexture(gameRender->mowerStruct[i].texture);
-            gameRender->mowerStruct[i].texture = NULL;
+            SDL_DestroyTexture(temp->texture);
+            temp->texture = NULL;
+            printf("[RENDER] Mower texture destroyed : %d\n", i);
+
             GameRender_FreeAllRenderCell(&(gameRender->alienArrayStruct[i]));
+            printf("[RENDER] AlienArrayStruct[%d] free\n", i);
         }
     }
 
-    // ! Update the position of the cursor / Waiting for that part to be finished !
+    // Update the position of the cursor
 }
 
 /*
@@ -100,9 +101,11 @@ void GameRender_UpdateRender(GameRender gameRender)
     }
 
     // Update the Mower
-    for (RenderCell pointer = gameRender->mowerStruct; pointer != NULL && pointer->texture != NULL; pointer = pointer->next)
+    for (RenderCell pointer = gameRender->mowerStruct; pointer != NULL; pointer = pointer->next)
     {
-        SDL_RenderCopy(gameRender->renderer, pointer->texture, NULL, pointer->dst);
+        if(pointer->texture != NULL){
+            SDL_RenderCopy(gameRender->renderer, pointer->texture, NULL, pointer->dst);
+        }
     }
 
     SDL_RenderPresent(gameRender->renderer);
@@ -126,21 +129,43 @@ void GameRender_Test()
     mower_array = init_mower_tab();
 
     add_entity(alien_array, -1, 0, 0);
-    add_entity(human_array, 1, 0, 100);
+    add_entity(alien_array, -1, 0, 0);
+    add_entity(alien_array, -1, 0, 0);
+    add_entity(alien_array, -1, 0, 0);
+    add_entity(alien_array, -1, 1, 0);
+    add_entity(alien_array, -1, 2, 0);
+    add_entity(alien_array, -1, 4, 0);
+    add_entity(human_array, 1, 0, 200);
+    add_entity(human_array, 1, 1, 200);
+    add_entity(human_array, 1, 2, 200);
+    add_entity(human_array, 1, 4, 200);
 
     GameRender_Init(&windowMain, &gameRender, 0);
 
-    for (int i = 0; i < 120; i++)
+    for (int i = 0; i < 300; i++)
     {
-
+        if(i == 10){
+            add_entity(human_array, 1, 0, 400);
+            add_entity(alien_array, -1, 1, 0);
+        }
+        if( i == 20 ){
+            
+            add_entity(alien_array, -1, 2, 0);
+            add_entity(human_array, 1, 3, 400);
+        }
+        if( i == 30){
+            add_entity(human_array, 1, 3, 200);
+            add_entity(alien_array, -1, 3, 0);
+        }
         update(human_array, alien_array, mower_array);
         GameRender_UpdateGameRender(gameRender, human_array, alien_array, mower_array, NULL, NULL);
         GameRender_UpdateRender(gameRender);
 
-        SDL_Delay(100);
+        SDL_Delay(50);
     }
 
     free_array(&human_array, &alien_array);
     free_mower(&mower_array);
     GameRender_FreeEverything(&windowMain, &gameRender);
+    printf("Finis\n");
 }

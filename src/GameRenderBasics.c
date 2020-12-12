@@ -222,30 +222,29 @@ int GameRender_AddRenderCell(RenderCell firstRC, RenderCell newRC)
 }
 
 /*
-    Only delete one element of the chain, depending on his position.
+    Only delete one element of the chain, depending on pointer.
     id 0 = first element, id nb-1 or superior = last element
 */
-void GameRender_DeleteRenderCell(RenderCell *firstRC, int id)
+void GameRender_DeleteRenderCell(RenderCell *firstRC, RenderCell *toDelete)
 {
-    RenderCell toDelete = *firstRC;
-    RenderCell previous = toDelete;
+    RenderCell temp = *firstRC;
+    RenderCell previous = temp;
     RenderCell next = NULL;
-    int i = 0;
 
     // find the Element and keep the previous one
-    for (; toDelete->next != NULL && i < id; previous = toDelete, toDelete = toDelete->next, i++)
-        ;
+    for (; temp != *toDelete; previous = temp, temp = temp->next);
 
     // if the RenderCell in parameters isn't already null
-    if (toDelete != NULL)
+    if (temp != NULL)
     {
-        // next = NULL if toDelete is in last
-        next = toDelete->next;
-        SDL_DestroyTexture(toDelete->texture);
-        free(toDelete->src);
-        free(toDelete->dst);
-        free(toDelete);
-        if (id == 0)
+        // next = NULL if temp is in last
+        next = temp->next;
+        SDL_DestroyTexture(temp->texture);
+        free(temp->src);
+        free(temp->dst);
+        free(temp);
+        toDelete = NULL;
+        if (temp == *firstRC)
         { // if we're in the first position
             *firstRC = next;
         }
@@ -258,13 +257,6 @@ void GameRender_DeleteRenderCell(RenderCell *firstRC, int id)
     {
         fprintf(stderr, "Trying to delete a NULL RenderCell\n");
     }
-}
-
-/*
-    Not done yet
-*/
-void GameRender_ModifyRenderCell()
-{
 }
 
 /*
@@ -309,7 +301,7 @@ RenderCell GameRender_CreateEmptyRenderCell()
     widthRatio and heightRatio dictate if we resize the image. There will conversion between int and double,
     but it won't cause problem
 */
-int GameRender_AddEntityToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element, int posX, int posY, double widthRatio, double heightRatio)
+int GameRender_AddElementToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element, int posX, int posY, double widthRatio, double heightRatio)
 {
     int error = 0;
     SDL_Surface *surface = NULL;
@@ -400,6 +392,48 @@ char *GameRender_GetPathFromId(int id)
 }
 
 /*
+    return 0 on succes or negative if error. Only used in init
+    Add every ui element needed in the game, depending on the gameMode
+    gameMode 0 = solo, gameMode 1 = multiplayer
+*/
+int GameRender_PrepareGame(GameRender gameRender, int gameMode)
+{
+    int error = 0;
+
+    // I. Ui
+
+    // add the background
+    //GameRender_AddElementToRenderCell(uiCell, renderer, PATH_TO_BACKGROUND, 0, 0, 1.2, 1.0);
+
+    // add the playground
+    error = GameRender_AddElementToRenderCell(gameRender->uiStruct, gameRender->renderer, PATH_TO_PLAYGROUND, 0, 0, 0.94, 1.0);
+
+    // add the shop and the cursor
+    switch (gameMode)
+    {
+    case 0:
+        break;
+    case 1:
+        break;
+    default:
+        fprintf(stderr, "Wrong gameMode, not loading the shop\n");
+        break;
+    }
+
+    // II. Mower 
+
+    for(int i = 0; i < LANE; i ++){
+        error = GameRender_AddElementToRenderCell(gameRender->mowerStruct, gameRender->renderer, PATH_TO_MOWER_0, 0, i*150, 0.4, 0.4);
+        
+    }
+
+    if( error < 0){
+        fprintf(stderr, "Error in Prepare Game\n");
+    }
+    return error;
+}
+
+/*
     return 0 on succes or negative if error.
     Takes the GameRender, the lane where the entity is added, and his id(for his texture)
     id : {1,2,3,4} for human, id : {-1,-2,-3} for alien, id : {0} for mower
@@ -407,15 +441,8 @@ char *GameRender_GetPathFromId(int id)
 */
 int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX)
 {
-    /*
-        This function is a bit experimental / tricky, because of the equation. 
-        We need to find where to position and redimension the different element, so
-        I tried to find some equation allowing it, depending on the screen.
-        Maybe do it depending on the actual lane texture
-    */
     char *pathToEntity = NULL;
     SDL_Renderer *renderer = NULL;
-    RenderCell rcLane = NULL;
     int x = 0;
     int y = 0;
     double widthRatio = 0;
@@ -437,54 +464,27 @@ int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX
         // width of entity is  : screen width * 5/96
         // height of entity is : screen height * 1/20
 
-        widthRatio = GameRender_FindWidthRatio(screenW);
+        widthRatio =  0.4; //(((double)screenW * 5. / 96.) / ((double)SIZE_ENTITY / 4.));
         heightRatio = widthRatio;
 
-        x = GameRender_FindPosX(screenW, x);
-        y = GameRender_FindPosY(screenH, lane);
+        x = posX;
+        y = lane * 150; //(screenH * 7 / 96) + lane * (screenH * 23 / 384);
 
         if (idEntity < 0)
         { //It's an alien
-            rcLane = gameRender->alienArrayStruct[lane];
+            if(gameRender->alienArrayStruct[lane] == NULL){
+                gameRender->alienArrayStruct[lane] = GameRender_CreateEmptyRenderCell();
+            }
+            GameRender_AddElementToRenderCell(gameRender->alienArrayStruct[lane], renderer, pathToEntity, x, y, widthRatio, heightRatio);
         }
         else if (idEntity > 0)
         { //It's an human
-            rcLane = gameRender->humanArrayStruct[lane];
+        if(gameRender->humanArrayStruct[lane] == NULL){
+                gameRender->humanArrayStruct[lane] = GameRender_CreateEmptyRenderCell();
+            }
+            GameRender_AddElementToRenderCell(gameRender->humanArrayStruct[lane], renderer, pathToEntity, x, y, widthRatio, heightRatio);
         }
-        else
-        { //It's a mower
-            rcLane = gameRender->humanArrayStruct[lane];
-        }
-        GameRender_AddEntityToRenderCell(rcLane, renderer, pathToEntity, x, y, widthRatio, heightRatio);
     }
-}
-
-int GameRender_FindPosY(int screenH, int lane)
-{
-    int y = 0;
-    y = (screenH * 7 / 96) + lane * (screenH * 23 / 384);
-    return y;
-}
-
-int GameRender_FindPosX(int screenW, int posX)
-{
-    int x = 0;
-    x = (screenW * 13 / 96) + 1000 * (screenW * 35 / 48);
-    return x;
-}
-
-double GameRender_FindWidthRatio(int screenW)
-{
-    double heightRatio = 0.0;
-    heightRatio = (((double)screenW * 5. / 96.) / ((double)SIZE_ENTITY / 4.));
-    return heightRatio;
-}
-
-double GameRender_FindHeightRatio(int screenH)
-{
-    double heightRatio = 0.0;
-    heightRatio = 0;
-    return heightRatio;
 }
 
 /*
@@ -498,6 +498,31 @@ void GameRender_MoveEntity(RenderCell rcToMove, Entity *entity)
     rcToMove->dst->x = newX;
 }
 
+RenderCell GameRender_GetLastRC(GameRender gameRender, int id, int lane){
+
+    RenderCell pointer = NULL;
+
+    if(id > 0){
+        pointer = gameRender->humanArrayStruct[lane];
+    } else if(id < 0) {
+        pointer = gameRender->alienArrayStruct[lane];
+    } else {
+        printf("Wrong id in GetLastRC");
+    }
+
+    for(; pointer->next != NULL; pointer = pointer->next);
+
+    return pointer;
+}
+
+RenderCell GameRender_GetI_RC(RenderCell firstRC, int id){
+    RenderCell temp = firstRC;
+    for(int i = 0; i < id; i++){
+        temp = temp->next;
+    }
+    return temp;
+}
+
 /*
     Take the gameRender, a chain of entity with its corresponding chain en RenderCell, browse every element
     and make the different adjustment
@@ -506,21 +531,65 @@ void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entit
 {
     Entity *tempEntity = firstEntity;
     RenderCell tempRC = *firstRC;
-    for (int i = 0; tempEntity != NULL; tempEntity = tempEntity->next, tempRC = tempRC->next, i++)
+    RenderCell previous = NULL;
+
+    for (; tempEntity != NULL; tempEntity = tempEntity->next, tempRC = tempRC->next)
     {
-        // Check if the entity is dead
-        if (tempEntity->hp < 0)
+        if (tempEntity != NULL && tempEntity->hp < 0)
         {
-            GameRender_DeleteRenderCell(firstRC, i);
+            printf("[RENDER] Free RenderCell\n");
+            GameRender_DeleteRenderCell(firstRC, &tempRC);
         }
 
-        // Check if the entity was created
-        if ((tempRC->texture == NULL || tempRC == NULL) && tempEntity != NULL)
+        if ((tempRC == NULL || tempRC->texture == NULL ) && tempEntity != NULL)
         {
+            printf("[RENDER] Adding RenderCell\n");
             GameRender_AddEntity(gameRender, tempEntity->id, tempEntity->lane, tempEntity->position);
+            tempRC = GameRender_GetLastRC(gameRender, tempEntity->id, tempEntity->lane);
         }
 
-        // Make the entity move
-        GameRender_MoveEntity(tempRC, tempEntity);
+        if (tempRC != NULL)
+        {
+            GameRender_MoveEntity(tempRC, tempEntity);
+        }
     }
+}
+
+/*
+    Display a specific RenderCell
+*/
+void GameRender_DisplayRenderCell(RenderCell rcToDisplay)
+{
+    int i = 0;
+    printf("---------------------------------------------\n");
+    for(RenderCell p = rcToDisplay; p != NULL; p = p->next, i++)
+    {
+        printf("%d. x : %d | y : %d | texture : %p\n",i , p->dst->x, p->dst->y, p->texture);
+    }
+}
+
+/*
+    Display everything
+*/
+void GameRender_DisplayEverything(GameRender gameRender)
+{
+    printf("---------------------------------------------\n");
+    printf("gameRender : %p | width : %d | height : %d\n", gameRender, gameRender->screen_width, gameRender->screen_height);
+    printf("renderer : %p\n", gameRender->renderer);
+    printf("---------------------------------------------\n");
+    printf("humanArrayStruct : %p\n", gameRender->humanArrayStruct);
+    for(int i = 0; i < LANE; i++){
+        GameRender_DisplayRenderCell(gameRender->humanArrayStruct[i]);
+    } 
+    printf("---------------------------------------------\n");
+    printf("alienArrayStruct : %p\n", gameRender->humanArrayStruct);
+    for(int i = 0; i < LANE; i++){
+        GameRender_DisplayRenderCell(gameRender->alienArrayStruct[i]);
+    } 
+    printf("---------------------------------------------\n");
+    printf("mowerStruct : %p\n", gameRender->mowerStruct);
+    GameRender_DisplayRenderCell(gameRender->mowerStruct);
+    printf("---------------------------------------------\n");
+    printf("uiStruct : %p\n", gameRender->mowerStruct);
+    GameRender_DisplayRenderCell(gameRender->uiStruct);
 }

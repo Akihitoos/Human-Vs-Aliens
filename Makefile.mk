@@ -28,4 +28,4 @@ src/GameRender.o: src/GameRender.c
 	$(CC) -c src/GameRender.c -o src/GameRender.o $(LIB)
 
 clear:
-	del src/*.o
+	del src\\*.o

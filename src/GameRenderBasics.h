@@ -21,7 +21,6 @@
 #define PATH_TO_HUMAN_2 "src\\img\\Human_Range.bmp"
 #define PATH_TO_HUMAN_3 "src\\img\\Human_Tank.bmp"
 #define PATH_TO_HUMAN_4 "src\\img\\Human_Range.bmp"
-
 #define PATH_TO_MOWER_0 "src\\img\\Mower.bmp" // EMPTY
 
 // The real id is negative
@@ -32,7 +31,7 @@
 // It will show the lane, the box where the entity will be placed etc.
 
 //#define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
-#define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
+#define PATH_TO_PLAYGROUND "C:\\Principal\\Programme\\S3\\devApp\\TP\\Human-Vs-Aliens\\src\\img\\Playground.bmp"
 
 // It will be a box where the entity choosable will appear
 #define PATH_TO_SHOP_UI // !EMPTY
@@ -101,25 +100,31 @@ void GameRender_FreeGameRender(GameRender *gameRender);
 
 int GameRender_AddRenderCell(RenderCell firstRC, RenderCell newRC);
 
-void GameRender_DeleteRenderCell(RenderCell *firstRC, int id);
+void GameRender_DeleteRenderCell(RenderCell *firstRC, RenderCell *toDelete);
 
-int GameRender_AddEntityToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element,
-                                     int posX, int posY, double widthRatio, double heightRatio);
+char *GameRender_GetPathFromId(int id);
+
+int GameRender_AddElementToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element,
+                                      int posX, int posY, double widthRatio, double heightRatio);
+
+int GameRender_PrepareGame(GameRender gameRender, int gameMode);
 
 int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX);
 
 void GameRender_MoveEntity(RenderCell rcToMove, Entity *entity);
 
+RenderCell GameRender_GetLastRC(GameRender gameRender, int id, int lane);
+
+RenderCell GameRender_GetI_RC(RenderCell firstRC, int id);
+
+// Debugging function
+
+void GameRender_DisplayRenderCell(RenderCell rcToDisplay);
+
+void GameRender_DisplayEverything(GameRender gameRender);
+
+// Function under test
+
 void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity);
-
-// mathematical function
-
-int GameRender_FindPosX(int screenW, int posX);
-
-int GameRender_FindPosY(int screenH, int lane);
-
-double GameRender_FindWidthRatio(int screenW);
-
-double GameRender_FindHeightRatio(int screenH);
 
 #endif

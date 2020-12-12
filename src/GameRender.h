@@ -21,7 +21,7 @@ void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntit
 
 void GameRender_UpdateRender(GameRender gameRender);
 
-// Debugging function
+// debugging function
 
 void GameRender_Test();
 
