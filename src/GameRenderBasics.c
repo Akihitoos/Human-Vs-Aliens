@@ -420,11 +420,11 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode, Shop *humanShop,
                 gameRender->uiStruct,
                 gameRender->renderer,
                 PATH_TO_CURSOR_PLAYER_1, 200, 38, 0.9, 0.9);
+                printf("%p\n", gameRender->uiStruct->next->next);
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
                 PATH_TO_CURSOR_SHOP, gameRender->screen_width/2 - 290, 605, 1, 1);
-
         break;
     case 1:
         error = GameRender_AddElementToRenderCell(
@@ -594,16 +594,34 @@ void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entit
 
 void GameRender_UpdateCursor(GameRender gameRender, Shop *humanShop, Shop *alienShop, int gameMode)
 {
-    RenderCell pointer = NULL;
+    RenderCell pointer = gameRender->uiStruct;
     switch(gameMode){
         case 0:
-            pointer = gameRender->uiStruct->next->next;
-            for(; pointer != NULL; pointer = pointer->next){
-                pointer->dst->x = 0;
-                pointer->dst->y = 0;
+            for(int i = 0; i < 2; i++){
+                pointer = pointer->next;
             }
+                pointer->dst->x = 200 + humanShop->cursor_position;
+                pointer->dst->y = 40 + humanShop->cursor_lane;
+                pointer = pointer->next;
+
+                pointer->dst->x = humanShop->cursor_shop;
             break;
         case 1:
+            for(int i = 0; i < 3; i++){
+                pointer = pointer->next;
+            }
+                pointer->dst->x = 200 + humanShop->cursor_position;
+                pointer->dst->y = 40 + humanShop->cursor_lane;
+                pointer = pointer->next;
+
+                pointer->dst->x = 500 + alienShop->cursor_position;
+                pointer->dst->y = 40 +alienShop->cursor_lane;
+                pointer = pointer->next;
+
+                pointer->dst->x = gameRender->screen_width/2 - 690 + humanShop->cursor_shop;
+                pointer = pointer->next;
+
+                pointer->dst->x = gameRender->screen_width/2 + 110 + alienShop->cursor_shop;
             break;
         default:
             fprintf(stderr, "Wrong gameMode\n");

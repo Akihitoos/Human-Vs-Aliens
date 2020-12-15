@@ -74,7 +74,9 @@ void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntit
     }
 
     // Update the position of the cursor
+    
     GameRender_UpdateCursor(gameRender, humanShop, alienShop, gameMode);
+    
 
 }
 
@@ -159,9 +161,14 @@ void GameRender_Test()
     Entity **alien_array = NULL;
     Mower mower_array = NULL;
 
+    Shop *humanShop = NULL;
+    Shop *alienShop = NULL;
+
     human_array = init_entity_array();
     alien_array = init_entity_array();
     mower_array = init_mower_tab();
+    humanShop = init_shop_human();
+    alienShop = init_shop_alien();
 
     add_entity(alien_array, -1, 0, 0);
     add_entity(alien_array, -1, 0, 0);
@@ -174,13 +181,13 @@ void GameRender_Test()
     add_entity(human_array, 1, 1, 200);
     add_entity(human_array, 1, 2, 200);
     add_entity(human_array, 1, 4, 200);
-
-    GameRender_Init(&windowMain, &gameRender, gameMode, NULL, NULL);
+    
+    GameRender_Init(&windowMain, &gameRender, gameMode, humanShop, alienShop);
 
     for (int i = 0; i < 300; i++)
     {
         update(human_array, alien_array, mower_array);
-        GameRender_UpdateGameRender(gameRender, human_array, alien_array, mower_array, NULL, NULL, gameMode);
+        GameRender_UpdateGameRender(gameRender, human_array, alien_array, mower_array, humanShop, alienShop, gameMode);
         GameRender_UpdateRender(gameRender, gameMode);
 
         SDL_Delay(50);

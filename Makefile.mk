@@ -1,7 +1,7 @@
 LIB = -I include -L lib -lmingw32 -lSDL2main -lSDL2
 CC = gcc
 BIN = bin/HumanVsAliens
-OBJECTS = src/main.o src/Entity.o src/interaction.o src/mower.o src/update.o src/GameRenderBasics.o src/GameRender.o
+OBJECTS = src/main.o src/Entity.o src/interaction.o src/mower.o src/update.o src/GameRenderBasics.o src/GameRender.o src/Shop.o
 
 all: $(OBJECTS) 
 	$(CC) -o $(BIN) $(OBJECTS) $(LIB)
@@ -26,6 +26,9 @@ src/GameRenderBasics.o: src/GameRenderBasics.c
 	
 src/GameRender.o: src/GameRender.c
 	$(CC) -c src/GameRender.c -o src/GameRender.o $(LIB)
+
+src/Shop.o: src/Shop.c
+	$(CC) -c src/Shop.c -o src/Shop.o $(LIB)
 
 clear:
 	del src\\*.o
