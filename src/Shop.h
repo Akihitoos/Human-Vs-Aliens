@@ -1,12 +1,14 @@
 #ifndef SHOP_H
 #define SHOP_H
 
-#include "Entity.h"
+#include "interaction.h"
 
 //For a same index, we consider an unique entity
 typedef struct Shop
 {
-    int cursor;
+    int cursor_shop;
+    int cursor_lane;
+    int cursor_position;
     int *id;
     int *tab_cost;
 }Shop;
@@ -18,5 +20,13 @@ Shop* init_shop_alien();
 // Free a shop memory
 void free_shop(Shop **shop);
 
+//Cursor moves function
+void shop_navigate(Shop *shop, int move);
+
+//returns True if the selected entity can be bought
+bool can_buy(Shop* shop, Player* player);
+
+// [Debug] displays the cursors
+void afficher_curseurs(Shop* shop);
 
 #endif
