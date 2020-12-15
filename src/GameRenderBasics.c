@@ -396,7 +396,7 @@ char *GameRender_GetPathFromId(int id)
     Add every ui element needed in the game, depending on the gameMode
     gameMode 0 = solo, gameMode 1 = multiplayer
 */
-int GameRender_PrepareGame(GameRender gameRender, int gameMode)
+int GameRender_PrepareGame(GameRender gameRender, int gameMode, Shop *humanShop, Shop *alienShop)
 {
     int error = 0;
 
@@ -406,14 +406,51 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
     //GameRender_AddElementToRenderCell(uiCell, renderer, PATH_TO_BACKGROUND, 0, 0, 1.2, 1.0);
 
     // add the playground
-    error = GameRender_AddElementToRenderCell(gameRender->uiStruct, gameRender->renderer, PATH_TO_PLAYGROUND, 0, 0, 0.94, 1.0);
+    error = GameRender_AddElementToRenderCell(gameRender->uiStruct, gameRender->renderer, PATH_TO_PLAYGROUND, 0, 0, 0.94, 0.75);
 
     // add the shop and the cursor
     switch (gameMode)
     {
     case 0:
+        error = GameRender_AddElementToRenderCell(
+                gameRender->uiStruct,
+                gameRender->renderer,
+                PATH_TO_SHOP_UI, gameRender->screen_width/2 - 300, 600, 1, 1);
+        error = GameRender_AddElementToRenderCell(
+                gameRender->uiStruct,
+                gameRender->renderer,
+                PATH_TO_CURSOR_PLAYER_1, 200, 38, 0.9, 0.9);
+        error = GameRender_AddElementToRenderCell(
+                gameRender->uiStruct,
+                gameRender->renderer,
+                PATH_TO_CURSOR_SHOP, gameRender->screen_width/2 - 290, 605, 1, 1);
+
         break;
     case 1:
+        error = GameRender_AddElementToRenderCell(
+                gameRender->uiStruct,
+                gameRender->renderer,
+                PATH_TO_SHOP_UI, gameRender->screen_width/2 - 700, 600, 1, 1);
+        error = GameRender_AddElementToRenderCell(
+                gameRender->uiStruct,
+                gameRender->renderer,
+                PATH_TO_SHOP_UI, gameRender->screen_width/2 + 100, 600, 1, 1);
+        error = GameRender_AddElementToRenderCell(
+                gameRender->uiStruct,
+                gameRender->renderer,
+                PATH_TO_CURSOR_PLAYER_1, 200, 40, 0.9, 0.9);
+        error = GameRender_AddElementToRenderCell(
+                gameRender->uiStruct,
+                gameRender->renderer,
+                PATH_TO_CURSOR_PLAYER_2, 1400, 40, 0.9, 0.9);
+        error = GameRender_AddElementToRenderCell(
+                gameRender->uiStruct,
+                gameRender->renderer,
+                PATH_TO_CURSOR_SHOP, gameRender->screen_width/2 - 690, 605, 1, 1);
+        error = GameRender_AddElementToRenderCell(
+                gameRender->uiStruct,
+                gameRender->renderer,
+                PATH_TO_CURSOR_SHOP, gameRender->screen_width/2 + 110, 605, 1, 1);
         break;
     default:
         fprintf(stderr, "Wrong gameMode, not loading the shop\n");
@@ -423,7 +460,7 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
     // II. Mower 
 
     for(int i = 0; i < LANE; i ++){
-        error = GameRender_AddElementToRenderCell(gameRender->mowerStruct, gameRender->renderer, PATH_TO_MOWER_0, 0, i*150, 0.4, 0.4);
+        error = GameRender_AddElementToRenderCell(gameRender->mowerStruct, gameRender->renderer, PATH_TO_MOWER_0, 0, i*100, 0.3, 0.3);
         
     }
 
@@ -464,11 +501,11 @@ int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX
         // width of entity is  : screen width * 5/96
         // height of entity is : screen height * 1/20
 
-        widthRatio =  0.4; //(((double)screenW * 5. / 96.) / ((double)SIZE_ENTITY / 4.));
+        widthRatio =  0.3; //(((double)screenW * 5. / 96.) / ((double)SIZE_ENTITY / 4.));
         heightRatio = widthRatio;
 
         x = posX;
-        y = lane * 150; //(screenH * 7 / 96) + lane * (screenH * 23 / 384);
+        y = lane * 100; //(screenH * 7 / 96) + lane * (screenH * 23 / 384);
 
         if (idEntity < 0)
         { //It's an alien
@@ -552,6 +589,25 @@ void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entit
         {
             GameRender_MoveEntity(tempRC, tempEntity);
         }
+    }
+}
+
+void GameRender_UpdateCursor(GameRender gameRender, Shop *humanShop, Shop *alienShop, int gameMode)
+{
+    RenderCell pointer = NULL;
+    switch(gameMode){
+        case 0:
+            pointer = gameRender->uiStruct->next->next;
+            for(; pointer != NULL; pointer = pointer->next){
+                pointer->dst->x = 0;
+                pointer->dst->y = 0;
+            }
+            break;
+        case 1:
+            break;
+        default:
+            fprintf(stderr, "Wrong gameMode\n");
+            break;
     }
 }
 

@@ -34,12 +34,12 @@
 #define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
 
 // It will be a box where the entity choosable will appear
-#define PATH_TO_SHOP_UI // !EMPTY
+#define PATH_TO_SHOP_UI "src\\img\\Shop.bmp"
 
 // Path to the different cursor used in the game
-#define PATH_TO_CURSOR_PLAYER_1 // !EMPTY
-#define PATH_TO_CURSOR_PLAYER_2 // !EMPTY
-#define PATH_TO_CURSOR_SHOP     // !EMPTY
+#define PATH_TO_CURSOR_PLAYER_1 "src\\img\\Cursor_Human_Player.bmp"
+#define PATH_TO_CURSOR_PLAYER_2 "src\\img\\Cursor_Alien_Player.bmp"
+#define PATH_TO_CURSOR_SHOP "src\\img\\Cursor_Shop.bmp"
 
 // Below are the struct
 
@@ -107,7 +107,7 @@ char *GameRender_GetPathFromId(int id);
 int GameRender_AddElementToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element,
                                       int posX, int posY, double widthRatio, double heightRatio);
 
-int GameRender_PrepareGame(GameRender gameRender, int gameMode);
+int GameRender_PrepareGame(GameRender gameRender, int gameMode, Shop *humanShop, Shop *alienShop);
 
 int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX);
 
@@ -126,5 +126,7 @@ void GameRender_DisplayEverything(GameRender gameRender);
 // Function under test
 
 void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity);
+
+void GameRender_UpdateCursor(GameRender gameRender, Shop *shopHuman, Shop *shopAlien, int gameMode);
 
 #endif
