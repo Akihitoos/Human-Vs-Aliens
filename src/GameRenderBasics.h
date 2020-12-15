@@ -31,7 +31,7 @@
 // It will show the lane, the box where the entity will be placed etc.
 
 //#define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
-#define PATH_TO_PLAYGROUND "C:\\Principal\\Programme\\S3\\devApp\\TP\\Human-Vs-Aliens\\src\\img\\Playground.bmp"
+#define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
 
 // It will be a box where the entity choosable will appear
 #define PATH_TO_SHOP_UI // !EMPTY
