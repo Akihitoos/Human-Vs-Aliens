@@ -18,7 +18,7 @@ Player* init_alien_player(int gamemode){
     Player* alien = (Player*)malloc(sizeof(Player));
 
     if(alien == NULL){
-        fprint(stderr, "Error in init_alien_player\n");
+        fprintf(stderr, "Error in init_alien_player\n");
         return NULL;
     }
   
