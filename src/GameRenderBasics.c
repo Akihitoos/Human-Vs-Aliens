@@ -604,7 +604,7 @@ void GameRender_UpdateCursor(GameRender gameRender, Shop *humanShop, Shop *alien
                 pointer->dst->y = 40 + humanShop->cursor_lane;
                 pointer = pointer->next;
 
-                pointer->dst->x = humanShop->cursor_shop;
+                pointer->dst->x = gameRender->screen_width/2 - 290 + humanShop->cursor_shop;
             break;
         case 1:
             for(int i = 0; i < 3; i++){

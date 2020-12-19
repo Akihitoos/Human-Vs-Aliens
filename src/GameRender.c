@@ -148,6 +148,48 @@ void GameRender_UpdateRender(GameRender gameRender, int gameMode)
     SDL_RenderClear(gameRender->renderer);
 }
 
+int Event_GetCursorMovement(){
+    SDL_Event movementEvent;
+    int movementValue = 0;
+    while(SDL_PollEvent(&movementEvent)){
+        if(movementEvent.type == SDL_KEYDOWN){
+            switch(movementEvent.key.keysym.sym){
+                case SDLK_q:
+                    movementValue = -1;
+                    break;
+                case SDLK_LEFT:
+                    movementValue = -1;
+                    break;
+                case SDLK_d:
+                    movementValue = 1;
+                    break;
+                case SDLK_RIGHT:
+                    movementValue = 1;
+                    break;
+                case SDLK_z:
+                    movementValue = 2;
+                    break;
+                case SDLK_UP:
+                    movementValue = 2;
+                    break;
+                case SDLK_s:
+                    movementValue = -2;
+                    break;
+                case SDLK_DOWN:
+                    movementValue = -2;
+                    break;
+                case SDLK_a:
+                    movementValue = 3;
+                    break;
+                case SDLK_e:
+                    movementValue = -3;
+                    break;
+            }
+        }
+    }
+    return movementValue;
+}
+
 /*
     A function to test the others
 */
@@ -155,7 +197,7 @@ void GameRender_Test()
 {
     GameRender gameRender = NULL;
     SDL_Window *windowMain = NULL;
-    int width = 0, height = 0, gameMode = 1;
+    int width = 0, height = 0, gameMode = 0;
 
     Entity **human_array = NULL;
     Entity **alien_array = NULL;
@@ -190,7 +232,7 @@ void GameRender_Test()
         GameRender_UpdateGameRender(gameRender, human_array, alien_array, mower_array, humanShop, alienShop, gameMode);
         GameRender_UpdateRender(gameRender, gameMode);
 
-        SDL_Delay(50);
+        SDL_Delay(100);
     }
 
     free_array(&human_array, &alien_array);

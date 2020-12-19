@@ -21,7 +21,7 @@
 #define PATH_TO_HUMAN_2 "src\\img\\Human_Range.bmp"
 #define PATH_TO_HUMAN_3 "src\\img\\Human_Tank.bmp"
 #define PATH_TO_HUMAN_4 "src\\img\\Human_Range.bmp"
-#define PATH_TO_MOWER_0 "src\\img\\Mower.bmp" // EMPTY
+#define PATH_TO_MOWER_0 "src\\img\\Mower.bmp"
 
 // The real id is negative
 #define PATH_TO_ALIEN_1 "src\\img\\Alien_Melee.bmp"
@@ -29,8 +29,6 @@
 #define PATH_TO_ALIEN_3 "src\\img\\Alien_Tank.bmp"
 
 // It will show the lane, the box where the entity will be placed etc.
-
-//#define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
 #define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
 
 // It will be a box where the entity choosable will appear
@@ -117,16 +115,16 @@ RenderCell GameRender_GetLastRC(GameRender gameRender, int id, int lane);
 
 RenderCell GameRender_GetI_RC(RenderCell firstRC, int id);
 
+void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity);
+
+void GameRender_UpdateCursor(GameRender gameRender, Shop *shopHuman, Shop *shopAlien, int gameMode);
+
 // Debugging function
 
 void GameRender_DisplayRenderCell(RenderCell rcToDisplay);
 
 void GameRender_DisplayEverything(GameRender gameRender);
 
-// Function under test
 
-void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity);
-
-void GameRender_UpdateCursor(GameRender gameRender, Shop *shopHuman, Shop *shopAlien, int gameMode);
 
 #endif
