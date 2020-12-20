@@ -18,6 +18,7 @@ int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode, S
     // Allocate the gameRender
     *gameRender = GameRender_InitGameRender(*window, width, height);
 
+
     if (*window == NULL || *gameRender == NULL)
     {
         fprintf(stderr, "Error in GameRender_Init : %s\n", SDL_GetError());
@@ -87,20 +88,16 @@ void GameRender_UpdateRender(GameRender gameRender, int gameMode)
     // Update the backgroung and the shop
     RenderCell uiPointer = gameRender->uiStruct;
     int i = 0;
-    switch(gameMode){
-        case 0:
-            for (i = 0; uiPointer != NULL && i < 2; uiPointer = uiPointer->next, i++){
-                SDL_RenderCopy(gameRender->renderer, uiPointer->texture, NULL, uiPointer->dst);
-            }
-            break;
-        case 1:
-            for (i = 0; uiPointer != NULL && i < 3; uiPointer = uiPointer->next, i++){
-                SDL_RenderCopy(gameRender->renderer, uiPointer->texture, NULL, uiPointer->dst);
-            }
-            break;
-        default:
-            fprintf(stderr, "Wrong gameMode\n");
-            break;
+    if(gameMode > 0 && gameMode <= 3){
+        for (i = 0; uiPointer != NULL && i < 2; uiPointer = uiPointer->next, i++){
+            SDL_RenderCopy(gameRender->renderer, uiPointer->texture, NULL, uiPointer->dst);
+        }
+    } else if (gameMode == 0) {
+        for (i = 0; uiPointer != NULL && i < 3; uiPointer = uiPointer->next, i++){
+            SDL_RenderCopy(gameRender->renderer, uiPointer->texture, NULL, uiPointer->dst);
+        }
+    } else {   
+        fprintf(stderr, "Wrong gameMode\n");
     }
     
     // Update the Entity
@@ -126,20 +123,16 @@ void GameRender_UpdateRender(GameRender gameRender, int gameMode)
 
     //update the cursor
     
-    switch(gameMode){
-        case 0:
-            for (; uiPointer != NULL; uiPointer = uiPointer->next){
-                SDL_RenderCopy(gameRender->renderer, uiPointer->texture, NULL, uiPointer->dst);
-            }
-            break;
-        case 1:
-            for (; uiPointer != NULL; uiPointer = uiPointer->next){
-                SDL_RenderCopy(gameRender->renderer, uiPointer->texture, NULL, uiPointer->dst);
-            }
-            break;
-        default:
-            fprintf(stderr, "Wrong gameMode\n");
-            break;
+    if( gameMode > 0 && gameMode <= 3 ){
+        for (; uiPointer != NULL; uiPointer = uiPointer->next){
+            SDL_RenderCopy(gameRender->renderer, uiPointer->texture, NULL, uiPointer->dst);
+        }
+    } else if ( gameMode == 0) {
+        for (; uiPointer != NULL; uiPointer = uiPointer->next){
+            SDL_RenderCopy(gameRender->renderer, uiPointer->texture, NULL, uiPointer->dst);
+        }
+    } else {
+        fprintf(stderr, "Wrong gameMode\n");
     }
     
     SDL_SetRenderDrawColor(gameRender->renderer, 255, 255, 255, 255);
@@ -147,95 +140,64 @@ void GameRender_UpdateRender(GameRender gameRender, int gameMode)
     SDL_RenderClear(gameRender->renderer);
 }
 
-void EventHandler(int *moveHuman, int *moveAlien){
-    SDL_Event movementEvent;
-    while(SDL_PollEvent(&movementEvent)){
-        if(movementEvent.type == SDL_KEYDOWN){
-            switch(movementEvent.key.keysym.sym){
+void EventHandler(Entity **humanArray, Entity **alienArray, Shop *humanShop, Shop *alienShop, Player* alienPlayer, Player* humanPlayer, int gameMode){
+    SDL_Event event;
+    int moveHuman = 0, moveAlien = 0;
+    while(SDL_PollEvent(&event)){
+        if(event.type == SDL_KEYDOWN){
+            switch(event.key.keysym.sym){
                 case SDLK_q:
-                    *moveHuman = -1;
-                    break;
-                case SDLK_LEFT:
-                    *moveAlien = -1;
-                    break;
-                case SDLK_d:
-                    *moveHuman = 1;
+                    moveHuman = -1;
                     break;
                 case SDLK_RIGHT:
-                    *moveAlien = 1;
+                    moveAlien = -1;
                     break;
-                case SDLK_z:
-                    *moveHuman = 2;
+                case SDLK_d:
+                    moveHuman = 1;
                     break;
-                case SDLK_UP:
-                    *moveAlien = 2;
+                case SDLK_LEFT:
+                    moveAlien = 1;
                     break;
                 case SDLK_s:
-                    *moveHuman = -2;
+                    moveHuman = 2;
                     break;
                 case SDLK_DOWN:
-                    *moveAlien = -2;
+                    moveAlien = 2;
+                    break;
+                case SDLK_z:
+                    moveHuman = -2;
+                    break;
+                case SDLK_UP:
+                    moveAlien = -2;
                     break;
                 case SDLK_a:
-                    *moveHuman = 3;
+                    moveHuman = -3;
                     break;
                 case SDLK_e:
-                    *moveHuman = -3;
+                    moveHuman = +3;
                     break;
                 case SDLK_SPACE:
+                    if(can_buy(humanShop, humanPlayer)){
+                        add_entity(humanArray, humanShop->id[humanShop->cursor_shop - 1], humanShop->cursor_lane, humanShop->cursor_position);
+                        humanPlayer->golds -= (double)humanShop->tab_cost[humanShop->cursor_shop - 1];
+                    }
                     break;
+                case SDLK_RETURN:
+                    if(gameMode == 0){
+                        if (can_buy(alienShop, alienPlayer)){
+                            add_entity(alienArray, alienShop->id[ (- alienShop->cursor_shop) -1], alienShop->cursor_lane, alienShop->cursor_position);
+                            alienPlayer->golds -= (double)alienShop->tab_cost[(- alienShop->cursor_shop) -1];
+                        }
+                    }
+                    break; 
+                default:
+                    break;
+            }   
+            if (moveAlien != 0){
+                shop_navigate(alienShop, moveAlien);
+            } else if (moveHuman != 0){
+                shop_navigate(humanShop, moveHuman);
             }
         }
     }
-}
-
-/*
-    A function to test the others
-*/
-void GameRender_Test()
-{
-    GameRender gameRender = NULL;
-    SDL_Window *windowMain = NULL;
-    int width = 0, height = 0, gameMode = 0;
-
-    Entity **human_array = NULL;
-    Entity **alien_array = NULL;
-    Mower mower_array = NULL;
-
-    Shop *humanShop = NULL;
-    Shop *alienShop = NULL;
-
-    human_array = init_entity_array();
-    alien_array = init_entity_array();
-    mower_array = init_mower_tab();
-    humanShop = init_shop_human();
-    alienShop = init_shop_alien();
-
-    add_entity(alien_array, -1, 0, 0);
-    add_entity(alien_array, -1, 0, 0);
-    add_entity(alien_array, -1, 0, 0);
-    add_entity(alien_array, -1, 0, 0);
-    add_entity(alien_array, -1, 1, 0);
-    add_entity(alien_array, -1, 2, 0);
-    add_entity(alien_array, -1, 4, 0);
-    add_entity(human_array, 1, 0, 200);
-    add_entity(human_array, 1, 1, 200);
-    add_entity(human_array, 1, 2, 200);
-    add_entity(human_array, 1, 4, 200);
-    
-    GameRender_Init(&windowMain, &gameRender, gameMode, humanShop, alienShop);
-
-    for (int i = 0; i < 300; i++)
-    {
-        update(human_array, alien_array, mower_array);
-        GameRender_UpdateGameRender(gameRender, human_array, alien_array, mower_array, humanShop, alienShop, gameMode);
-        GameRender_UpdateRender(gameRender, gameMode);
-
-        SDL_Delay(100);
-    }
-
-    free_array(&human_array, &alien_array);
-    free_mower(&mower_array);
-    GameRender_FreeEverything(&windowMain, &gameRender);
-    printf("Finis\n");
 }

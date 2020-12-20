@@ -21,10 +21,6 @@ void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntit
 
 void GameRender_UpdateRender(GameRender gameRender, int gameMode);
 
-void EventHandler(int *moveHuman, int *moveAlien);
-
-// debugging function
-
-void GameRender_Test();
+void EventHandler(Entity **humanArray, Entity **alienArray, Shop *humanShop, Shop *alienShop, Player* alienPlayer, Player* humanPlayer, int gameMode);
 
 #endif

@@ -73,7 +73,7 @@ void add_entity(Entity **simpleArray, int id, int lane, int pos)
     p = create_entity_on_id(id, lane, pos);
     if(p!=NULL){
         add_entity_to_lane(simpleArray,lane,p);      //input lanes from 0 to 4 
-    }else{fprintf(stderr,"Malloc error");}
+    }else{fprintf(stderr,"Malloc error in add_entity\n");}
     
 }
 

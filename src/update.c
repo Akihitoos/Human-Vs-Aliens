@@ -58,14 +58,14 @@ int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, 
 }
 
 
-int update (Entity ** human_array, Entity ** alien_array, Mower mower_array)
+int update (Entity ** human_array, Entity ** alien_array, Player *human_player, Player *alien_player, Mower mower_array)
 {
     int game_ended = 0;
     Entity* humanTemp=NULL;
     Entity* alienTemp=NULL;
 
-    //human_player->golds += (human_player->gold_per_second/REFRESH_RATE);
-    //alien_player->golds += (alien_player->gold_per_second/REFRESH_RATE);
+    human_player->golds += (human_player->gold_per_second/REFRESH_RATE);
+    alien_player->golds += (alien_player->gold_per_second/REFRESH_RATE);
     for (int lane = 0; lane <LANE; lane++){
 
         humanTemp=*(human_array+lane);

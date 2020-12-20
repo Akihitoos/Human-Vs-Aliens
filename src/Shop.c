@@ -88,14 +88,14 @@ void shop_navigate(Shop *shop, int move){
             break;
         case 3:
             shop->cursor_position += 100;
-            if (shop->cursor_position > 1000){
+            if (shop->cursor_position >= 1000){
                 shop->cursor_position = 0;
             }
             break;
         case -3:
             shop->cursor_position -= 100;
             if (shop->cursor_position < 0){
-                shop->cursor_position = 1000;
+                shop->cursor_position = 900;
             }
             break;
         default:
@@ -125,8 +125,8 @@ void shop_navigate(Shop *shop, int move){
             shop->cursor_lane -=1;
             if (shop->cursor_lane <0){
                 shop->cursor_lane = 4;
-                break;
             }
+            break;
         default:
             break;
         }
@@ -138,9 +138,14 @@ bool can_buy(Shop* shop, Player* player){
         return (player->golds >= shop->tab_cost[shop->cursor_shop-1]);
     }
     if (shop->id[0] < 0){
-        return (player->golds >= shop->tab_cost[-(shop->cursor_shop+1)]);
+        return (player->golds >= shop->tab_cost[-(shop->cursor_shop)]);
     }
     return false;
+}
+
+void randomize_choice_ai(Shop* alien){
+    alien->cursor_lane = rand()%5;
+    alien->cursor_shop = - ((rand()%3) + 1); 
 }
 
 void afficher_curseurs(Shop* shop){

@@ -20,7 +20,7 @@
 #define PATH_TO_HUMAN_1 "src\\img\\Human_Melee.bmp"
 #define PATH_TO_HUMAN_2 "src\\img\\Human_Range.bmp"
 #define PATH_TO_HUMAN_3 "src\\img\\Human_Tank.bmp"
-#define PATH_TO_HUMAN_4 "src\\img\\Human_Range.bmp"
+#define PATH_TO_HUMAN_4 "src\\img\\Human_Factory.bmp"
 #define PATH_TO_MOWER_0 "src\\img\\Mower.bmp"
 
 // The real id is negative
@@ -64,6 +64,7 @@ typedef struct gameRender
     RenderCell uiStruct; // Need to be careful, and know which case is what
     int screen_width;
     int screen_height;
+    float ratio;
 } GameRender_Struct;
 
 typedef GameRender_Struct *GameRender;
@@ -103,7 +104,7 @@ void GameRender_DeleteRenderCell(RenderCell *firstRC, RenderCell *toDelete);
 char *GameRender_GetPathFromId(int id);
 
 int GameRender_AddElementToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element,
-                                      int posX, int posY, double widthRatio, double heightRatio);
+                                      int posX, int posY, float widthRatio, float heightRatio);
 
 int GameRender_PrepareGame(GameRender gameRender, int gameMode);
 

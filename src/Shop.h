@@ -26,6 +26,8 @@ void shop_navigate(Shop *shop, int move);
 //returns True if the selected entity can be bought
 bool can_buy(Shop* shop, Player* player);
 
+void randomize_choice_ai(Shop* alien);
+
 // [Debug] displays the cursors
 void afficher_curseurs(Shop* shop);
 
