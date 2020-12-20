@@ -25,7 +25,7 @@ int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode, S
     }
     else
     {
-        error = GameRender_PrepareGame(*gameRender, gameMode, NULL, NULL);
+        error = GameRender_PrepareGame(*gameRender, gameMode);
     }
 
     return error;
@@ -76,7 +76,6 @@ void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntit
     // Update the position of the cursor
     
     GameRender_UpdateCursor(gameRender, humanShop, alienShop, gameMode);
-    
 
 }
 
@@ -148,46 +147,46 @@ void GameRender_UpdateRender(GameRender gameRender, int gameMode)
     SDL_RenderClear(gameRender->renderer);
 }
 
-int Event_GetCursorMovement(){
+void EventHandler(int *moveHuman, int *moveAlien){
     SDL_Event movementEvent;
-    int movementValue = 0;
     while(SDL_PollEvent(&movementEvent)){
         if(movementEvent.type == SDL_KEYDOWN){
             switch(movementEvent.key.keysym.sym){
                 case SDLK_q:
-                    movementValue = -1;
+                    *moveHuman = -1;
                     break;
                 case SDLK_LEFT:
-                    movementValue = -1;
+                    *moveAlien = -1;
                     break;
                 case SDLK_d:
-                    movementValue = 1;
+                    *moveHuman = 1;
                     break;
                 case SDLK_RIGHT:
-                    movementValue = 1;
+                    *moveAlien = 1;
                     break;
                 case SDLK_z:
-                    movementValue = 2;
+                    *moveHuman = 2;
                     break;
                 case SDLK_UP:
-                    movementValue = 2;
+                    *moveAlien = 2;
                     break;
                 case SDLK_s:
-                    movementValue = -2;
+                    *moveHuman = -2;
                     break;
                 case SDLK_DOWN:
-                    movementValue = -2;
+                    *moveAlien = -2;
                     break;
                 case SDLK_a:
-                    movementValue = 3;
+                    *moveHuman = 3;
                     break;
                 case SDLK_e:
-                    movementValue = -3;
+                    *moveHuman = -3;
+                    break;
+                case SDLK_SPACE:
                     break;
             }
         }
     }
-    return movementValue;
 }
 
 /*

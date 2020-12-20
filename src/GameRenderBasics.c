@@ -204,8 +204,7 @@ int GameRender_AddRenderCell(RenderCell firstRC, RenderCell newRC)
     { //If the RenderCell already contains something
 
         //Find the last RenderCell
-        for (; temp->next != NULL; temp = temp->next)
-            ;
+        for (; temp->next != NULL; temp = temp->next);
 
         if (newRC != NULL)
         {
@@ -396,7 +395,7 @@ char *GameRender_GetPathFromId(int id)
     Add every ui element needed in the game, depending on the gameMode
     gameMode 0 = solo, gameMode 1 = multiplayer
 */
-int GameRender_PrepareGame(GameRender gameRender, int gameMode, Shop *humanShop, Shop *alienShop)
+int GameRender_PrepareGame(GameRender gameRender, int gameMode)
 {
     int error = 0;
 
@@ -461,7 +460,6 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode, Shop *humanShop,
 
     for(int i = 0; i < LANE; i ++){
         error = GameRender_AddElementToRenderCell(gameRender->mowerStruct, gameRender->renderer, PATH_TO_MOWER_0, 0, i*100, 0.3, 0.3);
-        
     }
 
     if( error < 0){

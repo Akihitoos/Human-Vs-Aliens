@@ -21,7 +21,7 @@ void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntit
 
 void GameRender_UpdateRender(GameRender gameRender, int gameMode);
 
-int Event_GetCursorMovement();
+void EventHandler(int *moveHuman, int *moveAlien);
 
 // debugging function
 

@@ -105,7 +105,7 @@ char *GameRender_GetPathFromId(int id);
 int GameRender_AddElementToRenderCell(RenderCell renderCell, SDL_Renderer *renderer, char *path_to_element,
                                       int posX, int posY, double widthRatio, double heightRatio);
 
-int GameRender_PrepareGame(GameRender gameRender, int gameMode, Shop *humanShop, Shop *alienShop);
+int GameRender_PrepareGame(GameRender gameRender, int gameMode);
 
 int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX);
 
