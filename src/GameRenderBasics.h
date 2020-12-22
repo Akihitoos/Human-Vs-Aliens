@@ -17,30 +17,30 @@
 
 // The number is the id
 //#define PATH_TO_HUMAN_1 "src\\img\\Human_Melee.bmp"
-#define PATH_TO_HUMAN_1 "src\\img\\Human_Melee.bmp"
-#define PATH_TO_HUMAN_2 "src\\img\\Human_Range.bmp"
-#define PATH_TO_HUMAN_3 "src\\img\\Human_Tank.bmp"
-#define PATH_TO_HUMAN_4 "src\\img\\Human_Factory.bmp"
-#define PATH_TO_MOWER_0 "src\\img\\Mower.bmp"
+#define PATH_TO_HUMAN_1 "img\\Human_Melee.bmp"
+#define PATH_TO_HUMAN_2 "img\\Human_Range.bmp"
+#define PATH_TO_HUMAN_3 "img\\Human_Tank.bmp"
+#define PATH_TO_HUMAN_4 "img\\Human_Factory.bmp"
+#define PATH_TO_MOWER_0 "img\\Mower.bmp"
 
 // The real id is negative
-#define PATH_TO_ALIEN_1 "src\\img\\Alien_Melee.bmp"
-#define PATH_TO_ALIEN_2 "src\\img\\Alien_Range.bmp"
-#define PATH_TO_ALIEN_3 "src\\img\\Alien_Tank.bmp"
+#define PATH_TO_ALIEN_1 "img\\Alien_Melee.bmp"
+#define PATH_TO_ALIEN_2 "img\\Alien_Range.bmp"
+#define PATH_TO_ALIEN_3 "img\\Alien_Tank.bmp"
 
-#define PATH_TO_BACKGROUND "src\\img\\Background.bmp"
+#define PATH_TO_BACKGROUND "img\\Background.bmp"
 
 // It will show the lane, the box where the entity will be placed etc.
-#define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
+#define PATH_TO_PLAYGROUND "img\\Playground.bmp"
 
 // It will be a box where the entity choosable will appear
-#define PATH_TO_HUMAN_SHOP "src\\img\\Human_Shop.bmp"
-#define PATH_TO_ALIEN_SHOP "src\\img\\Alien_Shop.bmp"
+#define PATH_TO_HUMAN_SHOP "img\\Human_Shop.bmp"
+#define PATH_TO_ALIEN_SHOP "img\\Alien_Shop.bmp"
 
 // Path to the different cursor used in the game
-#define PATH_TO_CURSOR_PLAYER_1 "src\\img\\Cursor_Human_Player.bmp"
-#define PATH_TO_CURSOR_PLAYER_2 "src\\img\\Cursor_Alien_Player.bmp"
-#define PATH_TO_CURSOR_SHOP "src\\img\\Cursor_Shop.bmp"
+#define PATH_TO_CURSOR_PLAYER_1 "img\\Cursor_Human_Player.bmp"
+#define PATH_TO_CURSOR_PLAYER_2 "img\\Cursor_Alien_Player.bmp"
+#define PATH_TO_CURSOR_SHOP "img\\Cursor_Shop.bmp"
 
 // Below are the struct
 
