@@ -31,7 +31,7 @@ int CanMove(Entity* entity, Entity* target, Entity *entity_array){
         if(temp == entity){
             continue;
         }
-        if( temp->position <= entity->position && temp->position >= entity->position - worldUnitUntilYouCantMove){
+        if( temp->position < entity->position && temp->position >= entity->position - worldUnitUntilYouCantMove){
             canMove = 0;
             break;
         }
@@ -92,6 +92,7 @@ int update (Entity ** human_array, Entity ** alien_array, Player *human_player, 
 
     human_player->golds += (human_player->gold_per_second/REFRESH_RATE);
     alien_player->golds += (alien_player->gold_per_second/REFRESH_RATE);
+    
     for (int lane = 0; lane <LANE; lane++){
 
         humanTemp=*(human_array+lane);
