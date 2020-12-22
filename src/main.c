@@ -14,9 +14,6 @@ int main(int argc, char **argv)
     Player *alienPlayer;
     int gameMode = 0, gameEnded = 0, menu_end = 0,choice = 0;;
     
-
-
-
     //Menu
     do
     {
@@ -63,7 +60,8 @@ int main(int argc, char **argv)
                         }
                     }
                     gameEnded = update(humanArray, alienArray, humanPlayer, alienPlayer, mowerArray);
-                    GameRender_UpdateGameRender(gameRender, humanArray, alienArray, mowerArray, humanShop, alienShop, gameMode);
+                    GameRender_UpdateGameRender(gameRender, humanArray, alienArray, humanPlayer, alienPlayer,
+                                                mowerArray, humanShop, alienShop, gameMode);
                     GameRender_UpdateRender(gameRender, gameMode);
                     
                     SDL_Delay(100);

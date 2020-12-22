@@ -10,7 +10,7 @@ typedef bool *Mower;
 //Initialize a boolean tab fully True
 Mower init_mower_tab();
 
-//Returns 1 if mower activated, 0 if game ends. If return 1, free the corresponding lane, and disables the mower.
+//Returns 1 if mower activated, 2 if game ends. If return 1, free the corresponding lane, and disables the mower.
 int activate_mower(Mower tab, int lane, Entity **entity_tab);
 
 //Free the mower tab memory

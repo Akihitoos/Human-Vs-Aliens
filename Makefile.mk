@@ -1,6 +1,6 @@
-LIB = -I include -L lib -lmingw32 -lSDL2main -lSDL2
+LIB = -I include -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf
 CC = gcc
-BIN = bin/HumanVsAliens
+BIN = HumanVsAliens/HumanVsAliens
 OBJECTS = src/main.o src/Entity.o src/interaction.o src/mower.o src/update.o src/GameRenderBasics.o src/GameRender.o src/Shop.o src/Player.o
 
 all: $(OBJECTS) 

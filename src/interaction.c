@@ -189,6 +189,17 @@ void show_tab_order_by_asc(Entity* temp){
     }
 }
 
+int can_place(int posX, Entity *first_human_entity){
+    Entity *temp = first_human_entity;
+    int isPossible = 1;
+    for(; temp != NULL; temp = temp->next){
+        if( temp->position >= posX -10 && temp->position <= posX + 10){
+            isPossible = 0;
+        }
+    }
+    return isPossible;
+}
+
 void debugEntityArray(Entity **array)
 {
     //Affiche le pointeur du tableau

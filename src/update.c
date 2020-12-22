@@ -16,13 +16,39 @@ void commonUpdate(Entity **entity_array, int lane, Entity* entity)
 }
 
 /*
+    return 1 if the entity can move, 0 if not
+*/
+int CanMove(Entity* entity, Entity* target, Entity *entity_array){
+    int canMove = 1;
+    int worldUnitUntilYouCantMove = 50;
+    Entity *temp;
+
+    if( ( (target == NULL) || ( entity->position - ( entity->movement_speed/REFRESH_RATE) >= target->position) ) == 0){
+        canMove = 0;
+    }
+
+    for(temp = entity_array; temp != NULL; temp = temp->next){
+        if(temp == entity){
+            continue;
+        }
+        if( temp->position <= entity->position && temp->position >= entity->position - worldUnitUntilYouCantMove){
+            canMove = 0;
+            break;
+        }
+    }
+
+    return canMove;
+}
+
+/*
     Go through every entity of the entity_array, apply common update and attack if in range.
 */
 int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, int lane, Mower mower_array)
 {
-    int temp = 0;
+    int gameEnded = 0;
+    int mowerActivated = 0;
     Entity* target = NULL;
-    for(;*entity!=NULL;){
+    for(;*entity!=NULL && mowerActivated == 0;){
         // common update
         commonUpdate(entity_array, lane, *entity);
 
@@ -33,16 +59,16 @@ int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, 
             target = alien_search_human(*entity, ennemy_array[lane]);
 
             // move
-            if((target == NULL) || ((*entity)->position - ((*entity)->movement_speed/REFRESH_RATE) >= target->position) )
+            if( (CanMove(*entity, target, *entity_array) == 1) )
             {
                 move(*entity);
 
                 // Use the mower
             } 
             if((*entity)->position <= -50 ) {
-                temp = activate_mower(mower_array, lane, entity_array);
-                if (temp == 1){
-                    return temp;
+                mowerActivated = activate_mower(mower_array, lane, entity_array);
+                if(mowerActivated == 2){
+                    gameEnded = 1;
                 }
             }
         }
@@ -54,7 +80,7 @@ int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, 
 
         (*entity)=(*entity)->next;  // Make the loop reach his condition
     }
-    return temp;
+    return gameEnded;
 }
 
 

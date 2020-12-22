@@ -2,20 +2,18 @@
 
 /*
     Return 0 on success or a negative error on failure.
-    Create, allocate and load everything in order to initalise the game window, including the SDL
+    Create, allocate and load everything in order to initalise the game window, including the SDL 
+    and his extension for text TTF
     gameMode : 0 = solo, 1 = multiplayer
 */
 int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode, Shop *humanShop, Shop *alienShop)
 {
     int error = 0, width = 0, height = 0;
 
-    // initialise the SDL
     GameRender_InitSDL(SDL_INIT_VIDEO);
 
-    // Create the window
     *window = GameRender_CreateWindow(&width, &height);
 
-    // Allocate the gameRender
     *gameRender = GameRender_InitGameRender(*window, width, height);
 
 
@@ -37,14 +35,12 @@ int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode, S
 */
 void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender)
 {
-    // Free the gameRender
     GameRender_FreeGameRender(gameRender);
 
-    // destroy the window
     SDL_DestroyWindow(*window);
     *window = NULL;
 
-    // uninitialise the SDL ?
+    TTF_Quit();
     SDL_Quit();
 }
 
@@ -52,7 +48,8 @@ void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender)
     Take the gameRender and update/modify/add/remove when it's needed 
 */
 void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntity, Entity **alienArrayEntity,
-                                 Mower mowerArray, Shop *humanShop, Shop *alienShop, int gameMode)
+                                 Player* humanPlayer, Player* alienPlayer, Mower mowerArray, Shop *humanShop, 
+                                 Shop *alienShop, int gameMode)
 {
     // Update the entity array
     for (int i = 0; i < LANE; i++)
@@ -76,8 +73,7 @@ void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntit
 
     // Update the position of the cursor
     
-    GameRender_UpdateCursor(gameRender, humanShop, alienShop, gameMode);
-
+    GameRender_UpdateUi(gameRender, humanShop, alienShop, humanPlayer, alienPlayer, gameMode);
 }
 
 /*
@@ -176,7 +172,7 @@ void EventHandler(Entity **humanArray, Entity **alienArray, Shop *humanShop, Sho
                     moveHuman = +3;
                     break;
                 case SDLK_SPACE:
-                    if(can_buy(humanShop, humanPlayer)){
+                    if(can_buy(humanShop, humanPlayer) && can_place(humanShop->cursor_position, humanArray[humanShop->cursor_lane])){
                         add_entity(humanArray, humanShop->id[humanShop->cursor_shop - 1], humanShop->cursor_lane, humanShop->cursor_position);
                         humanPlayer->golds -= (double)humanShop->tab_cost[humanShop->cursor_shop - 1];
                     }

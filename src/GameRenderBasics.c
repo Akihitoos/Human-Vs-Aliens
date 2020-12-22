@@ -8,6 +8,10 @@ void GameRender_InitSDL(Uint32 flags)
         SDL_Log("Error SDL_Init %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
+    if(TTF_Init() == -1){
+        fprintf(stderr, "TTF_Init: %s\n", TTF_GetError());
+        exit(EXIT_FAILURE);
+    }
 }
 
 /*
@@ -272,7 +276,9 @@ RenderCell GameRender_CreateEmptyRenderCell()
     {
         new->texture = NULL;
         new->src = (SDL_Rect *)malloc(sizeof(SDL_Rect));
+        new->src->x = -500;
         new->dst = (SDL_Rect *)malloc(sizeof(SDL_Rect));
+        new->dst->x = -500;
         new->next = NULL;
 
         // if something is wrong, we free everything and return NULL
@@ -427,7 +433,9 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
     );
 
     // add the shop and the cursor
-    if( gameMode > 0 && gameMode <= 3 ){ // singleplayer
+    if (gameMode < 0 || gameMode > 3) {
+        fprintf(stderr, "Wrong gameMode, not finishing to load the UI\n");
+    } else {
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
@@ -436,7 +444,6 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
                 800 * gameRender->ratio, 
                 gameRender->ratio, 
                 gameRender->ratio);
-
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
@@ -453,30 +460,49 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
                 800 * gameRender->ratio,
                 gameRender->ratio, 
                 gameRender->ratio);
-                
-    } else if(gameMode == 0 ){ // multiplayer
-        error = GameRender_AddElementToRenderCell(
-                gameRender->uiStruct,
-                gameRender->renderer,
-                PATH_TO_HUMAN_SHOP, 
-                20 * gameRender->ratio,
-                800 * gameRender->ratio,
-                gameRender->ratio,
-                gameRender->ratio);
+        SDL_Color humanColor = {88, 214, 141};
+        RenderCell headerMoneyHuman = GameRender_CreateEmptyRenderCell();
+        headerMoneyHuman->dst->x = 680 * gameRender->ratio ;
+        headerMoneyHuman->dst->y = 800 * gameRender->ratio ;
+        headerMoneyHuman->dst->w = 250 * gameRender->ratio ;
+        headerMoneyHuman->dst->h = 62 * gameRender->ratio ;
+        GameRender_UpdateText(gameRender, headerMoneyHuman, "Money :", humanColor);
+        error = GameRender_AddRenderCell(gameRender->uiStruct, headerMoneyHuman);
+        headerMoneyHuman = NULL;
+
+        RenderCell moneyHuman = GameRender_CreateEmptyRenderCell();
+        moneyHuman->dst->x = 680 * gameRender->ratio ;
+        moneyHuman->dst->y = 862 * gameRender->ratio ;
+        moneyHuman->dst->w = 250 * gameRender->ratio ;
+        moneyHuman->dst->h = 62 * gameRender->ratio ;
+        error = GameRender_AddRenderCell(gameRender->uiStruct, moneyHuman);
+        moneyHuman = NULL;
+
+        RenderCell headerScoreHuman = GameRender_CreateEmptyRenderCell();
+        headerScoreHuman->dst->x = 680 * gameRender->ratio ;
+        headerScoreHuman->dst->y = 924 * gameRender->ratio ;
+        headerScoreHuman->dst->w = 250 * gameRender->ratio ;
+        headerScoreHuman->dst->h = 62 * gameRender->ratio ;
+        GameRender_UpdateText(gameRender, headerScoreHuman, "Score :", humanColor);
+        error = GameRender_AddRenderCell(gameRender->uiStruct, headerScoreHuman);
+        headerScoreHuman = NULL;
+
+        RenderCell scoreHuman = GameRender_CreateEmptyRenderCell();
+        scoreHuman->dst->x = 680 * gameRender->ratio ;
+        scoreHuman->dst->y = 986 * gameRender->ratio ;
+        scoreHuman->dst->w = 250 * gameRender->ratio ;
+        scoreHuman->dst->h = 62 * gameRender->ratio ;
+        error = GameRender_AddRenderCell(gameRender->uiStruct, scoreHuman);
+        scoreHuman = NULL;
+    }
+
+    if(gameMode == 0){
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
                 PATH_TO_ALIEN_SHOP, 
                 1250 * gameRender->ratio, 
                 800 * gameRender->ratio, 
-                gameRender->ratio, 
-                gameRender->ratio);
-        error = GameRender_AddElementToRenderCell(
-                gameRender->uiStruct,
-                gameRender->renderer,
-                PATH_TO_CURSOR_PLAYER_1, 
-                200 * gameRender->ratio, 
-                20 * gameRender->ratio, 
                 gameRender->ratio, 
                 gameRender->ratio);
         error = GameRender_AddElementToRenderCell(
@@ -491,20 +517,45 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
                 gameRender->uiStruct,
                 gameRender->renderer,
                 PATH_TO_CURSOR_SHOP, 
-                20 * gameRender->ratio,
-                800 * gameRender->ratio,
-                gameRender->ratio, 
-                gameRender->ratio);
-        error = GameRender_AddElementToRenderCell(
-                gameRender->uiStruct,
-                gameRender->renderer,
-                PATH_TO_CURSOR_SHOP, 
                 1250 * gameRender->ratio, 
                 800 * gameRender->ratio, 
                 gameRender->ratio, 
                 gameRender->ratio);
-    } else {
-        fprintf(stderr, "Wrong gameMode, not loading the shop\n");
+
+        SDL_Color alienColor = {130, 224, 170};
+        RenderCell headerMoneyAlien = GameRender_CreateEmptyRenderCell();
+        headerMoneyAlien->dst->x = 1000 * gameRender->ratio ;
+        headerMoneyAlien->dst->y = 800 * gameRender->ratio ;
+        headerMoneyAlien->dst->w = 250 * gameRender->ratio ;
+        headerMoneyAlien->dst->h = 62 * gameRender->ratio ;
+        GameRender_UpdateText(gameRender, headerMoneyAlien, "Money :", alienColor);
+        error = GameRender_AddRenderCell(gameRender->uiStruct, headerMoneyAlien);
+        headerMoneyAlien = NULL;
+
+        RenderCell moneyAlien = GameRender_CreateEmptyRenderCell();
+        moneyAlien->dst->x = 1000 * gameRender->ratio ;
+        moneyAlien->dst->y = 862 * gameRender->ratio ;
+        moneyAlien->dst->w = 250 * gameRender->ratio ;
+        moneyAlien->dst->h = 62 * gameRender->ratio ;
+        error = GameRender_AddRenderCell(gameRender->uiStruct, moneyAlien);
+        moneyAlien = NULL;
+
+        RenderCell headerScoreAlien = GameRender_CreateEmptyRenderCell();
+        headerScoreAlien->dst->x = 1000 * gameRender->ratio ;
+        headerScoreAlien->dst->y = 924 * gameRender->ratio ;
+        headerScoreAlien->dst->w = 250 * gameRender->ratio ;
+        headerScoreAlien->dst->h = 62 * gameRender->ratio ;
+        GameRender_UpdateText(gameRender, headerScoreAlien, "Score :", alienColor);
+        error = GameRender_AddRenderCell(gameRender->uiStruct, headerScoreAlien);
+        headerScoreAlien = NULL;
+
+        RenderCell scoreAlien = GameRender_CreateEmptyRenderCell();
+        scoreAlien->dst->x = 1000 * gameRender->ratio ;
+        scoreAlien->dst->y = 986 * gameRender->ratio ;
+        scoreAlien->dst->w = 250 * gameRender->ratio ;
+        scoreAlien->dst->h = 62 * gameRender->ratio ;
+        error = GameRender_AddRenderCell(gameRender->uiStruct, scoreAlien);
+        scoreAlien = NULL;
     }
 
     // II. Mower 
@@ -636,40 +687,80 @@ void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entit
     }
 }
 
-void GameRender_UpdateCursor(GameRender gameRender, Shop *humanShop, Shop *alienShop, int gameMode)
+void GameRender_UpdateText(GameRender gameRender, RenderCell scoreCell, char *textToDisplay, SDL_Color color){
+    TTF_Font *font;
+    int newWidth = 0, newHeight = 0;
+
+    font = TTF_OpenFont(PATH_TO_FONT, 48);
+    if(!font){
+        printf("TTF_OpenFont: %s\n", TTF_GetError());
+    }
+
+    SDL_Surface *text_surface = NULL;
+
+    if(!(text_surface = TTF_RenderText_Solid(font, textToDisplay, color))){
+        fprintf(stderr, "GameRender_UpdateMoney, TTF_RenderText_Solid: %s\n", TTF_GetError());
+    } else {
+        scoreCell->texture = SDL_CreateTextureFromSurface(gameRender->renderer, text_surface);
+
+        SDL_QueryTexture(scoreCell->texture, NULL, NULL, &newWidth, &newHeight);
+        scoreCell->dst->w =newWidth * gameRender->ratio;
+        scoreCell->dst->h =newHeight * gameRender->ratio;
+
+
+        SDL_FreeSurface(text_surface); 
+    }
+
+    TTF_CloseFont(font);
+    font = NULL;
+}
+
+void GameRender_UpdateUi(GameRender gameRender, Shop *humanShop, Shop *alienShop, Player* humanPlayer, Player* alienPlayer, int gameMode)
 {
     RenderCell pointer = gameRender->uiStruct;
     
-    if ( gameMode > 0 && gameMode <= 3 ){
+    if (gameMode < 0 || gameMode > 3) {
+        fprintf(stderr, "Wrong gameMode, not finishing to load the UI\n");
+    } else {
         for(int i = 0; i < 3; i++){
             pointer = pointer->next;
         }
-        
         pointer->dst->x = 200 * gameRender->ratio + humanShop->cursor_position * 1.5 * gameRender->ratio;
         pointer->dst->y = 20 * gameRender->ratio + (humanShop->cursor_lane * 150) * gameRender->ratio;
         pointer = pointer->next;
 
         pointer->dst->x = 20 * gameRender->ratio + (humanShop->cursor_shop -1) * 162 * gameRender->ratio;
+        pointer = pointer->next->next;
         
-    } else if(gameMode == 0) {
-        for(int i = 0; i < 4; i++){
-            pointer = pointer->next;
-        }
-        
-        pointer->dst->x = 200 * gameRender->ratio + humanShop->cursor_position * 1.5 * gameRender->ratio;
-        pointer->dst->y = 20 * gameRender->ratio + (humanShop->cursor_lane * 150) * gameRender->ratio;
-        pointer = pointer->next;
+        SDL_Color humanColor = {93, 173, 226};
+        char textToDisplay[50];
+        sprintf(textToDisplay, "%d", (int)humanPlayer->golds);  
+        GameRender_UpdateText(gameRender, pointer, textToDisplay, humanColor);
+        pointer = pointer->next->next;
+
+        sprintf(textToDisplay, "%d", humanPlayer->score);
+        GameRender_UpdateText(gameRender, pointer, textToDisplay, humanColor);
+    }
+
+    if(gameMode == 0){
+        pointer = pointer->next->next;
 
         pointer->dst->y = 20 * gameRender->ratio + alienShop->cursor_lane * 150 * gameRender->ratio;
         pointer = pointer->next;
 
-        pointer->dst->x = 20 * gameRender->ratio + (humanShop->cursor_shop -1) * 162 * gameRender->ratio;
-        pointer = pointer->next;
-
         pointer->dst->x = 1250 * gameRender->ratio + (-alienShop->cursor_shop -1) * 162 * gameRender->ratio;
-    } else {
-        fprintf(stderr, "Wrong gameMode\n");
+        pointer = pointer->next->next;
+
+        SDL_Color alienColor = {130, 224, 170};
+        char textToDisplay[50];
+        sprintf(textToDisplay, "%d", (int)alienPlayer->golds);  
+        GameRender_UpdateText(gameRender, pointer, textToDisplay, alienColor);
+        pointer = pointer->next->next;
+
+        sprintf(textToDisplay, "%d", alienPlayer->score);
+        GameRender_UpdateText(gameRender, pointer, textToDisplay, alienColor);
     }
+
 }
 
 /*

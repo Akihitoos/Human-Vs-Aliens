@@ -6,6 +6,7 @@
 #define GAME_RENDER_BASICS_H
 
 #include <SDL.h>
+#include <SDL_ttf.h>
 #include "interaction.h" // Get the constant LANE
 #include "Shop.h"
 
@@ -41,6 +42,9 @@
 #define PATH_TO_CURSOR_PLAYER_1 "img\\Cursor_Human_Player.bmp"
 #define PATH_TO_CURSOR_PLAYER_2 "img\\Cursor_Alien_Player.bmp"
 #define PATH_TO_CURSOR_SHOP "img\\Cursor_Shop.bmp"
+
+#define PATH_TO_FONT "consola.ttf"
+
 
 // Below are the struct
 
@@ -121,7 +125,9 @@ RenderCell GameRender_GetI_RC(RenderCell firstRC, int id);
 
 void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity);
 
-void GameRender_UpdateCursor(GameRender gameRender, Shop *shopHuman, Shop *shopAlien, int gameMode);
+void GameRender_UpdateText(GameRender gameRender, RenderCell scoreCell, char *textToDisplay, SDL_Color color);
+
+void GameRender_UpdateUi(GameRender gameRender, Shop *humanShop, Shop *alienShop, Player* humanPlayer, Player* alienPlayer, int gameMode);
 
 // Debugging function
 

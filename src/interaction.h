@@ -44,6 +44,9 @@ void attack (Entity *attacker, Entity *attacked);
 // Make the entity move depending on his movement_speed
 void move(Entity *alien);
 
+// return 0 if it isn't possible to place an entity on the specified lane, otherwise return 1
+int can_place(int posX, Entity *first_human_entity);
+
 // Function used to debug the Array (It prints every single elements of the array)
 void debugEntityArray(Entity **array);
 
