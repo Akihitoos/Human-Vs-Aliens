@@ -403,60 +403,121 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
     // I. Ui
 
     // add the background
-    //GameRender_AddElementToRenderCell(uiCell, renderer, PATH_TO_BACKGROUND, 0, 0, 1.2, 1.0);
+    error = GameRender_AddElementToRenderCell
+    (
+        gameRender->uiStruct, 
+        gameRender->renderer, 
+        PATH_TO_BACKGROUND, 
+        0, 
+        0, 
+        gameRender->ratio, 
+        gameRender->ratio
+    );
 
     // add the playground
-    error = GameRender_AddElementToRenderCell(gameRender->uiStruct, gameRender->renderer, PATH_TO_PLAYGROUND, 0, 0, gameRender->ratio, gameRender->ratio);
+    error = GameRender_AddElementToRenderCell
+    (
+        gameRender->uiStruct, 
+        gameRender->renderer, 
+        PATH_TO_PLAYGROUND, 
+        200 * gameRender->ratio, 
+        20 * gameRender->ratio, 
+        gameRender->ratio, 
+        gameRender->ratio
+    );
 
     // add the shop and the cursor
-    if( gameMode > 0 && gameMode <= 3 ){
+    if( gameMode > 0 && gameMode <= 3 ){ // singleplayer
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
-                PATH_TO_SHOP_UI, gameRender->screen_width/2 - 300, 600, gameRender->ratio, gameRender->ratio);
+                PATH_TO_HUMAN_SHOP, 
+                20 * gameRender->ratio, 
+                800 * gameRender->ratio, 
+                gameRender->ratio, 
+                gameRender->ratio);
+
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
-                PATH_TO_CURSOR_PLAYER_1, 200, 38, 0.9, 0.9);
+                PATH_TO_CURSOR_PLAYER_1, 
+                200 * gameRender->ratio, 
+                20 * gameRender->ratio, 
+                gameRender->ratio, 
+                gameRender->ratio);
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
-                PATH_TO_CURSOR_SHOP, gameRender->screen_width/2 - 290, 605, gameRender->ratio, gameRender->ratio);
-    } else if(gameMode == 0 ){
+                PATH_TO_CURSOR_SHOP, 
+                20 * gameRender->ratio, 
+                800 * gameRender->ratio,
+                gameRender->ratio, 
+                gameRender->ratio);
+                
+    } else if(gameMode == 0 ){ // multiplayer
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
-                PATH_TO_SHOP_UI, gameRender->screen_width/2 - 700, 600, gameRender->ratio, gameRender->ratio);
+                PATH_TO_HUMAN_SHOP, 
+                20 * gameRender->ratio,
+                800 * gameRender->ratio,
+                gameRender->ratio,
+                gameRender->ratio);
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
-                PATH_TO_SHOP_UI, gameRender->screen_width/2 + 100, 600, gameRender->ratio, gameRender->ratio);
+                PATH_TO_ALIEN_SHOP, 
+                1250 * gameRender->ratio, 
+                800 * gameRender->ratio, 
+                gameRender->ratio, 
+                gameRender->ratio);
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
-                PATH_TO_CURSOR_PLAYER_1, 200, 40, gameRender->ratio, gameRender->ratio);
+                PATH_TO_CURSOR_PLAYER_1, 
+                200 * gameRender->ratio, 
+                20 * gameRender->ratio, 
+                gameRender->ratio, 
+                gameRender->ratio);
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
-                PATH_TO_CURSOR_PLAYER_2, 1400, 40, gameRender->ratio, gameRender->ratio);
+                PATH_TO_CURSOR_PLAYER_2, 
+                1850 * gameRender->ratio, 
+                20 * gameRender->ratio, 
+                gameRender->ratio, 
+                gameRender->ratio);
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
-                PATH_TO_CURSOR_SHOP, gameRender->screen_width/2 - 690, 605, gameRender->ratio, gameRender->ratio);
+                PATH_TO_CURSOR_SHOP, 
+                20 * gameRender->ratio,
+                800 * gameRender->ratio,
+                gameRender->ratio, 
+                gameRender->ratio);
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
-                PATH_TO_CURSOR_SHOP, gameRender->screen_width/2 + 110, 605, gameRender->ratio, gameRender->ratio);
+                PATH_TO_CURSOR_SHOP, 
+                1250 * gameRender->ratio, 
+                800 * gameRender->ratio, 
+                gameRender->ratio, 
+                gameRender->ratio);
     } else {
         fprintf(stderr, "Wrong gameMode, not loading the shop\n");
     }
 
     // II. Mower 
     
-    float entityRatio = gameRender->ratio/2.666;
-    
     for(int i = 0; i < LANE; i ++){
-        error = GameRender_AddElementToRenderCell(gameRender->mowerStruct, gameRender->renderer, PATH_TO_MOWER_0, 0, i*100, entityRatio, entityRatio);
+        error = GameRender_AddElementToRenderCell(
+            gameRender->mowerStruct, 
+            gameRender->renderer, 
+            PATH_TO_MOWER_0, 
+            20 * gameRender->ratio, 
+            20 * gameRender->ratio + i*150 * gameRender->ratio, 
+            gameRender->ratio, 
+            gameRender->ratio);
     }
 
     if( error < 0){
@@ -487,31 +548,22 @@ int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX
         screenW = gameRender->screen_width;
         screenH = gameRender->screen_height;
 
-        // position are in int, but I expect the approximation to be usable
-        // position x of entity: (screen width * 13/96) + posX * (screen width * 35/48)
-        // position y of entity: (screen height * 7/96) + lane * (screen width * 5/96 + screen width * 1/128)
-        //                                                       ( screen width * 23/384 )
-        // width of entity is  : screen width * 5/96
-        // height of entity is : screen height * 1/20
-
-        x = posX;
-        y = lane * 100; //(screenH * 7 / 96) + lane * (screenH * 23 / 384);
-
-        float entityRatio = gameRender->ratio/2.66666;  //changes with the bmp file size
+        x = 200 * gameRender->ratio + (posX * 0.01) * 150 * gameRender->ratio;
+        y = 20 * gameRender->ratio + lane * 150 * gameRender->ratio;
 
         if (idEntity < 0)
         { //It's an alien
             if(gameRender->alienArrayStruct[lane] == NULL){
                 gameRender->alienArrayStruct[lane] = GameRender_CreateEmptyRenderCell();
             }
-            GameRender_AddElementToRenderCell(gameRender->alienArrayStruct[lane], renderer, pathToEntity, x, y, entityRatio, entityRatio);
+            GameRender_AddElementToRenderCell(gameRender->alienArrayStruct[lane], renderer, pathToEntity, x, y, gameRender->ratio, gameRender->ratio);
         }
         else if (idEntity > 0)
         { //It's an human
         if(gameRender->humanArrayStruct[lane] == NULL){
                 gameRender->humanArrayStruct[lane] = GameRender_CreateEmptyRenderCell();
             }
-            GameRender_AddElementToRenderCell(gameRender->humanArrayStruct[lane], renderer, pathToEntity, x, y, entityRatio, entityRatio);
+            GameRender_AddElementToRenderCell(gameRender->humanArrayStruct[lane], renderer, pathToEntity, x, y, gameRender->ratio, gameRender->ratio);
         }
     }
 }
@@ -520,10 +572,10 @@ int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX
     Look at the entity, and convert his postion to the RenderCell corresponding
     (it only changes the x position)
 */
-void GameRender_MoveEntity(RenderCell rcToMove, Entity *entity)
+void GameRender_MoveEntity(float screenRatio, RenderCell rcToMove, Entity *entity)
 {
     int newX = 0;
-    newX = entity->position; // Need the equation to transform it from 1000 to the actual size of the lane
+    newX = 200 * screenRatio + (entity->position * 1.5) * screenRatio; 
     rcToMove->dst->x = newX;
 }
 
@@ -579,7 +631,7 @@ void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entit
 
         if (tempRC != NULL)
         {
-            GameRender_MoveEntity(tempRC, tempEntity);
+            GameRender_MoveEntity(gameRender->ratio, tempRC, tempEntity);
         }
     }
 }
@@ -589,30 +641,32 @@ void GameRender_UpdateCursor(GameRender gameRender, Shop *humanShop, Shop *alien
     RenderCell pointer = gameRender->uiStruct;
     
     if ( gameMode > 0 && gameMode <= 3 ){
-        for(int i = 0; i < 2; i++){
-            pointer = pointer->next;
-        }
-        pointer->dst->x = 200 + humanShop->cursor_position;
-        pointer->dst->y = (40 + humanShop->cursor_lane * 150)/gameRender->ratio;
-        pointer = pointer->next;
-
-        pointer->dst->x = (gameRender->screen_width/2 - 290 + humanShop->cursor_shop * 30) / gameRender->ratio;
-    } else if(gameMode == 0) {
         for(int i = 0; i < 3; i++){
             pointer = pointer->next;
         }
-        pointer->dst->x = 200 + humanShop->cursor_position;
-        pointer->dst->y = (40 + humanShop->cursor_lane * 150)/gameRender->ratio;
+        
+        pointer->dst->x = 200 * gameRender->ratio + humanShop->cursor_position * 1.5 * gameRender->ratio;
+        pointer->dst->y = 20 * gameRender->ratio + (humanShop->cursor_lane * 150) * gameRender->ratio;
         pointer = pointer->next;
 
-        pointer->dst->x = 500 + alienShop->cursor_position;
-        pointer->dst->y = (40 + alienShop->cursor_lane * 150)/gameRender->ratio;
+        pointer->dst->x = 20 * gameRender->ratio + (humanShop->cursor_shop -1) * 162 * gameRender->ratio;
+        
+    } else if(gameMode == 0) {
+        for(int i = 0; i < 4; i++){
+            pointer = pointer->next;
+        }
+        
+        pointer->dst->x = 200 * gameRender->ratio + humanShop->cursor_position * 1.5 * gameRender->ratio;
+        pointer->dst->y = 20 * gameRender->ratio + (humanShop->cursor_lane * 150) * gameRender->ratio;
         pointer = pointer->next;
 
-        pointer->dst->x = (gameRender->screen_width/2 - 690 + humanShop->cursor_shop * 30) / gameRender->ratio;
+        pointer->dst->y = 20 * gameRender->ratio + alienShop->cursor_lane * 150 * gameRender->ratio;
         pointer = pointer->next;
 
-        pointer->dst->x = (gameRender->screen_width/2 + 110 + alienShop->cursor_shop * 30) / gameRender->ratio;
+        pointer->dst->x = 20 * gameRender->ratio + (humanShop->cursor_shop -1) * 162 * gameRender->ratio;
+        pointer = pointer->next;
+
+        pointer->dst->x = 1250 * gameRender->ratio + (-alienShop->cursor_shop -1) * 162 * gameRender->ratio;
     } else {
         fprintf(stderr, "Wrong gameMode\n");
     }

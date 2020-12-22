@@ -39,7 +39,7 @@ int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, 
 
                 // Use the mower
             } 
-            if((*entity)->position <= 0 ) {
+            if((*entity)->position <= -50 ) {
                 temp = activate_mower(mower_array, lane, entity_array);
                 if (temp == 1){
                     return temp;

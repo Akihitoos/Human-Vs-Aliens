@@ -28,11 +28,14 @@
 #define PATH_TO_ALIEN_2 "src\\img\\Alien_Range.bmp"
 #define PATH_TO_ALIEN_3 "src\\img\\Alien_Tank.bmp"
 
+#define PATH_TO_BACKGROUND "src\\img\\Background.bmp"
+
 // It will show the lane, the box where the entity will be placed etc.
 #define PATH_TO_PLAYGROUND "src\\img\\Playground.bmp"
 
 // It will be a box where the entity choosable will appear
-#define PATH_TO_SHOP_UI "src\\img\\Shop.bmp"
+#define PATH_TO_HUMAN_SHOP "src\\img\\Human_Shop.bmp"
+#define PATH_TO_ALIEN_SHOP "src\\img\\Alien_Shop.bmp"
 
 // Path to the different cursor used in the game
 #define PATH_TO_CURSOR_PLAYER_1 "src\\img\\Cursor_Human_Player.bmp"
@@ -110,7 +113,7 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode);
 
 int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX);
 
-void GameRender_MoveEntity(RenderCell rcToMove, Entity *entity);
+void GameRender_MoveEntity(float screenRatio, RenderCell rcToMove, Entity *entity);
 
 RenderCell GameRender_GetLastRC(GameRender gameRender, int id, int lane);
 

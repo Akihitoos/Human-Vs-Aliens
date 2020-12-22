@@ -135,7 +135,6 @@ void GameRender_UpdateRender(GameRender gameRender, int gameMode)
         fprintf(stderr, "Wrong gameMode\n");
     }
     
-    SDL_SetRenderDrawColor(gameRender->renderer, 255, 255, 255, 255);
     SDL_RenderPresent(gameRender->renderer);
     SDL_RenderClear(gameRender->renderer);
 }
@@ -149,13 +148,13 @@ void EventHandler(Entity **humanArray, Entity **alienArray, Shop *humanShop, Sho
                 case SDLK_q:
                     moveHuman = -1;
                     break;
-                case SDLK_RIGHT:
+                case SDLK_LEFT:
                     moveAlien = -1;
                     break;
                 case SDLK_d:
                     moveHuman = 1;
                     break;
-                case SDLK_LEFT:
+                case SDLK_RIGHT:
                     moveAlien = 1;
                     break;
                 case SDLK_s:
