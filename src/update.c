@@ -59,7 +59,7 @@ int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, 
             target = alien_search_human(*entity, ennemy_array[lane]);
 
             // move
-            if( (CanMove(*entity, target, *entity_array) == 1) )
+            if( (CanMove(*entity, target, entity_array[lane]) == 1) )
             {
                 move(*entity);
 
