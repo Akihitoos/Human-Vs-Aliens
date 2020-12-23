@@ -655,25 +655,41 @@ RenderCell GameRender_GetI_RC(RenderCell firstRC, int id){
     return temp;
 }
 
+//return 1 if the size is the same, else 0
+int GameRender_CompareSizeOfRCAndEntity(RenderCell firstRC, Entity *firstEntity){
+    int isOfSameSize = 0;
+    RenderCell currentRC = firstRC;
+    Entity *currentEntity = firstEntity;
+    for(; currentRC != NULL && currentEntity != NULL; currentRC = currentRC->next, currentEntity = currentEntity->next);
+    if(currentRC == NULL && currentEntity == NULL){
+        isOfSameSize = 1;
+    }
+    return isOfSameSize;
+}
+
 /*
     Take the gameRender, a chain of entity with its corresponding chain en RenderCell, browse every element
     and make the different adjustment
 */
 void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity)
 {
+    int minimumHealth = 100;
     Entity *tempEntity = firstEntity;
     RenderCell tempRC = *firstRC;
-    RenderCell previous = NULL;
 
-    for (; tempEntity != NULL; tempEntity = tempEntity->next, tempRC = tempRC->next)
+    for (; tempEntity != NULL; )
     {
-        if (tempEntity != NULL && tempEntity->hp < 0)
+        if (tempEntity != NULL && tempEntity->hp <= 30 && GameRender_CompareSizeOfRCAndEntity(*firstRC, firstEntity) == 1)
         {
             printf("[RENDER] Free RenderCell\n");
+            RenderCell nextRC = tempRC->next;
             GameRender_DeleteRenderCell(firstRC, &tempRC);
+            tempRC = nextRC;
+            tempEntity = tempEntity->next;
+            continue;
         }
 
-        if ((tempRC == NULL || tempRC->texture == NULL ) && tempEntity != NULL)
+        if ((tempRC == NULL || tempRC->texture == NULL ) && tempEntity != NULL && tempEntity->hp > minimumHealth)
         {
             printf("[RENDER] Adding RenderCell\n");
             GameRender_AddEntity(gameRender, tempEntity->id, tempEntity->lane, tempEntity->position);
@@ -683,7 +699,9 @@ void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entit
         if (tempRC != NULL)
         {
             GameRender_MoveEntity(gameRender->ratio, tempRC, tempEntity);
+            tempRC = tempRC->next;
         }
+        tempEntity = tempEntity->next;
     }
 }
 
