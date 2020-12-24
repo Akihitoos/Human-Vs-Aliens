@@ -67,6 +67,7 @@ typedef struct gameRender
     SDL_Renderer *renderer;
     RenderCell *humanArrayStruct;
     RenderCell *alienArrayStruct;
+    int **hasBeenDeleted; // used to synchronise the SDL update with the game itself
     RenderCell mowerStruct;
     RenderCell uiStruct; // Need to be careful, and know which case is what
     int screen_width;
@@ -123,7 +124,7 @@ RenderCell GameRender_GetLastRC(GameRender gameRender, int id, int lane);
 
 RenderCell GameRender_GetI_RC(RenderCell firstRC, int id);
 
-void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity);
+void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity, int *hasBeenDeleted);
 
 void GameRender_UpdateText(GameRender gameRender, RenderCell scoreCell, char *textToDisplay, SDL_Color color);
 

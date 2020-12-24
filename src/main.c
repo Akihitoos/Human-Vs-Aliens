@@ -3,6 +3,7 @@
 
 int main(int argc, char **argv)
 {
+
     GameRender gameRender = NULL;
     SDL_Window *windowMain = NULL;
     Entity **humanArray = init_entity_array();
@@ -28,24 +29,7 @@ int main(int argc, char **argv)
                 humanPlayer = init_human_player();
                 humanPlayer->gold_per_second = (double)50;
                 alienPlayer = init_alien_player(gameMode);
-                switch (gameMode)
-                {
-                case 0:
-                    alienPlayer->gold_per_second = (double)50;
-                    break;
-                case 1:
-                    alienPlayer->gold_per_second = (double)25;
-                    break;
-                case 2:
-                    alienPlayer->gold_per_second = (double)50;
-                    break;
-                case 3:
-                    alienPlayer->gold_per_second = (double)75;
-                    break;
-                default:
-                    fprintf(stderr,"Wrong gameMode\n");
-                    break;
-                }
+                alienPlayer->gold_per_second = GetIAGoldPerSecond(gameMode);
 
                 GameRender_Init(&windowMain, &gameRender, gameMode, humanShop, alienShop);
 
@@ -53,13 +37,9 @@ int main(int argc, char **argv)
                 {
                     EventHandler(humanArray, alienArray, humanShop, alienShop, alienPlayer, humanPlayer, gameMode);
                     if(gameMode > 0 && gameMode <= 3){
-                        randomize_choice_ai(alienShop);
-                        if(can_buy(alienShop, alienPlayer)){
-                            add_entity(alienArray, alienShop->id[ (- alienShop->cursor_shop) -1], alienShop->cursor_lane, alienShop->cursor_position);
-                            alienPlayer->golds -= (double)alienShop->tab_cost[ -alienShop->cursor_shop -1];
-                        }
+                        AIHandler(alienShop, alienPlayer, alienArray);
                     }
-                    gameEnded = update(humanArray, alienArray, humanPlayer, alienPlayer, mowerArray);
+                    gameEnded = update(humanArray, alienArray, humanPlayer, alienPlayer, mowerArray, gameRender->hasBeenDeleted);
                     GameRender_UpdateGameRender(gameRender, humanArray, alienArray, humanPlayer, alienPlayer,
                                                 mowerArray, humanShop, alienShop, gameMode);
                     GameRender_UpdateRender(gameRender, gameMode);
@@ -71,40 +51,13 @@ int main(int argc, char **argv)
                 GameRender_FreeEverything(&windowMain, &gameRender);
                 gameEnded = 1;
 
-
-
-
             } else {
                 printf("Game already ended !\n");
             }
 
-
             break;
         case 2:
-            printf("1 or 2 players ? \n");
-            scanf("%d",&choice);
-            if (choice == 1){
-                printf("Easy 1, Medium 2, Hard 3\n");
-                scanf("%d",&choice);
-                switch (choice)
-                {
-                case 1:
-                    gameMode = 1;
-                    break;
-                case 2:
-                    gameMode = 2;
-                    break;
-                case 3:
-                    gameMode = 3;
-                    break;
-                default:
-                    printf("Wrong choice\n");
-                    break;
-                }
-            } else if (choice == 2) {
-                gameMode = 0;
-            }
-            choice = 2;
+            GetGameMode(&choice, &gameMode);
             break;
         case 3:
             printf("DLC features \n");

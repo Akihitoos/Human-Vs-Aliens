@@ -134,13 +134,23 @@ GameRender GameRender_InitGameRender(SDL_Window *window, int width, int height)
         gameRender->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         gameRender->humanArrayStruct = GameRender_InitArrayRenderCell();
         gameRender->alienArrayStruct = GameRender_InitArrayRenderCell();
+        gameRender->hasBeenDeleted = (int **)malloc(sizeof(int*) * 2);
+        if(gameRender->hasBeenDeleted != NULL){
+            for(int i = 0; i < 2; i++){
+                gameRender->hasBeenDeleted[i] = (int *)malloc(sizeof(int) * LANE);
+                for(int j = 0; j < LANE; j++){
+                    gameRender->hasBeenDeleted[i][j] = 0;
+                }
+            }
+        }
         gameRender->mowerStruct = GameRender_InitRenderCell();
         gameRender->uiStruct = GameRender_InitRenderCell();
         gameRender->screen_width = width;
         gameRender->screen_height = height;
         gameRender->ratio = (float)width /(float)1920;
     }
-    if (gameRender == NULL || gameRender->renderer == NULL)
+    if (gameRender == NULL || gameRender->renderer == NULL || gameRender->hasBeenDeleted == NULL 
+        || gameRender->hasBeenDeleted[0] == NULL || gameRender->hasBeenDeleted[1] == NULL)
     {
         fprintf(stderr, "Error occured in GameRender_InitGameRender() : %s\n", SDL_GetError());
     }
@@ -183,6 +193,12 @@ void GameRender_FreeGameRender(GameRender *gameRender)
 {
     GameRender_FreeArrayRenderCell(&((*gameRender)->humanArrayStruct));
     GameRender_FreeArrayRenderCell(&((*gameRender)->alienArrayStruct));
+    for(int i = 0; i < 2; i++){
+        free((*gameRender)->hasBeenDeleted[i]);
+        (*gameRender)->hasBeenDeleted[i] = NULL;
+    }
+    free((*gameRender)->hasBeenDeleted);
+    (*gameRender)->hasBeenDeleted = NULL;
     GameRender_FreeAllRenderCell(&((*gameRender)->uiStruct));
     GameRender_FreeAllRenderCell(&((*gameRender)->mowerStruct));
     SDL_DestroyRenderer((*gameRender)->renderer);
@@ -460,7 +476,7 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
                 800 * gameRender->ratio,
                 gameRender->ratio, 
                 gameRender->ratio);
-        SDL_Color humanColor = {88, 214, 141};
+        SDL_Color humanColor = {0, 0, 255};;
         RenderCell headerMoneyHuman = GameRender_CreateEmptyRenderCell();
         headerMoneyHuman->dst->x = 680 * gameRender->ratio ;
         headerMoneyHuman->dst->y = 800 * gameRender->ratio ;
@@ -522,7 +538,7 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
                 gameRender->ratio, 
                 gameRender->ratio);
 
-        SDL_Color alienColor = {130, 224, 170};
+        SDL_Color alienColor = {0, 128, 0};
         RenderCell headerMoneyAlien = GameRender_CreateEmptyRenderCell();
         headerMoneyAlien->dst->x = 1000 * gameRender->ratio ;
         headerMoneyAlien->dst->y = 800 * gameRender->ratio ;
@@ -540,6 +556,7 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
         error = GameRender_AddRenderCell(gameRender->uiStruct, moneyAlien);
         moneyAlien = NULL;
 
+        /*
         RenderCell headerScoreAlien = GameRender_CreateEmptyRenderCell();
         headerScoreAlien->dst->x = 1000 * gameRender->ratio ;
         headerScoreAlien->dst->y = 924 * gameRender->ratio ;
@@ -556,6 +573,7 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
         scoreAlien->dst->h = 62 * gameRender->ratio ;
         error = GameRender_AddRenderCell(gameRender->uiStruct, scoreAlien);
         scoreAlien = NULL;
+        */
     }
 
     // II. Mower 
@@ -655,37 +673,25 @@ RenderCell GameRender_GetI_RC(RenderCell firstRC, int id){
     return temp;
 }
 
-//return 1 if the size is the same, else 0
-int GameRender_CompareSizeOfRCAndEntity(RenderCell firstRC, Entity *firstEntity){
-    int isOfSameSize = 0;
-    RenderCell currentRC = firstRC;
-    Entity *currentEntity = firstEntity;
-    for(; currentRC != NULL && currentEntity != NULL; currentRC = currentRC->next, currentEntity = currentEntity->next);
-    if(currentRC == NULL && currentEntity == NULL){
-        isOfSameSize = 1;
-    }
-    return isOfSameSize;
-}
-
 /*
     Take the gameRender, a chain of entity with its corresponding chain en RenderCell, browse every element
     and make the different adjustment
 */
-void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity)
+void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entity *firstEntity, int *waitingToUpdate)
 {
     int minimumHealth = 100;
     Entity *tempEntity = firstEntity;
     RenderCell tempRC = *firstRC;
-
-    for (; tempEntity != NULL; )
+    
+    for (; tempEntity != NULL && *waitingToUpdate != 1; tempEntity = tempEntity->next)
     {
-        if (tempEntity != NULL && tempEntity->hp <= 30 && GameRender_CompareSizeOfRCAndEntity(*firstRC, firstEntity) == 1)
+        if (tempEntity != NULL && tempEntity->hp <= 30)
         {
             printf("[RENDER] Free RenderCell\n");
             RenderCell nextRC = tempRC->next;
             GameRender_DeleteRenderCell(firstRC, &tempRC);
+            *waitingToUpdate = 1;
             tempRC = nextRC;
-            tempEntity = tempEntity->next;
             continue;
         }
 
@@ -701,7 +707,7 @@ void GameRender_UpdateRcEntity(GameRender gameRender, RenderCell *firstRC, Entit
             GameRender_MoveEntity(gameRender->ratio, tempRC, tempEntity);
             tempRC = tempRC->next;
         }
-        tempEntity = tempEntity->next;
+
     }
 }
 
@@ -750,7 +756,7 @@ void GameRender_UpdateUi(GameRender gameRender, Shop *humanShop, Shop *alienShop
         pointer->dst->x = 20 * gameRender->ratio + (humanShop->cursor_shop -1) * 162 * gameRender->ratio;
         pointer = pointer->next->next;
         
-        SDL_Color humanColor = {93, 173, 226};
+        SDL_Color humanColor = {0, 0, 255};
         char textToDisplay[50];
         sprintf(textToDisplay, "%d", (int)humanPlayer->golds);  
         GameRender_UpdateText(gameRender, pointer, textToDisplay, humanColor);
@@ -769,13 +775,9 @@ void GameRender_UpdateUi(GameRender gameRender, Shop *humanShop, Shop *alienShop
         pointer->dst->x = 1250 * gameRender->ratio + (-alienShop->cursor_shop -1) * 162 * gameRender->ratio;
         pointer = pointer->next->next;
 
-        SDL_Color alienColor = {130, 224, 170};
+        SDL_Color alienColor = {0, 128, 0};
         char textToDisplay[50];
         sprintf(textToDisplay, "%d", (int)alienPlayer->golds);  
-        GameRender_UpdateText(gameRender, pointer, textToDisplay, alienColor);
-        pointer = pointer->next->next;
-
-        sprintf(textToDisplay, "%d", alienPlayer->score);
         GameRender_UpdateText(gameRender, pointer, textToDisplay, alienColor);
     }
 

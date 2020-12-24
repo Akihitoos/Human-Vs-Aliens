@@ -54,8 +54,8 @@ void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntit
     // Update the entity array
     for (int i = 0; i < LANE; i++)
     {
-        GameRender_UpdateRcEntity(gameRender, &(gameRender->humanArrayStruct[i]), humanArrayEntity[i]);
-        GameRender_UpdateRcEntity(gameRender, &(gameRender->alienArrayStruct[i]), alienArrayEntity[i]);
+        GameRender_UpdateRcEntity(gameRender, &(gameRender->humanArrayStruct[i]), humanArrayEntity[i], &(gameRender->hasBeenDeleted[0][i]));
+        GameRender_UpdateRcEntity(gameRender, &(gameRender->alienArrayStruct[i]), alienArrayEntity[i], &(gameRender->hasBeenDeleted[1][i]));
 
         // Update mowerStruct
         RenderCell temp = GameRender_GetI_RC(gameRender->mowerStruct, i);

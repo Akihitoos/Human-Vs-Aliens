@@ -200,6 +200,56 @@ int can_place(int posX, Entity *first_human_entity){
     return isPossible;
 }
 
+double GetIAGoldPerSecond(int gameMode){
+    double goldPerSecond = 0.0;
+    switch (gameMode)
+    {
+    case 0:
+        goldPerSecond = (double)50;
+        break;
+    case 1:
+        goldPerSecond = (double)25;
+        break;
+    case 2:
+        goldPerSecond = (double)50;
+        break;
+    case 3:
+        goldPerSecond = (double)75;
+        break;
+    default:
+        fprintf(stderr,"Wrong gameMode\n");
+        break;
+    }
+    return goldPerSecond;
+}
+
+void GetGameMode(int *choice, int *gameMode){
+    printf("1 or 2 players ? \n");
+    scanf("%d",choice);
+    if (*choice == 1){
+        printf("Easy 1, Medium 2, Hard 3\n");
+        scanf("%d",choice);
+        switch (*choice)
+        {
+        case 1:
+            *gameMode = 1;
+            break;
+        case 2:
+            *gameMode = 2;
+            break;
+        case 3:
+            *gameMode = 3;
+            break;
+        default:
+            printf("Wrong choice\n");
+            break;
+        }
+    } else if (*choice == 2) {
+        *gameMode = 0;
+    }
+    *choice = 2;
+}
+
 void debugEntityArray(Entity **array)
 {
     //Affiche le pointeur du tableau

@@ -145,7 +145,17 @@ bool can_buy(Shop* shop, Player* player){
 
 void randomize_choice_ai(Shop* alien){
     alien->cursor_lane = rand()%5;
-    alien->cursor_shop = - ((rand()%3) + 1); 
+    alien->cursor_shop = - ( (rand()%3) + 1);
+    printf("%d\n", alien->cursor_shop);
+}
+
+void AIHandler(Shop *alienShop, Player *alienPlayer, Entity **alienArray){
+    randomize_choice_ai(alienShop);
+    if(can_buy(alienShop, alienPlayer)){
+        add_entity(alienArray, alienShop->id[ (- alienShop->cursor_shop) -1], alienShop->cursor_lane, alienShop->cursor_position);
+        printf("%d\n", alienShop->id[ (- alienShop->cursor_shop) -1]);
+        alienPlayer->golds -= (double)alienShop->tab_cost[ -alienShop->cursor_shop -1];
+    }
 }
 
 void afficher_curseurs(Shop* shop){

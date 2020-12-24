@@ -28,6 +28,8 @@ bool can_buy(Shop* shop, Player* player);
 
 void randomize_choice_ai(Shop* alien);
 
+void AIHandler(Shop *alienShop, Player *alienPlayer, Entity **alienArray);
+
 // [Debug] displays the cursors
 void afficher_curseurs(Shop* shop);
 

@@ -47,6 +47,10 @@ void move(Entity *alien);
 // return 0 if it isn't possible to place an entity on the specified lane, otherwise return 1
 int can_place(int posX, Entity *first_human_entity);
 
+double GetIAGoldPerSecond(int gameMode);
+
+void GetGameMode(int *choice, int *gameMode);
+
 // Function used to debug the Array (It prints every single elements of the array)
 void debugEntityArray(Entity **array);
 
