@@ -44,7 +44,7 @@ int main(int argc, char **argv)
                                                 mowerArray, humanShop, alienShop, gameMode);
                     GameRender_UpdateRender(gameRender, gameMode);
                     
-                    SDL_Delay(100);
+                    SDL_Delay(1000/REFRESH_RATE);
                 }
                 free_array(&humanArray, &alienArray);
                 free_mower(&mowerArray);
