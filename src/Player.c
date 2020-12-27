@@ -9,7 +9,7 @@ Player* init_human_player(){
     human->team = 1;
     human->score = 0;
     human->golds = 500;
-    human->gold_per_second = 1;
+    human->gold_per_second = 50;
     return human;
 }
 
@@ -30,7 +30,7 @@ Player* init_alien_player(int gamemode){
     
     alien->score = 0;
     alien->golds = 500;
-    alien->gold_per_second = 1;
+    alien->gold_per_second = 10;
     return alien;
 }
 

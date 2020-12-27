@@ -1,77 +1,81 @@
 #include "update.h"
 #include "GameRender.h"
+#include "FileHandler.h"
 
 int main(int argc, char **argv)
 {
-
     GameRender gameRender = NULL;
     SDL_Window *windowMain = NULL;
     Entity **humanArray = NULL;
     Entity **alienArray = NULL;
-    Mower mowerArray = NULL;
+    Cannon cannonArray = NULL;
     Shop *humanShop = NULL;
     Shop *alienShop = NULL;
     Player *humanPlayer = NULL;
     Player *alienPlayer = NULL;
-    int gameMode = 0, gameEnded = 0, menu_end = 0,choice = 0;;
-    
+    char *gameModeMessage = NULL;
+    int gameMode = 0, gameEnded = 0, menu_end = 0, choice = 0;
+
+    gameModeMessage = GetArgumentConfiguration(argc, argv, &gameMode);
+
+    printf("Welcome to Human Vs Aliens !\n");
+    printf("%s\n", gameModeMessage);
+    FreeString(&gameModeMessage);
+
     //Menu
-    do
+    while(!menu_end && gameMode != -1)
     {
-        printf("Welcome to Human Vs Aliens !\n1. Play the game\n2. Choose a gamemode\n3. View records\n0. Exit the game\n");
-        scanf("%d",&choice);
+        printf("1. Play the game\n");
+        printf("2. View records\n");
+        printf("0. Exit the game\n");
+        scanf("%d", &choice);
         switch (choice)
         {
         case 1:
             gameEnded = 0;
             humanArray = init_entity_array();
             alienArray = init_entity_array();
-            mowerArray = init_mower_tab();
+            cannonArray = init_cannon_tab();
             humanShop = init_shop_human();
             alienShop = init_shop_alien();
             clock_t startingTime = clock();
             clock_t currentTime = startingTime;
 
-            if(humanPlayer == NULL){
-                humanPlayer = init_human_player();
-                humanPlayer->gold_per_second = (double)50;
-            } else {
-                humanPlayer->golds = (double)500;
-                humanPlayer->score = 0;
-            }
-        
+            humanPlayer = init_human_player();
             alienPlayer = init_alien_player(gameMode);
             alienPlayer->gold_per_second = GetIAGoldPerSecond(gameMode);
-            alienShop->cursor_position = -( (rand()%3) + 1);
+            alienShop->cursor_position = -((rand() % 3) + 1);
 
             GameRender_Init(&windowMain, &gameRender, gameMode, humanShop, alienShop);
 
             while (!gameEnded)
-            {
+            {   
                 EventHandler(humanArray, alienArray, humanShop, alienShop, alienPlayer, humanPlayer, gameMode);
-                if(gameMode > 0 && gameMode <= 3){
+                if (gameMode > 0 && gameMode <= 3)
+                {
                     AIHandler(alienShop, alienPlayer, alienArray);
                 }
-                gameEnded = update(humanArray, alienArray, humanPlayer, alienPlayer, mowerArray, gameRender->hasBeenDeleted, startingTime, currentTime);
+                gameEnded = update(humanArray, alienArray, humanPlayer, alienPlayer, cannonArray, gameRender->hasBeenDeleted, startingTime, currentTime);
                 GameRender_UpdateGameRender(gameRender, humanArray, alienArray, humanPlayer, alienPlayer,
-                                            mowerArray, humanShop, alienShop, gameMode);
+                                            cannonArray, humanShop, alienShop, gameMode);
                 GameRender_UpdateRender(gameRender, gameMode);
-                
-                SDL_Delay(1000/REFRESH_RATE);
+
+                SDL_Delay(1000 / REFRESH_RATE);
             }
-            
+
+            GameRender_FreeEverything(&windowMain, &gameRender);
+
+            FH_WriteScore(PATH_TO_HIGHSCORE_TXT, humanPlayer->score);
+
             free_array(&humanArray, &alienArray);
-            free_mower(&mowerArray);
+            free_cannon(&cannonArray);
             free_shop(&humanShop);
             free_shop(&alienShop);
+            free_player(&humanPlayer);
             free_player(&alienPlayer);
-            GameRender_FreeEverything(&windowMain, &gameRender);
             break;
         case 2:
-            GetGameMode(&choice, &gameMode);
-            break;
-        case 3:
-            printf("Your score is %d \n", humanPlayer->score);
+            FH_DisplayAllScore(PATH_TO_HIGHSCORE_TXT);
             break;
         case 0:
             menu_end = 1;
@@ -80,9 +84,8 @@ int main(int argc, char **argv)
             break;
         }
 
-    } while (!menu_end);
-
-    free_player(&humanPlayer);
+    }
+    
 
     return EXIT_SUCCESS;
 }

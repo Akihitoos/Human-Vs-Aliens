@@ -1,7 +1,7 @@
 LIB = -I include -L lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf
 CC = gcc
 BIN = HumanVsAliens/HumanVsAliens
-OBJECTS = src/main.o src/Entity.o src/interaction.o src/mower.o src/update.o src/GameRenderBasics.o src/GameRender.o src/Shop.o src/Player.o
+OBJECTS = src/main.o src/Entity.o src/interaction.o src/Cannon.o src/update.o src/GameRenderBasics.o src/GameRender.o src/Shop.o src/Player.o src/FileHandler.o
 
 all: $(OBJECTS) 
 	$(CC) -o $(BIN) $(OBJECTS) $(LIB)
@@ -15,8 +15,8 @@ src/Entity.o: src/Entity.c
 src/interaction.o: src/interaction.c
 	$(CC) -c src/interaction.c -o src/interaction.o $(LIB)
 
-src/mower.o: src/mower.c
-	$(CC) -c src/mower.c -o src/mower.o $(LIB)
+src/Cannon.o: src/Cannon.c
+	$(CC) -c src/Cannon.c -o src/Cannon.o $(LIB)
 
 src/update.o: src/update.c
 	$(CC) -c src/update.c -o src/update.o $(LIB)
@@ -32,6 +32,9 @@ src/Shop.o: src/Shop.c
 
 src/Player.o: src/Player.c
 	$(CC) -c src/Player.c -o src/Player.o $(LIB)
+
+src/FileHandler.o: src/FileHandler.c
+	$(CC) -c src/FileHandler.c -o src/FileHandler.o $(LIB)
 
 clear:
 	del src\\*.o

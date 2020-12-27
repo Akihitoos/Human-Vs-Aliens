@@ -17,7 +17,7 @@ void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender);
 // Function of the game loop
 
 void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntity, Entity **alienArrayEntity,
-                                 Player* humanPlayer, Player* alienPlayer, Mower mowerArray, Shop *humanShop, 
+                                 Player* humanPlayer, Player* alienPlayer, Cannon cannonArray, Shop *humanShop, 
                                  Shop *alienShop, int gameMode);
 
 void GameRender_UpdateRender(GameRender gameRender, int gameMode);

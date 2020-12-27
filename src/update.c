@@ -44,12 +44,12 @@ int CanMove(Entity* entity, Entity* target, Entity *entity_array){
 /*
     Go through every entity of the entity_array, apply common update and attack if in range.
 */
-int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, int lane, Mower mower_array, int **hasBeenDeleted, Player *player)
+int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, int lane, Cannon cannon_array, int **hasBeenDeleted, Player *player)
 {
     int gameEnded = 0;
-    int mowerActivated = 0;
+    int cannonActivated = 0;
     Entity* target = NULL;
-    for(;*entity!=NULL && mowerActivated == 0;){
+    for(;*entity!=NULL && cannonActivated == 0;){
         // common update
         if((*entity)->id > 0){
             commonUpdate(entity_array, lane, *entity, hasBeenDeleted[0]);
@@ -73,11 +73,11 @@ int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, 
             {
                 move(*entity);
 
-                // Use the mower
+                // Use the cannon
             } 
             if((*entity)->position <= -50 ) {
-                mowerActivated = activate_mower(mower_array, lane, entity_array);
-                if(mowerActivated == 2){
+                cannonActivated = activate_cannon(cannon_array, lane, entity_array);
+                if(cannonActivated == 2){
                     gameEnded = 1;
                 }
             }
@@ -94,7 +94,7 @@ int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, 
 }
 
 
-int update (Entity ** human_array, Entity ** alien_array, Player *human_player, Player *alien_player, Mower mower_array, int **hasBeenDeleted, clock_t startingTime, clock_t currentTime)
+int update (Entity ** human_array, Entity ** alien_array, Player *human_player, Player *alien_player, Cannon cannon_array, int **hasBeenDeleted, clock_t startingTime, clock_t currentTime)
 {
     int game_ended = 0;
     int scoreIncrement = 0;
@@ -114,8 +114,8 @@ int update (Entity ** human_array, Entity ** alien_array, Player *human_player, 
 
         humanTemp=*(human_array+lane);
         alienTemp=*(alien_array+lane);
-        entityUpdate(human_array, &humanTemp, alien_array, lane, mower_array, hasBeenDeleted, human_player);
-        game_ended = entityUpdate(alien_array, &alienTemp, human_array, lane, mower_array, hasBeenDeleted, alien_player);
+        entityUpdate(human_array, &humanTemp, alien_array, lane, cannon_array, hasBeenDeleted, human_player);
+        game_ended = entityUpdate(alien_array, &alienTemp, human_array, lane, cannon_array, hasBeenDeleted, alien_player);
         if (game_ended == 1){
             return game_ended;
         }

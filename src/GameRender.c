@@ -48,7 +48,7 @@ void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender)
     Take the gameRender and update/modify/add/remove when it's needed 
 */
 void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntity, Entity **alienArrayEntity,
-                                 Player* humanPlayer, Player* alienPlayer, Mower mowerArray, Shop *humanShop, 
+                                 Player* humanPlayer, Player* alienPlayer, Cannon cannonArray, Shop *humanShop, 
                                  Shop *alienShop, int gameMode)
 {
     // Update the entity array
@@ -57,14 +57,14 @@ void GameRender_UpdateGameRender(GameRender gameRender, Entity **humanArrayEntit
         GameRender_UpdateRcEntity(gameRender, &(gameRender->humanArrayStruct[i]), humanArrayEntity[i], &(gameRender->hasBeenDeleted[0][i]));
         GameRender_UpdateRcEntity(gameRender, &(gameRender->alienArrayStruct[i]), alienArrayEntity[i], &(gameRender->hasBeenDeleted[1][i]));
 
-        // Update mowerStruct
-        RenderCell temp = GameRender_GetI_RC(gameRender->mowerStruct, i);
+        // Update cannonStruct
+        RenderCell temp = GameRender_GetI_RC(gameRender->cannonStruct, i);
 
-        if (mowerArray[i] == false && temp->texture != NULL)
+        if (cannonArray[i] == false && temp->texture != NULL)
         {
             SDL_DestroyTexture(temp->texture);
             temp->texture = NULL;
-            printf("[RENDER] Mower texture destroyed : %d\n", i);
+            printf("[RENDER] Cannon texture destroyed : %d\n", i);
 
             GameRender_FreeAllRenderCell(&(gameRender->alienArrayStruct[i]));
             printf("[RENDER] AlienArrayStruct[%d] free\n", i);
@@ -109,8 +109,8 @@ void GameRender_UpdateRender(GameRender gameRender, int gameMode)
         }
     }
 
-    // Update the Mower
-    for (RenderCell pointer = gameRender->mowerStruct; pointer != NULL; pointer = pointer->next)
+    // Update the Cannon
+    for (RenderCell pointer = gameRender->cannonStruct; pointer != NULL; pointer = pointer->next)
     {
         if(pointer->texture != NULL){
             SDL_RenderCopy(gameRender->renderer, pointer->texture, NULL, pointer->dst);

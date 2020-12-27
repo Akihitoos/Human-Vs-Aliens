@@ -200,6 +200,60 @@ int can_place(int posX, Entity *first_human_entity){
     return isPossible;
 }
 
+char *AllocateStringFromBuffer(char *buffer){
+    char *newString = NULL;
+    newString = (char *)malloc( ( strlen(buffer) + 1 ) * sizeof(char));
+    if(newString != NULL){
+        strcpy(newString, buffer);
+    }
+    return newString;
+}
+
+char *GetArgumentConfiguration(int argc, char **argv, int *gameMode){
+    char *messageToDisplay;
+    int strToInt1 = -1, strToInt2 = -1;
+    switch(argc){
+        case 2:
+            strToInt1 = (int)strtol(argv[1], NULL, 10);
+            if(strToInt1 != 0) {
+                messageToDisplay = AllocateStringFromBuffer("Wrong argument");
+                *gameMode = -1;
+                break;
+            }
+            messageToDisplay = AllocateStringFromBuffer("You choosed multiplayer");
+            *gameMode = strToInt1;
+            break;
+        case 3:
+            strToInt1 = (int)strtol(argv[1], NULL, 10);
+            strToInt2 = (int)strtol(argv[2], NULL, 10);
+            if((strToInt1 != 1 ) || (strToInt2 < 1 || strToInt2 > 3)){
+                messageToDisplay = AllocateStringFromBuffer("Wrong argument");
+                *gameMode = -1;
+                break;
+            }
+            if(strToInt2 == 1){
+                messageToDisplay = AllocateStringFromBuffer("You choosed singleplayer with the easy difficulty");
+            }
+            if(strToInt2 == 2){
+                messageToDisplay = AllocateStringFromBuffer("You choosed singleplayer with the medium difficulty");
+            }
+            if(strToInt2 == 3){
+                messageToDisplay = AllocateStringFromBuffer("You choosed singleplayer with the hard difficulty");
+            }
+            *gameMode = strToInt2;
+            break;
+        default:
+            *gameMode = -1;
+            break;
+    }
+    return messageToDisplay;
+}
+
+void FreeString(char **toDelete){
+    free(*toDelete);
+    *toDelete = NULL;
+}
+
 double GetIAGoldPerSecond(int gameMode){
     double goldPerSecond = 0.0;
     switch (gameMode)
@@ -208,13 +262,13 @@ double GetIAGoldPerSecond(int gameMode){
         goldPerSecond = (double)50;
         break;
     case 1:
-        goldPerSecond = (double)25;
-        break;
-    case 2:
         goldPerSecond = (double)50;
         break;
-    case 3:
+    case 2:
         goldPerSecond = (double)75;
+        break;
+    case 3:
+        goldPerSecond = (double)100;
         break;
     default:
         fprintf(stderr,"Wrong gameMode\n");
@@ -223,6 +277,7 @@ double GetIAGoldPerSecond(int gameMode){
     return goldPerSecond;
 }
 
+/*
 void GetGameMode(int *choice, int *gameMode){
     printf("1 or 2 players ? \n");
     scanf("%d",choice);
@@ -249,6 +304,7 @@ void GetGameMode(int *choice, int *gameMode){
     }
     *choice = 2;
 }
+*/
 
 void debugEntityArray(Entity **array)
 {

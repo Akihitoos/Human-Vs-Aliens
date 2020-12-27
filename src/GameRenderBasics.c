@@ -143,7 +143,7 @@ GameRender GameRender_InitGameRender(SDL_Window *window, int width, int height)
                 }
             }
         }
-        gameRender->mowerStruct = GameRender_InitRenderCell();
+        gameRender->cannonStruct = GameRender_InitRenderCell();
         gameRender->uiStruct = GameRender_InitRenderCell();
         gameRender->screen_width = width;
         gameRender->screen_height = height;
@@ -200,7 +200,7 @@ void GameRender_FreeGameRender(GameRender *gameRender)
     free((*gameRender)->hasBeenDeleted);
     (*gameRender)->hasBeenDeleted = NULL;
     GameRender_FreeAllRenderCell(&((*gameRender)->uiStruct));
-    GameRender_FreeAllRenderCell(&((*gameRender)->mowerStruct));
+    GameRender_FreeAllRenderCell(&((*gameRender)->cannonStruct));
     SDL_DestroyRenderer((*gameRender)->renderer);
     free(*gameRender);
     *gameRender = NULL;
@@ -394,7 +394,7 @@ char *GameRender_GetPathFromId(int id)
         temp = PATH_TO_ALIEN_1;
         break;
     case 0:
-        temp = PATH_TO_MOWER_0;
+        temp = PATH_TO_CANNON_0;
         break;
     case 1:
         temp = PATH_TO_HUMAN_1;
@@ -557,13 +557,13 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
         moneyAlien = NULL;
     }
 
-    // II. Mower 
+    // II. Cannon 
     
     for(int i = 0; i < LANE; i ++){
         error = GameRender_AddElementToRenderCell(
-            gameRender->mowerStruct, 
+            gameRender->cannonStruct, 
             gameRender->renderer, 
-            PATH_TO_MOWER_0, 
+            PATH_TO_CANNON_0, 
             20 * gameRender->ratio, 
             20 * gameRender->ratio + i*150 * gameRender->ratio, 
             gameRender->ratio, 
@@ -579,7 +579,7 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
 /*
     return 0 on succes or negative if error.
     Takes the GameRender, the lane where the entity is added, and his id(for his texture)
-    id : {1,2,3,4} for human, id : {-1,-2,-3} for alien, id : {0} for mower
+    id : {1,2,3,4} for human, id : {-1,-2,-3} for alien, id : {0} for cannon
     posX : pos of the Human Entity
 */
 int GameRender_AddEntity(GameRender gameRender, int idEntity, int lane, int posX)
@@ -796,9 +796,9 @@ void GameRender_DisplayEverything(GameRender gameRender)
         GameRender_DisplayRenderCell(gameRender->alienArrayStruct[i]);
     } 
     printf("---------------------------------------------\n");
-    printf("mowerStruct : %p\n", gameRender->mowerStruct);
-    GameRender_DisplayRenderCell(gameRender->mowerStruct);
+    printf("cannonStruct : %p\n", gameRender->cannonStruct);
+    GameRender_DisplayRenderCell(gameRender->cannonStruct);
     printf("---------------------------------------------\n");
-    printf("uiStruct : %p\n", gameRender->mowerStruct);
+    printf("uiStruct : %p\n", gameRender->cannonStruct);
     GameRender_DisplayRenderCell(gameRender->uiStruct);
 }

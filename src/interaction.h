@@ -2,11 +2,13 @@
 #define INTERACTION_H
 
 #define LANE 5
-#define REFRESH_RATE 10
+#define MAX_TAB 256
+#define REFRESH_RATE 60
 
 #include "Entity.h"
 #include "Player.h"
-#include "mower.h"
+#include "cannon.h"
+#include <string.h>
 
 // function which initialize a simple array of entity
 Entity **init_entity_array();
@@ -46,6 +48,12 @@ void move(Entity *alien);
 
 // return 0 if it isn't possible to place an entity on the specified lane, otherwise return 1
 int can_place(int posX, Entity *first_human_entity);
+
+char *AllocateStringFromBuffer(char *buffer);
+
+char *GetArgumentConfiguration(int argc, char **argv, int *gameMode);
+
+void FreeString(char **toDelete);
 
 double GetIAGoldPerSecond(int gameMode);
 

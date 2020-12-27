@@ -22,7 +22,7 @@
 #define PATH_TO_HUMAN_2 "img\\Human_Range.bmp"
 #define PATH_TO_HUMAN_3 "img\\Human_Tank.bmp"
 #define PATH_TO_HUMAN_4 "img\\Human_Factory.bmp"
-#define PATH_TO_MOWER_0 "img\\Mower.bmp"
+#define PATH_TO_CANNON_0 "img\\Cannon.bmp"
 
 // The real id is negative
 #define PATH_TO_ALIEN_1 "img\\Alien_Melee.bmp"
@@ -69,7 +69,7 @@ typedef struct gameRender
     RenderCell *humanArrayStruct;
     RenderCell *alienArrayStruct;
     int **hasBeenDeleted; // used to synchronise the SDL update with the game itself
-    RenderCell mowerStruct;
+    RenderCell cannonStruct;
     RenderCell uiStruct; // Need to be careful, and know which case is what
     int screen_width;
     int screen_height;
