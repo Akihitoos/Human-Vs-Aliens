@@ -21,7 +21,7 @@ Le premier argument est obligatoire, le deuxième ne l'est pas. Voici comment le
 - stdlib.h, stdio.h, string.h, time.h
 -> pour les allocations, la gestion des inputs, la gestion des chaines de caractères, et du temps pour le score
 
-- SDL
+- SDL et SDL_ttf
 -> Pour la gestion du rendu graphique
 
 ---
