@@ -60,7 +60,7 @@ Entity *create_human_melee(int positionX, int lane){
     return new;
 }
 
-// Function returning an Usine (a special type of Human)
+// Function returning a factory (a special type of Human)
 Entity *create_human_factory(int positionX, int lane){
     Entity *new = NULL;
     new = (Entity *)malloc(sizeof(Entity));

@@ -172,7 +172,7 @@ void attack(Entity *attacker, Entity *attacked){
 }
 
 void factory_generation(Entity *factory, Player *p){
-    p->golds += (p->gold_per_second / REFRESH_RATE);
+    p->golds += ((double)factory->income / REFRESH_RATE);
 }
 
 void move(Entity *alien){

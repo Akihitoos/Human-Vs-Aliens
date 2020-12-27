@@ -41,7 +41,8 @@
 // Path to the different cursor used in the game
 #define PATH_TO_CURSOR_PLAYER_1 "img\\Cursor_Human_Player.bmp"
 #define PATH_TO_CURSOR_PLAYER_2 "img\\Cursor_Alien_Player.bmp"
-#define PATH_TO_CURSOR_SHOP "img\\Cursor_Shop.bmp"
+#define PATH_TO_CURSOR_SHOP_HUMAN "img\\Cursor_Shop_Human.bmp"
+#define PATH_TO_CURSOR_SHOP_ALIEN "img\\Cursor_Shop_Alien.bmp"
 
 #define PATH_TO_FONT "consola.ttf"
 

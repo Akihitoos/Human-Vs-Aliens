@@ -471,7 +471,7 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
-                PATH_TO_CURSOR_SHOP, 
+                PATH_TO_CURSOR_SHOP_HUMAN, 
                 20 * gameRender->ratio, 
                 800 * gameRender->ratio,
                 gameRender->ratio, 
@@ -532,7 +532,7 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
         error = GameRender_AddElementToRenderCell(
                 gameRender->uiStruct,
                 gameRender->renderer,
-                PATH_TO_CURSOR_SHOP, 
+                PATH_TO_CURSOR_SHOP_ALIEN, 
                 1250 * gameRender->ratio, 
                 800 * gameRender->ratio, 
                 gameRender->ratio, 
@@ -555,25 +555,6 @@ int GameRender_PrepareGame(GameRender gameRender, int gameMode)
         moneyAlien->dst->h = 62 * gameRender->ratio ;
         error = GameRender_AddRenderCell(gameRender->uiStruct, moneyAlien);
         moneyAlien = NULL;
-
-        /*
-        RenderCell headerScoreAlien = GameRender_CreateEmptyRenderCell();
-        headerScoreAlien->dst->x = 1000 * gameRender->ratio ;
-        headerScoreAlien->dst->y = 924 * gameRender->ratio ;
-        headerScoreAlien->dst->w = 250 * gameRender->ratio ;
-        headerScoreAlien->dst->h = 62 * gameRender->ratio ;
-        GameRender_UpdateText(gameRender, headerScoreAlien, "Score :", alienColor);
-        error = GameRender_AddRenderCell(gameRender->uiStruct, headerScoreAlien);
-        headerScoreAlien = NULL;
-
-        RenderCell scoreAlien = GameRender_CreateEmptyRenderCell();
-        scoreAlien->dst->x = 1000 * gameRender->ratio ;
-        scoreAlien->dst->y = 986 * gameRender->ratio ;
-        scoreAlien->dst->w = 250 * gameRender->ratio ;
-        scoreAlien->dst->h = 62 * gameRender->ratio ;
-        error = GameRender_AddRenderCell(gameRender->uiStruct, scoreAlien);
-        scoreAlien = NULL;
-        */
     }
 
     // II. Mower 
@@ -772,7 +753,7 @@ void GameRender_UpdateUi(GameRender gameRender, Shop *humanShop, Shop *alienShop
         pointer->dst->y = 20 * gameRender->ratio + alienShop->cursor_lane * 150 * gameRender->ratio;
         pointer = pointer->next;
 
-        pointer->dst->x = 1250 * gameRender->ratio + (-alienShop->cursor_shop -1) * 162 * gameRender->ratio;
+        pointer->dst->x = 1250 * gameRender->ratio + (-alienShop->cursor_shop -1) * 217 * gameRender->ratio;
         pointer = pointer->next->next;
 
         SDL_Color alienColor = {0, 128, 0};

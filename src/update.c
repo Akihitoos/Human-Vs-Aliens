@@ -44,7 +44,7 @@ int CanMove(Entity* entity, Entity* target, Entity *entity_array){
 /*
     Go through every entity of the entity_array, apply common update and attack if in range.
 */
-int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, int lane, Mower mower_array, int **hasBeenDeleted)
+int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, int lane, Mower mower_array, int **hasBeenDeleted, Player *player)
 {
     int gameEnded = 0;
     int mowerActivated = 0;
@@ -57,6 +57,10 @@ int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, 
             commonUpdate(entity_array, lane, *entity, hasBeenDeleted[1]);
         }
         
+        //Factory generation
+        if ((*entity)->id == 4 && (*entity)->hp > 0){
+            factory_generation(*entity,player);
+        }
 
         // research and move
         if( (*entity)->id > 0 ) {
@@ -90,21 +94,28 @@ int entityUpdate(Entity** entity_array, Entity** entity, Entity** ennemy_array, 
 }
 
 
-int update (Entity ** human_array, Entity ** alien_array, Player *human_player, Player *alien_player, Mower mower_array, int **hasBeenDeleted)
+int update (Entity ** human_array, Entity ** alien_array, Player *human_player, Player *alien_player, Mower mower_array, int **hasBeenDeleted, clock_t startingTime, clock_t currentTime)
 {
     int game_ended = 0;
+    int scoreIncrement = 0;
     Entity* humanTemp=NULL;
     Entity* alienTemp=NULL;
 
     human_player->golds += (human_player->gold_per_second/REFRESH_RATE);
     alien_player->golds += (alien_player->gold_per_second/REFRESH_RATE);
+
+    currentTime = clock();
+    if(currentTime > startingTime + 1000.0){
+        startingTime = currentTime;
+        human_player->score += 2;
+    }
     
     for (int lane = 0; lane <LANE; lane++){
 
         humanTemp=*(human_array+lane);
         alienTemp=*(alien_array+lane);
-        entityUpdate(human_array, &humanTemp, alien_array, lane, mower_array, hasBeenDeleted);
-        game_ended = entityUpdate(alien_array, &alienTemp, human_array, lane, mower_array, hasBeenDeleted);
+        entityUpdate(human_array, &humanTemp, alien_array, lane, mower_array, hasBeenDeleted, human_player);
+        game_ended = entityUpdate(alien_array, &alienTemp, human_array, lane, mower_array, hasBeenDeleted, alien_player);
         if (game_ended == 1){
             return game_ended;
         }

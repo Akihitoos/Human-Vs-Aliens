@@ -6,13 +6,13 @@ int main(int argc, char **argv)
 
     GameRender gameRender = NULL;
     SDL_Window *windowMain = NULL;
-    Entity **humanArray = init_entity_array();
-    Entity **alienArray = init_entity_array();
-    Mower mowerArray = init_mower_tab();
-    Shop *humanShop = init_shop_human();
-    Shop *alienShop = init_shop_alien();
-    Player *humanPlayer;
-    Player *alienPlayer;
+    Entity **humanArray = NULL;
+    Entity **alienArray = NULL;
+    Mower mowerArray = NULL;
+    Shop *humanShop = NULL;
+    Shop *alienShop = NULL;
+    Player *humanPlayer = NULL;
+    Player *alienPlayer = NULL;
     int gameMode = 0, gameEnded = 0, menu_end = 0,choice = 0;;
     
     //Menu
@@ -24,46 +24,50 @@ int main(int argc, char **argv)
         {
         case 1:
 
-            if(!gameEnded){
+            humanArray = init_entity_array();
+            alienArray = init_entity_array();
+            mowerArray = init_mower_tab();
+            humanShop = init_shop_human();
+            alienShop = init_shop_alien();
+            clock_t startingTime = clock();
+            clock_t currentTime = startingTime;
 
-                humanPlayer = init_human_player();
-                humanPlayer->gold_per_second = (double)50;
-                alienPlayer = init_alien_player(gameMode);
-                alienPlayer->gold_per_second = GetIAGoldPerSecond(gameMode);
+            humanPlayer = init_human_player();
+            humanPlayer->gold_per_second = (double)50;
+            alienPlayer = init_alien_player(gameMode);
+            alienPlayer->gold_per_second = GetIAGoldPerSecond(gameMode);
+            alienShop->cursor_position = -( (rand()%3) + 1);
 
-                GameRender_Init(&windowMain, &gameRender, gameMode, humanShop, alienShop);
+            GameRender_Init(&windowMain, &gameRender, gameMode, humanShop, alienShop);
 
-                while (!gameEnded)
-                {
-                    EventHandler(humanArray, alienArray, humanShop, alienShop, alienPlayer, humanPlayer, gameMode);
-                    if(gameMode > 0 && gameMode <= 3){
-                        AIHandler(alienShop, alienPlayer, alienArray);
-                    }
-                    gameEnded = update(humanArray, alienArray, humanPlayer, alienPlayer, mowerArray, gameRender->hasBeenDeleted);
-                    GameRender_UpdateGameRender(gameRender, humanArray, alienArray, humanPlayer, alienPlayer,
-                                                mowerArray, humanShop, alienShop, gameMode);
-                    GameRender_UpdateRender(gameRender, gameMode);
-                    
-                    SDL_Delay(1000/REFRESH_RATE);
+            while (!gameEnded)
+            {
+                EventHandler(humanArray, alienArray, humanShop, alienShop, alienPlayer, humanPlayer, gameMode);
+                if(gameMode > 0 && gameMode <= 3){
+                    AIHandler(alienShop, alienPlayer, alienArray);
                 }
-                free_array(&humanArray, &alienArray);
-                free_mower(&mowerArray);
-                GameRender_FreeEverything(&windowMain, &gameRender);
-                gameEnded = 1;
-
-            } else {
-                printf("Game already ended !\n");
+                gameEnded = update(humanArray, alienArray, humanPlayer, alienPlayer, mowerArray, gameRender->hasBeenDeleted, startingTime, currentTime);
+                GameRender_UpdateGameRender(gameRender, humanArray, alienArray, humanPlayer, alienPlayer,
+                                            mowerArray, humanShop, alienShop, gameMode);
+                GameRender_UpdateRender(gameRender, gameMode);
+                
+                SDL_Delay(1000/REFRESH_RATE);
             }
 
+            free_array(&humanArray, &alienArray);
+            free_mower(&mowerArray);
+            free_shop(&humanShop);
+            free_shop(&alienShop);
+            free_player(&alienPlayer);
+            GameRender_FreeEverything(&windowMain, &gameRender);
             break;
         case 2:
             GetGameMode(&choice, &gameMode);
             break;
         case 3:
-            printf("DLC features \n");
+            printf("Your score is %d \n", humanPlayer->score);
             break;
         case 0:
-            gameEnded = 1;
             menu_end = 1;
             break;
         default:
@@ -72,5 +76,6 @@ int main(int argc, char **argv)
 
     } while (!menu_end);
 
+    free_player(&humanPlayer);
     return EXIT_SUCCESS;
 }
