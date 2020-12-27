@@ -23,7 +23,7 @@ int main(int argc, char **argv)
         switch (choice)
         {
         case 1:
-
+            gameEnded = 0;
             humanArray = init_entity_array();
             alienArray = init_entity_array();
             mowerArray = init_mower_tab();
@@ -32,8 +32,14 @@ int main(int argc, char **argv)
             clock_t startingTime = clock();
             clock_t currentTime = startingTime;
 
-            humanPlayer = init_human_player();
-            humanPlayer->gold_per_second = (double)50;
+            if(humanPlayer == NULL){
+                humanPlayer = init_human_player();
+                humanPlayer->gold_per_second = (double)50;
+            } else {
+                humanPlayer->golds = (double)500;
+                humanPlayer->score = 0;
+            }
+        
             alienPlayer = init_alien_player(gameMode);
             alienPlayer->gold_per_second = GetIAGoldPerSecond(gameMode);
             alienShop->cursor_position = -( (rand()%3) + 1);
@@ -53,7 +59,7 @@ int main(int argc, char **argv)
                 
                 SDL_Delay(1000/REFRESH_RATE);
             }
-
+            
             free_array(&humanArray, &alienArray);
             free_mower(&mowerArray);
             free_shop(&humanShop);
@@ -77,5 +83,6 @@ int main(int argc, char **argv)
     } while (!menu_end);
 
     free_player(&humanPlayer);
+
     return EXIT_SUCCESS;
 }

@@ -141,13 +141,13 @@ void EventHandler(Entity **humanArray, Entity **alienArray, Shop *humanShop, Sho
     while(SDL_PollEvent(&event)){
         if(event.type == SDL_KEYDOWN){
             switch(event.key.keysym.sym){
-                case SDLK_q:
+                case SDLK_a:
                     moveHuman = -1;
                     break;
                 case SDLK_LEFT:
                     moveAlien = -1;
                     break;
-                case SDLK_d:
+                case SDLK_e:
                     moveHuman = 1;
                     break;
                 case SDLK_RIGHT:
@@ -165,10 +165,10 @@ void EventHandler(Entity **humanArray, Entity **alienArray, Shop *humanShop, Sho
                 case SDLK_UP:
                     moveAlien = -2;
                     break;
-                case SDLK_a:
+                case SDLK_q:
                     moveHuman = -3;
                     break;
-                case SDLK_e:
+                case SDLK_d:
                     moveHuman = +3;
                     break;
                 case SDLK_SPACE:
