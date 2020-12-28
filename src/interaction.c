@@ -243,6 +243,7 @@ char *GetArgumentConfiguration(int argc, char **argv, int *gameMode){
             *gameMode = strToInt2;
             break;
         default:
+            messageToDisplay = AllocateStringFromBuffer("Wrong argument");
             *gameMode = -1;
             break;
     }

@@ -66,6 +66,7 @@ typedef RenderCell_Struct *RenderCell;
 typedef struct gameRender
 {
     SDL_Renderer *renderer;
+    SDL_Window *windowMain;
     RenderCell *humanArrayStruct;
     RenderCell *alienArrayStruct;
     int **hasBeenDeleted; // used to synchronise the SDL update with the game itself
@@ -94,7 +95,7 @@ RenderCell GameRender_CreateEmptyRenderCell();
 
 RenderCell *GameRender_InitArrayRenderCell();
 
-GameRender GameRender_InitGameRender(SDL_Window *window, int width, int height);
+GameRender GameRender_InitGameRender();
 
 // free function of the GameRender
 

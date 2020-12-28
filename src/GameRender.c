@@ -6,18 +6,15 @@
     and his extension for text TTF
     gameMode : 0 = solo, 1 = multiplayer
 */
-int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode, Shop *humanShop, Shop *alienShop)
+int GameRender_Init(GameRender *gameRender, int gameMode)
 {
     int error = 0, width = 0, height = 0;
 
     GameRender_InitSDL(SDL_INIT_VIDEO);
 
-    *window = GameRender_CreateWindow(&width, &height);
+    *gameRender = GameRender_InitGameRender();
 
-    *gameRender = GameRender_InitGameRender(*window, width, height);
-
-
-    if (*window == NULL || *gameRender == NULL)
+    if ((*gameRender)->windowMain == NULL || *gameRender == NULL)
     {
         fprintf(stderr, "Error in GameRender_Init : %s\n", SDL_GetError());
         error = -1;
@@ -33,12 +30,9 @@ int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode, S
 /*
     Free every rendering component, including SDL
 */
-void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender)
+void GameRender_FreeEverything(GameRender *gameRender)
 {
     GameRender_FreeGameRender(gameRender);
-
-    SDL_DestroyWindow(*window);
-    *window = NULL;
 
     TTF_Quit();
     SDL_Quit();

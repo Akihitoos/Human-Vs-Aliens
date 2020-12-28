@@ -10,9 +10,9 @@
 
 // First and last function
 
-int GameRender_Init(SDL_Window **window, GameRender *gameRender, int gameMode, Shop *humanShop, Shop *alienShop);
+int GameRender_Init(GameRender *gameRender, int gameMode);
 
-void GameRender_FreeEverything(SDL_Window **window, GameRender *gameRender);
+void GameRender_FreeEverything(GameRender *gameRender);
 
 // Function of the game loop
 

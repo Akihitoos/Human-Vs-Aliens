@@ -64,8 +64,7 @@ void GameRender_GetDisplayMode(int *width, int *height)
 
 }
 
-//Return 0 on success or a negative error on failure
-//Create a window by asking the user the resolution he wants, and return them via parameters
+//Return a window by asking the user the resolution he wants, and return them via parameters
 SDL_Window *GameRender_CreateWindow(int *width, int *height)
 {
     SDL_Window *window = NULL;
@@ -125,13 +124,17 @@ RenderCell *GameRender_InitArrayRenderCell()
     Allocate a struct GameRender* and return it.
     Width and height correspond to the screen.
 */
-GameRender GameRender_InitGameRender(SDL_Window *window, int width, int height)
+GameRender GameRender_InitGameRender()
 {
     GameRender gameRender = NULL;
+    int width = -1,height = -1;
     gameRender = (GameRender_Struct *)malloc(sizeof(GameRender_Struct));
     if (gameRender != NULL)
     {
-        gameRender->renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+        gameRender->windowMain = GameRender_CreateWindow(&width, &height);
+        if(gameRender->windowMain != NULL){
+            gameRender->renderer = SDL_CreateRenderer(gameRender->windowMain, -1, SDL_RENDERER_ACCELERATED);
+        }
         gameRender->humanArrayStruct = GameRender_InitArrayRenderCell();
         gameRender->alienArrayStruct = GameRender_InitArrayRenderCell();
         gameRender->hasBeenDeleted = (int **)malloc(sizeof(int*) * 2);
@@ -202,6 +205,8 @@ void GameRender_FreeGameRender(GameRender *gameRender)
     GameRender_FreeAllRenderCell(&((*gameRender)->uiStruct));
     GameRender_FreeAllRenderCell(&((*gameRender)->cannonStruct));
     SDL_DestroyRenderer((*gameRender)->renderer);
+    SDL_DestroyWindow((*gameRender)->windowMain);
+    (*gameRender)->windowMain = NULL;
     free(*gameRender);
     *gameRender = NULL;
 }

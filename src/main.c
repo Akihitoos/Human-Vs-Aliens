@@ -5,7 +5,6 @@
 int main(int argc, char **argv)
 {
     GameRender gameRender = NULL;
-    SDL_Window *windowMain = NULL;
     Entity **humanArray = NULL;
     Entity **alienArray = NULL;
     Cannon cannonArray = NULL;
@@ -46,8 +45,8 @@ int main(int argc, char **argv)
             alienPlayer->gold_per_second = GetIAGoldPerSecond(gameMode);
             alienShop->cursor_position = -((rand() % 3) + 1);
 
-            GameRender_Init(&windowMain, &gameRender, gameMode, humanShop, alienShop);
-
+            GameRender_Init(&gameRender, gameMode);
+            
             while (!gameEnded)
             {   
                 EventHandler(humanArray, alienArray, humanShop, alienShop, alienPlayer, humanPlayer, gameMode);
@@ -63,7 +62,7 @@ int main(int argc, char **argv)
                 SDL_Delay(1000 / REFRESH_RATE);
             }
 
-            GameRender_FreeEverything(&windowMain, &gameRender);
+            GameRender_FreeEverything(&gameRender);
 
             FH_WriteScore(PATH_TO_HIGHSCORE_TXT, humanPlayer->score);
 
