@@ -68,10 +68,17 @@ void GameRender_GetDisplayMode(int *width, int *height)
 SDL_Window *GameRender_CreateWindow(int *width, int *height)
 {
     SDL_Window *window = NULL;
+    SDL_Surface *windowIcon = SDL_LoadBMP(PATH_TO_GAME_ICON);
+    if(windowIcon == NULL){
+        SDL_Log("Erreur in GameRender_CreateWindow() : %s \n", SDL_GetError());
+    }
     GameRender_GetDisplayMode(width, height);
     window = SDL_CreateWindow("Human vs Aliens", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, *width, *height, SDL_WINDOW_ALLOW_HIGHDPI);
-    if (window == NULL)
+    if (window != NULL && windowIcon != NULL)
     {
+        SDL_SetWindowIcon(window, windowIcon);
+        SDL_FreeSurface(windowIcon);
+    } else {
         SDL_Log("Erreur in GameRender_CreateWindow() : %s \n", SDL_GetError());
     }
     return window;

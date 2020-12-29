@@ -17,6 +17,9 @@
 #define SIZE_ENTITY 400
 
 // The number is the id
+
+#define PATH_TO_GAME_ICON "img\\Game_Icon.bmp"
+
 //#define PATH_TO_HUMAN_1 "src\\img\\Human_Melee.bmp"
 #define PATH_TO_HUMAN_1 "img\\Human_Melee.bmp"
 #define PATH_TO_HUMAN_2 "img\\Human_Range.bmp"
