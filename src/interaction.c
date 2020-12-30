@@ -158,7 +158,7 @@ Entity* human_search_alien (Entity * human, Entity *first_alien_entity)
     Entity *temp = first_alien_entity;
     while (temp != NULL)
     {
-        if((human->position + human->range > temp->position) && (human->position <= human->position)
+        if((human->position + human->range > temp->position) && (human->position <= temp->position)
         && ((cible == NULL) || (cible->position > temp->position))){
             cible = temp;
         }
